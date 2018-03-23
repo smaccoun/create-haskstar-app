@@ -10,12 +10,14 @@ data DirSetup =
     ,gitDir :: Text
     }
 
+frontendDirConfig :: DirSetup
 frontendDirConfig =
   DirSetup
 	  {dirName = "front-end"
 	  ,gitDir = "git@github.com:simonh1000/elm-webpack-starter.git"
 	  }
 
+backendDirConfig :: DirSetup
 backendDirConfig =
   DirSetup
 	  {dirName = "back-end"
@@ -26,9 +28,10 @@ asLocal dirName = "./" <> dirName
 
 majorCommentBlock :: Text -> IO ()
 majorCommentBlock msg = do
-  putStrLn "******************"
-  echo $ unsafeTextToLine msg 
-  putStrLn "******************\n\n"
+  printf "\n\n***********************************************\n"
+  echo $ unsafeTextToLine msg
+  printf "***********************************************\n\n"
+
 
 getDir :: Turtle.FilePath -> DirSetup -> (Text, Turtle.FilePath)
 getDir rootDir dirSetup =
@@ -40,8 +43,14 @@ getDir rootDir dirSetup =
 setupDir :: Turtle.FilePath -> DirSetup -> IO ()
 setupDir rootDir dirSetup = do
   let (dname, dPath) = getDir rootDir dirSetup
+  existingDir <- testdir dPath
+  if existingDir then do
+    echo "Found existing directory! Will remove and replace!"
+    rmtree dPath
+  else
+    echo "Detected valid initial state"
   majorCommentBlock $ "Setting up " <> dname
-  setupResult<- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
+  setupResult <- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
   case setupResult of
     ExitSuccess   -> return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
@@ -51,6 +60,12 @@ buildFrontEnd topDir = do
   cd $ getDir topDir frontendDirConfig & snd
   _ <- shell "yarn install" empty
   _ <- shell "elm-package install --yes" empty
+  return ()
+
+buildBackEnd topDir = do
+  majorCommentBlock "BUILDING BACK END"
+  cd $ getDir topDir backendDirConfig & snd
+  _ <- shell "stack build" empty
   return ()
 
 main :: IO ()
