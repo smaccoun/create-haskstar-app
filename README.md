@@ -1,8 +1,8 @@
 # create-haskstar-app
 
-Automatically build fullstack haskell webapps in one command!
+Automatically build and deploy fullstack haskell webapps in one command!
+Batteries included
 
 ```
-chmod +x setup
-./setup.sh
+./create-app
 ```
