@@ -4,6 +4,19 @@
 
 import Turtle
 
+
+main :: IO ()
+main = do
+  topDir <- pwd
+  setupDir topDir backendDirConfig
+  setupDir topDir frontendDirConfig
+  buildBackEnd topDir
+  buildFrontEnd topDir
+  runFrontEnd topDir
+  cd topDir
+  return ()
+
+
 data DirSetup =
   DirSetup
     {dirName :: Text
@@ -14,7 +27,7 @@ frontendDirConfig :: DirSetup
 frontendDirConfig =
   DirSetup
 	  {dirName = "front-end"
-	  ,gitDir = "git@github.com:simonh1000/elm-webpack-starter.git"
+	  ,gitDir = "git@github.com:smaccoun/haskstar-elm.git"
 	  }
 
 backendDirConfig :: DirSetup
@@ -68,12 +81,17 @@ buildBackEnd topDir = do
   _ <- shell "stack build" empty
   return ()
 
-main :: IO ()
-main = do
-  topDir <- pwd
-  setupDir topDir backendDirConfig
-  setupDir topDir frontendDirConfig
-  buildFrontEnd topDir
-  cd topDir
+
+runFrontEnd topDir = do
+  majorCommentBlock "STARTING WEB SERVER"
+  cd $ getDir topDir frontendDirConfig & snd
+  s <- shell "yarn start & " empty
+  case s of
+    ExitSuccess   -> do
+        printf "\nSuccessfully started server. Go to localhost:3000\n"
+        return ()
+    ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
+
+
 
