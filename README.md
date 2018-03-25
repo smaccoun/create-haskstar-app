@@ -1,4 +1,7 @@
-# create-haskstar-app
+<h1 align="center">
+  <img src="./logo.png"/><br>
+  Create-Haskstar-App 
+</h1>
 
 ## tl;dr
 Automatically build and deploy fullstack haskell webapps in one command!
