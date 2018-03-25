@@ -21,11 +21,15 @@ As all monolithic frameworks come with certain drawbacks (too much magic, differ
 the eventual goal of this is to make the full setup process highly customizable.
 
 
-## Directions
+## Setup
 
 Simply run the following and follow the prompts!
-```
-./create-app
+```bash
+$ git clone git@github.com:smaccoun/create-haskstar-app.git
+
+$ cd create-haskstar-app
+
+$ ./create-app
 ```
 
 
