@@ -7,13 +7,30 @@ import Turtle
 
 main :: IO ()
 main = do
-  shell "chmod +x ttab" empty
+  chmod executable "./ttab"
   topDir <- pwd
   validateAndSetupDir topDir backendDirConfig
   validateAndSetupDir topDir frontendDirConfig
-  runFrontEnd topDir
+  askToRun $ runServers topDir
   cd topDir
   return ()
+
+
+askToRun onYes = do
+  echo "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no"
+  maybeAnswer <- readline
+  case maybeAnswer of
+     Just a ->
+       case a of
+         "y" -> onYes
+         "n" -> echo "You can boot up each server by running ./run.sh"
+         _ -> echo "Please entery (y) or (n)"
+     Nothing ->
+        echo "Please entery (y) or (n)"
+
+runServers topDir = do
+    runBackEnd topDir
+    runFrontEnd topDir
 
 
 data DirSetup =
@@ -140,6 +157,18 @@ runFrontEnd topDir = do
   case s of
     ExitSuccess   -> do
         printf "\nSuccessfully started server. Go to localhost:3000\n"
+        return ()
+    ExitFailure n -> die (" failed with exit code: " <> repr n)
+  return ()
+
+runBackEnd topDir = do
+  majorCommentBlock "STARTING LOCAL BACK-END"
+  cd $ getDir topDir backendDirConfig & snd
+  s <- shell "../ttab stack exec api-exe" empty
+
+  case s of
+    ExitSuccess   -> do
+        printf "\nSuccessfully started api. Logs will be output to console\n"
         return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
