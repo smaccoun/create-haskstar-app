@@ -1,0 +1,68 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: b9c6de3d693950ce6211194e54b698726296b0242d4c2746e41f97a398474773
+
+name:           create-app
+version:        0.1.0.0
+description:    Please see the README on Github at <https://github.com/smaccoun/build#readme>
+homepage:       https://github.com/smaccoun/build#readme
+bug-reports:    https://github.com/smaccoun/build/issues
+author:         Steven MacCoun
+maintainer:     theraccoun@gmail.com
+copyright:      2018 Steven MacCoun
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/smaccoun/build
+
+library
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , system-filepath
+    , turtle
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_create_app
+  default-language: Haskell2010
+
+executable create-app
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , create-app
+    , system-filepath
+    , turtle
+  other-modules:
+      Paths_create_app
+  default-language: Haskell2010
+
+test-suite build-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , create-app
+    , system-filepath
+    , turtle
+  other-modules:
+      Paths_create_app
+  default-language: Haskell2010
