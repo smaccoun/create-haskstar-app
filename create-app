@@ -1,1 +1,1 @@
-stack exec create-app
+stack exec create-app -- $1

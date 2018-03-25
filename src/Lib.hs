@@ -20,6 +20,7 @@ askToRun onYes = do
         echo "Please entery (y) or (n)"
 
 runServers topDir = do
+
     runBackEnd topDir
     runFrontEnd topDir
 
@@ -65,45 +66,7 @@ getDir rootDir dirSetup =
     dname = dirName dirSetup
     dPath = rootDir </> (fromText dname)
 
-data ValidateResult = Valid | Replace | Keep
 
-validateInitialSetup :: Text -> Turtle.FilePath -> IO ValidateResult
-validateInitialSetup dname dPath = do
-  existingDir <- testdir dPath
-  if existingDir then do
-    echo $ unsafeTextToLine $ "Found existing directory " <> dname
-    echo "Would you like to replace (R) or keep (enter)"
-    answer <- readline
-    case answer of
-        Just a ->
-            case a of
-                "R" -> do
-                    echo "Replacing existing directories"
-                    return Replace
-                _ -> do
-                  echo "Keeping existing directory"
-                  return Keep
-  else do
-    echo "Detected valid initial state"
-    return Valid
-
-validateAndSetupDir :: Turtle.FilePath -> DirSetup -> IO ()
-validateAndSetupDir rootDir dirSetup = do
-    let (dname, dPath) = getDir rootDir dirSetup
-    majorCommentBlock $ "Setting up " <> dname
-    validateResult <- validateInitialSetup dname dPath
-    case validateResult of
-        Valid -> do
-            setup
-            return ()
-        Replace -> do
-            rmtree dPath
-            setup
-        Keep -> return ()
-    where
-        setup = do
-            setupDir rootDir dirSetup
-            return ()
 
 
 setupDir :: Turtle.FilePath -> DirSetup -> IO ()
@@ -117,6 +80,7 @@ setupDir rootDir dirSetup = do
 
 
 getTemplate topDir dname dirSetup = do
+  majorCommentBlock $ "Setting up " <> dname
   cd topDir
   setupResult <- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
   case setupResult of
@@ -163,4 +127,44 @@ runBackEnd topDir = do
   return ()
 
 
+-- POSSIBLY DEPRECATED
 
+data ValidateResult = Valid | Replace | Keep
+
+validateInitialSetup :: Text -> Turtle.FilePath -> IO ValidateResult
+validateInitialSetup dname dPath = do
+  existingDir <- testdir dPath
+  if existingDir then do
+    echo $ unsafeTextToLine $ "Found existing directory " <> dname
+    echo "Would you like to replace (R) or keep (enter)"
+    answer <- readline
+    case answer of
+        Just a ->
+            case a of
+                "R" -> do
+                    echo "Replacing existing directories"
+                    return Replace
+                _ -> do
+                  echo "Keeping existing directory"
+                  return Keep
+  else do
+    echo "Detected valid initial state"
+    return Valid
+
+validateAndSetupDir :: Turtle.FilePath -> DirSetup -> IO ()
+validateAndSetupDir rootDir dirSetup = do
+    let (dname, dPath) = getDir rootDir dirSetup
+    majorCommentBlock $ "Setting up " <> dname
+    validateResult <- validateInitialSetup dname dPath
+    case validateResult of
+        Valid -> do
+            setup
+            return ()
+        Replace -> do
+            rmtree dPath
+            setup
+        Keep -> return ()
+    where
+        setup = do
+            setupDir rootDir dirSetup
+            return ()

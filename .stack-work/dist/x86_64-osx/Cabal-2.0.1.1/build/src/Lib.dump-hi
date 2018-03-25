@@ -1,10 +1,10 @@
 
 ==================== FINAL INTERFACE ====================
-2018-03-25 19:50:16.651843 UTC
+2018-03-25 21:19:45.74807 UTC
 
 interface create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT:Lib 8002
-  interface hash: 41258629f9f2d1e7a0cbc52f46bd12bf
-  ABI hash: 76580c87356e1a99361c31ffb977afbb
+  interface hash: bdb086d1602c9ab9d23545cc33001e85
+  ABI hash: c638dbe885ed5d7aa117f36e7bc89332
   export-list hash: 8dad6e8b0e7beb916a3c72a929b5104d
   orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
   flag hash: 24d08bf1fca4cd3ed34e3c4d3a3d84eb
@@ -927,14 +927,20 @@ aff4e8e1c28e7d44964cfa06d4ec8c76
      Unfolding: InlineRule (2, True, False)
                 (\ (w :: Filesystem.Path.Internal.FilePath) (w1 :: Lib.DirSetup) ->
                  case Lib.$wgetDir w w1 of ww { (#,#) ww1 ww2 -> (ww1, ww2) }) -}
-894b809f2900b92bb54473c903968f84
+7a769e8434ce74cea29fa9de1752d23e
   getTemplate ::
-    Control.Monad.IO.Class.MonadIO m =>
     Filesystem.Path.Internal.FilePath
-    -> Data.Text.Internal.Text -> Lib.DirSetup -> m ()
+    -> Data.Text.Internal.Text -> Lib.DirSetup -> GHC.Types.IO ()
   {- Arity: 4,
-     Strictness: <S(SL),U(1*U,C(U))><L,U(U,U,U,U)><L,1*U(U,U,U)><L,1*U(A,A,1*U(U,U,U))> -}
-39820d20cdcd7f21ea7089504a6dd4cd
+     Strictness: <L,U(U,U,U,U)><L,U(U,U,U)><L,1*U(A,A,1*U(U,U,U))><S,U>,
+     Unfolding: InlineRule (0, True, True)
+                Lib.getTemplate1
+                  `cast`
+                (<Filesystem.Path.Internal.FilePath>_R
+                 ->_R <Data.Text.Internal.Text>_R
+                 ->_R <Lib.DirSetup>_R
+                 ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
+187391fd3c88a56220d277cdc1b7ccf1
   getTemplate1 ::
     Filesystem.Path.Internal.FilePath
     -> Data.Text.Internal.Text
@@ -942,7 +948,7 @@ aff4e8e1c28e7d44964cfa06d4ec8c76
     -> GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
   {- Arity: 4,
-     Strictness: <L,U(U,U,U,U)><L,1*U(U,U,U)><L,1*U(A,A,1*U(U,U,U))><S,U> -}
+     Strictness: <L,U(U,U,U,U)><L,U(U,U,U)><L,1*U(A,A,1*U(U,U,U))><S,U> -}
 fb07f31bb47bedcd747250172229776c
   gitDir :: Lib.DirSetup -> Data.Text.Internal.Text
   RecSel Left Lib.DirSetup
@@ -973,21 +979,21 @@ ad43cae785062a77e2009241393b0f2f
     -> GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U> -}
-2ec178d8aa4ab312e0b24b0da57b54e7
+8a12f5319b4df10dd8302404d2308179
   runFrontEnd :: Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
-  {- Arity: 2, Strictness: <L,U(U,U,U,U)><S,U>,
+  {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U>,
      Unfolding: InlineRule (0, True, True)
                 Lib.runFrontEnd1
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-640792262b0fd4674d0796e4a8acf337
+3806162734dde028fff317979e901dcf
   runFrontEnd1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
-  {- Arity: 2, Strictness: <L,U(U,U,U,U)><S,U> -}
-6f987d0c80d2e09f78d280556692b814
+  {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U> -}
+314a2d12f19b012e0c8737af62824f52
   runServers :: Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,U(U,U,U,U)><S,U>,
      Unfolding: InlineRule (0, True, True)
@@ -995,7 +1001,7 @@ ad43cae785062a77e2009241393b0f2f
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-5de8665feca635599ed418351cc21550
+a845df0ef0fb0ebb4a15d41b1abfbf77
   runServers1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -1006,7 +1012,7 @@ ad43cae785062a77e2009241393b0f2f
                    (s :: GHC.Prim.State# GHC.Prim.RealWorld)[OneShot] ->
                  case Lib.runBackEnd1 topDir s of ds1 { (#,#) ipv ipv1 ->
                  Lib.runFrontEnd1 topDir ipv }) -}
-f04d91c485757712adb056d4874d67e4
+0229b36c39802dfc75b54026907ecefb
   setupDir ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup -> GHC.Types.IO ()
@@ -1018,7 +1024,7 @@ f04d91c485757712adb056d4874d67e4
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R <Lib.DirSetup>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-631c795076ec7469972a9f226ce3787f
+e4cee0e88f60b88e89dddd2a8c6a5163
   setupDir1 ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup
@@ -1038,7 +1044,7 @@ f04d91c485757712adb056d4874d67e4
                  case ds of wild1 {
                    Lib.FRONT_END -> Lib.buildFrontEnd1 rootDir ipv
                    Lib.BACK_END -> Lib.buildBackEnd1 rootDir ipv } } }) -}
-3304e7e54a04ef7d8ac5ac6a3b8fcdb6
+289c65e2b3819c12f00fa999f021d642
   validateAndSetupDir ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup -> GHC.Types.IO ()
@@ -1050,7 +1056,7 @@ f04d91c485757712adb056d4874d67e4
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R <Lib.DirSetup>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-f91b75fb7ee0e340da43ffb2ce29a609
+bb0ccc12d5d47af6b363453339e51719
   validateAndSetupDir1 ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup
