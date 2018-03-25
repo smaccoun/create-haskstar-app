@@ -2,7 +2,9 @@
 
 ## tl;dr
 Automatically build and deploy fullstack haskell webapps in one command!
-Batteries included
+Batteries included, even devops!
+
+Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options
 
 #### Currently wip. Contributions highly welcome!
 
@@ -14,8 +16,6 @@ designed to largely get production ready haskell-based apps up and running quick
 
 As all monolithic frameworks come with certain drawbacks (too much magic, difference of opinions on the "right way", etc)
 the eventual goal of this is to make the full setup process highly customizable.
-
-
 
 
 ## Directions
@@ -41,8 +41,9 @@ Simply run the following and follow the prompts!
 |   lib    | Status   |
 |----------|:---------|
 | Elm      |   ✅ 
-| selda    |   in progress    |
-| yesod?    |          |
+| Miso (haskell)  |      |
+| Reflex? (haskell)    |          |
+| Halogen (purescript)    |          |
 
 ### Back-End
 
