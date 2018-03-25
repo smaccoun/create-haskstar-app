@@ -29,7 +29,7 @@ git clone git@github.com:smaccoun/create-haskstar-app.git
 cd create-haskstar-app
 
 chmod +x create-app
-./create-app
+./create-app my-app
 ```
 
 
