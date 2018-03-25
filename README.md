@@ -14,7 +14,7 @@ Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options
 ## Why?
 
 Designed to automate all the redundant, not-so-fun parts of setting up a stack.
-This is almost like a framework, monolithic and highly opinionated,
+This is almost like a framework - monolithic and highly opinionated - 
 designed to largely get production ready haskell-based apps up and running quickly!
 
 As all monolithic frameworks come with certain drawbacks (too much magic, difference of opinions on the "right way", etc)
@@ -25,11 +25,11 @@ the eventual goal of this is to make the full setup process highly customizable.
 
 Simply run the following and follow the prompts!
 ```bash
-$ git clone git@github.com:smaccoun/create-haskstar-app.git
+git clone git@github.com:smaccoun/create-haskstar-app.git
+cd create-haskstar-app
 
-$ cd create-haskstar-app
-
-$ ./create-app
+chmod +x create-app
+./create-app
 ```
 
 
@@ -39,6 +39,7 @@ $ ./create-app
 
 |   lib    | Status   |
 |----------|:---------|
+| CircleCI |          |
 | AWS      |   In progress    |
 | GCloud   |      |
 
