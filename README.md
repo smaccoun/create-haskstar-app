@@ -38,25 +38,27 @@ chmod +x create-app
 # Roadmap
 
 
-### Supported Platforms 
+### Deployment 
 
-|   lib    | Status   |
+|   Type   | Status   |
 |----------|:---------|
-| OSX      |   ✅     |
+| OSX Binary     |   ✅     |
+| Homebrew | In progress   |
 | Nix      |      |
 | ....     |      |
 
-### DevOps
+### ---------Dev Ops-----------
 
-|   lib    | Status   |
+|   Platforms | Status   |
 |----------|:---------|
 | CircleCI |          |
 | AWS      |   In progress    |
 | GCloud   |      |
 
 
-### Front-End Options
+### ---------Front-End-----------
 
+#### Frameworks
 |   lib    | Status   |
 |----------|:---------|
 | Elm      |   ✅ 
@@ -64,7 +66,25 @@ chmod +x create-app
 | Reflex? (haskell)    |          |
 | Halogen (purescript)    |          |
 
-### Back-End
+
+#### User/Session/Auth
+
+|   Feature | Status   |
+|----------|:---------|
+| Login/Register view |          |
+| password hasing (scrypt) |      |
+| OAuth     |      |
+| Cookie    |      |
+
+#### Styling
+
+|   Feature | Status   |
+|----------|:---------|
+| Bulma |          |
+| Font Awesome |      |
+| Ionic |      |
+
+### ---------Back-End-----------
 
 |   lib    | Status   |
 |----------|:---------|
@@ -73,7 +93,9 @@ chmod +x create-app
 | yesod?    |          |
 
 
-### DB
+### ---------DB-----------
+
+**Only plan on supporting postgres for a while**
 
 |   lib    | Status   |
 |----------|:---------|
