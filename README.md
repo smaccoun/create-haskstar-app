@@ -25,10 +25,22 @@ the eventual goal of this is to make the full setup process highly customizable.
 
 ## Setup
 
-Simply run the following and follow the prompts!
+--TODO: Work on nix build
+
+SIf you are on OSX, simply run the following and follow the prompts!
 ```bash
 git clone git@github.com:smaccoun/create-haskstar-app.git
 cd create-haskstar-app
+
+chmod +x create-app
+./create-app my-app
+```
+
+### Manual
+
+To manually build
+```bash
+./build.sh   # Runs stack build and moves binary to local dir
 
 chmod +x create-app
 ./create-app my-app
