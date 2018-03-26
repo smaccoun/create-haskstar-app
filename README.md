@@ -3,13 +3,15 @@
   Create-Haskstar-App 
 </h1>
 
+## Currently WIP. Contributions highly welcome!
+
 ## tl;dr
 Automatically build and deploy fullstack haskell webapps in one command!
 Batteries included, even devops!
 
 Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options
 
-#### Currently wip. Contributions highly welcome!
+
 
 ## Why?
 
@@ -34,6 +36,15 @@ chmod +x create-app
 
 
 # Roadmap
+
+
+### Supported Platforms 
+
+|   lib    | Status   |
+|----------|:---------|
+| OSX      |   ✅     |
+| Nix      |      |
+| ....     |      |
 
 ### DevOps
 
