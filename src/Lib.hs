@@ -6,6 +6,7 @@ module Lib where
 
 import Turtle
 import Filesystem.Path.CurrentOS (encodeString)
+import qualified Data.Text as T
 
 askToRun onYes = do
   echo "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no"
@@ -20,7 +21,6 @@ askToRun onYes = do
         echo "Please entery (y) or (n)"
 
 runServers topDir = do
-
     runBackEnd topDir
     runFrontEnd topDir
 
@@ -98,9 +98,30 @@ buildFrontEnd topDir = do
 
 buildBackEnd topDir = do
   majorCommentBlock "BUILDING BACK END"
-  cd $ getDir topDir backendDirConfig & snd
+  let backendDir = getDir topDir backendDirConfig & snd
+  cd backendDir
   _ <- shell "stack build" empty
+  _ <- mkBackendEnv backendDir
   return ()
+
+mkBackendEnv :: Turtle.FilePath -> IO ()
+mkBackendEnv backendDir = do
+  echo "Enter name of DB"
+--   dbName <- readline
+--   echo "Enter name of User"
+--   dbUser <- readline
+--   echo "Enter DB Password"
+--   dbPassword <- readline
+  let textFile = T.intercalate "\n" [dbHostLine, dbPortLine, dbDatabase, dbSchema, dbUserEnv , dbPasswordEnv ]
+  writeTextFile (backendDir </> ".env") textFile
+
+  where
+    dbHostLine    = "DB_HOST=localhost"
+    dbPortLine    = "DB_PORT=5432"
+    dbDatabase    = "DB_DATABASE=test"
+    dbSchema      = "DB_SCHEMA=public"
+    dbUserEnv     = "DB_USERNAME=postgres"
+    dbPasswordEnv = "DB_PASSWORD=postgres"
 
 
 runFrontEnd topDir = do
@@ -117,7 +138,7 @@ runFrontEnd topDir = do
 runBackEnd topDir = do
   majorCommentBlock "STARTING LOCAL BACK-END"
   cd $ getDir topDir backendDirConfig & snd
-  s <- shell "../ttab stack exec api-exe" empty
+  s <- shell "../ttab ./run.sh" empty
 
   case s of
     ExitSuccess   -> do
