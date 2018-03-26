@@ -1,10 +1,10 @@
 
 ==================== FINAL INTERFACE ====================
-2018-03-25 19:45:22.374131 UTC
+2018-03-25 23:55:27.435067 UTC
 
 interface main@main:Paths_create_app 8002
-  interface hash: 22be6e759369fd546cdc0521a3b83259
-  ABI hash: a09b6cd757c77f00204a7246bffe621f
+  interface hash: f3f453c3beec9fe0d11e502501ee139b
+  ABI hash: 89c85105484317c8734d52898753970e
   export-list hash: 223a19c8aa723256da7f151129e73632
   orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
   flag hash: bfb51463531ceb4d2f5102107e19bdf4
@@ -322,14 +322,14 @@ dab8a393fd50f0a812f3df6363900a98
   getDynLibDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "create_app_dynlibdir"#) -}
-5232a9e266530e20036a26352346a3e9
+992ed372a128b21372d418d33629e36a
   getLibDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getLibDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-6b584810ec47bae29467ff0a167fb17a
+e8a6fde7293e6741144c1464ff139848
   getLibDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -344,7 +344,7 @@ dab8a393fd50f0a812f3df6363900a98
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getLibDir2
                    eta) -}
-c6ab0a1b08a5c1dd8e65cd8e9766f730
+77b89533567c0dd63414c712ab2816ac
   getLibDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -551,10 +551,10 @@ c099d7734ec03f28fcccb16c3acbdd63
   getSysconfDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "create_app_sysconfdir"#) -}
-0a1421741e63c6cff5ee6f03f017377c
+639c1d0e4a99157cf06818371bc2e4e0
   libdir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
-                   "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0-9DGw39AV3Mk9LYBsQGhizH-create-app"#) -}
+                   "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0-7UVsxtzhVwF9xLMlBMWxUC-create-app"#) -}
 793bb38fa85ad043ef5d789111d858cf
   libexecdir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#

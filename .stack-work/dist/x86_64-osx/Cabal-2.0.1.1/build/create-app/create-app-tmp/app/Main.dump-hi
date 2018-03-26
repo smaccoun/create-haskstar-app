@@ -1,11 +1,11 @@
 
 ==================== FINAL INTERFACE ====================
-2018-03-25 21:19:47.054087 UTC
+2018-03-26 00:09:00.985959 UTC
 
 interface main@main:Main 8002
-  interface hash: 8d2941f31a4155942417d1008929afaf
-  ABI hash: 76b1920f324618bed6d19430bb407a6f
-  export-list hash: f7ec76bf975da373a839906812655323
+  interface hash: 84aebca12a38f6f6daea9a89f843a23c
+  ABI hash: a5bdbadbe6bab0f55ce5dcc8217803c6
+  export-list hash: 337f18927ce0675a6381243edeafb276
   orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
   flag hash: 3d6cd0da6542b11a5942a7c3bea1a87c
   sig of: Nothing
@@ -28,7 +28,7 @@ package dependencies: StateVar-1.1.0.4@StateVar-1.1.0.4-5dJbnTVECtEAhfJXPZKdbO
                       comonad-5.0.1@comonad-5.0.1-7j4AeOMTFovFSFO9XMFm1
                       containers-0.5.7.1@containers-0.5.7.1
                       contravariant-1.4@contravariant-1.4-3UCY3arLvoG71jrGOYoc39
-                      create-app-0.1.0.0@create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT
+                      create-app-0.1.0.0@create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm
                       deepseq-1.4.2.0@deepseq-1.4.2.0 directory-1.3.0.0@directory-1.3.0.0
                       distributive-0.5.2@distributive-0.5.2-JCgfTXNR3ywAyV7fFWIBI5
                       exceptions-0.8.3@exceptions-0.8.3-ADEDRATtUrMK1JW4zMQ9U
@@ -111,19 +111,26 @@ family instance modules: base-4.9.1.0:Control.Applicative
                          vector-0.11.0.0@vector-0.11.0.0-LMwQhhnXj8U3T5Bm1JFxG:Data.Vector.Unboxed
                          vector-0.11.0.0@vector-0.11.0.0-LMwQhhnXj8U3T5Bm1JFxG:Data.Vector.Unboxed.Base
 import  -/  base-4.9.1.0:Control.Applicative 32430a90492e727f4bd80db71c28600c
+import  -/  base-4.9.1.0:Data.Function 7aca86bfbd92366def5f260e30cb2628
 import  -/  base-4.9.1.0:Data.Functor 5ab1dc703df5b482e77efb697833ca3c
 import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
 import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  base-4.9.1.0:System.Environment 08cb808e8e6a7821e6f8cfa76a977431
+import  -/  base-4.9.1.0:System.Environment.ExecutablePath c0642906090adf4ac3de6ca173967541
 import  -/  base-4.9.1.0:System.IO c9de64c5f5407c4cf1c52500c4d15200
-import  -/  create-app-0.1.0.0@create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT:Lib c638dbe885ed5d7aa117f36e7bc89332
+import  -/  create-app-0.1.0.0@create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm:Lib 668cd44181101a1eb398234a6ea99374
 import  -/  ghc-prim-0.5.0.0:GHC.Types 89f8de4f08018c9177c98d979eae0e45
 import  -/  optparse-applicative-0.13.2.0@optparse-applicative-0.13.2.0-EqIYOWOFTvf23sT5QTYn9U:Options.Applicative.Types 51a5ed351e52971e6533467cf30252fe
 import  -/  system-filepath-0.4.13.4@system-filepath-0.4.13.4-FWiHTT5fTCT3S4HJQGlD59:Filesystem.Path e5c856c8ed8980f0e3765332fe68f424
 import  -/  system-filepath-0.4.13.4@system-filepath-0.4.13.4-FWiHTT5fTCT3S4HJQGlD59:Filesystem.Path.CurrentOS 77dd33ec69302cf21b6fa1ceec93c125
+import  -/  text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text 02cbbc20bdd508fabc38de38896bbae0
 import  -/  text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Internal a2f6f66c5bb1247458d9fa25257ab188
 import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle 2d73177f5fb84fe62ef5503be4ba294d
 import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle.Options 96d35d6cd5fcadafde1a51e6bf1d2ef8
 import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle.Prelude 81005099d00b6aa79cbb29650d683a79
+64724f070dffdb88a2e6879423c62794
+  $sfromString7 :: GHC.Types.Int
+  {- HasNoCafRefs, Unfolding: (GHC.Types.I# 4#) -}
 d6831ef04cb9301b090dfae6f7bb7ec7
   $trModule :: GHC.Types.Module
   {- HasNoCafRefs, Strictness: m,

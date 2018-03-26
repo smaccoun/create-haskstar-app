@@ -30,7 +30,7 @@ version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
 bindir     = "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/bin"
-libdir     = "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT"
+libdir     = "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm"
 dynlibdir  = "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2"
 datadir    = "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/share/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0"
 libexecdir = "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/libexec/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0"

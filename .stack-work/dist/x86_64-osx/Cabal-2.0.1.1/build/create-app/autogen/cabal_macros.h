@@ -44,6 +44,17 @@
   (major1) == 0 && (major2) == 4 && (minor) <= 13)
 #endif /* MIN_VERSION_system_filepath */
 
+/* package text-1.2.2.1 */
+#ifndef VERSION_text
+#define VERSION_text "1.2.2.1"
+#endif /* VERSION_text */
+#ifndef MIN_VERSION_text
+#define MIN_VERSION_text(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  2 || \
+  (major1) == 1 && (major2) == 2 && (minor) <= 2)
+#endif /* MIN_VERSION_text */
+
 /* package turtle-1.3.6 */
 #ifndef VERSION_turtle
 #define VERSION_turtle "1.3.6"
@@ -188,7 +199,7 @@
 #endif /* MIN_TOOL_VERSION_runghc */
 
 #ifndef CURRENT_COMPONENT_ID
-#define CURRENT_COMPONENT_ID "create-app-0.1.0.0-9DGw39AV3Mk9LYBsQGhizH-create-app"
+#define CURRENT_COMPONENT_ID "create-app-0.1.0.0-7UVsxtzhVwF9xLMlBMWxUC-create-app"
 #endif /* CURRENT_COMPONENT_ID */
 #ifndef CURRENT_PACKAGE_VERSION
 #define CURRENT_PACKAGE_VERSION "0.1.0.0"

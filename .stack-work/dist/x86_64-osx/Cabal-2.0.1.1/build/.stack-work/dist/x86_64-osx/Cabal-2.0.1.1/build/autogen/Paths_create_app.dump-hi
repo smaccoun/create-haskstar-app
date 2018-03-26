@@ -1,11 +1,11 @@
 
 ==================== FINAL INTERFACE ====================
-2018-03-25 19:44:17.884194 UTC
+2018-03-25 23:55:26.594062 UTC
 
-interface create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT:Paths_create_app 8002
-  interface hash: 982acce0a0d70b17d93b9e64127dd357
-  ABI hash: 4db50820ac2e5a3008903852d6dfba27
-  export-list hash: 4dca09708edc294af2ad2838ff75d394
+interface create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm:Paths_create_app 8002
+  interface hash: f4f89a4cb108c8f86eb6da4ddf2593ab
+  ABI hash: c9d7910a1c95209f330a72c73597cdf6
+  export-list hash: d15426fc9f6ca5dc9ff1da7de06403c7
   orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
   flag hash: 4582ee1993f25da07b22a0976cd5fba6
   sig of: Nothing
@@ -40,41 +40,41 @@ import  -/  base-4.9.1.0:System.Environment 08cb808e8e6a7821e6f8cfa76a977431
 import  -/  ghc-prim-0.5.0.0:GHC.Types 89f8de4f08018c9177c98d979eae0e45
 addDependentFile "/Users/stevenmaccoun/.stack/programs/x86_64-osx/ghc-8.0.2/lib/ghc-8.0.2/include/ghcversion.h"
 addDependentFile ".stack-work/dist/x86_64-osx/Cabal-2.0.1.1/build/autogen/cabal_macros.h"
-7395dcf0f8959bff408b9bd846914b7d
+1d317d296a8d6eefa2e45410d52fd08e
   $trModule :: GHC.Types.Module
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.Module
                    Paths_create_app.$trModule2
                    Paths_create_app.$trModule1) -}
-dd07ad84931de0f87afe966e6bc2e7e3
+8cba6fb81dcd5ff43728633c47944434
   $trModule1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "Paths_create_app"#) -}
-fe518c527980f3d580c1ca795d9bd5a7
+8e70e906ab96792ec74a92df9f32e01b
   $trModule2 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS
-                   "create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT"#) -}
-bad57400399cd65d1e18473b10c28114
+                   "create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm"#) -}
+75728cf2dc122b77c08f914e7e8ad1ba
   bindir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
                    "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/bin"#) -}
-d662f893abeea4e230c828a6484f5ca7
+1795c4269178b018749624121cfa676c
   datadir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
                    "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/share/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0"#) -}
-2020e2d6c110b02854de0ff0f127bd8c
+0cf902f97c0b20054ad39df56e37823b
   dynlibdir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
                    "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2"#) -}
-ce9ae79c49f6e303c0612aa65307568a
+582c9a19feec7abc4cf6b00ca2beb5fb
   getBinDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getBinDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-22aec207d9bd50741e5927f403e68cab
+cd6d70ff20df1974d7cf11e926b70ff2
   getBinDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -89,7 +89,7 @@ ce9ae79c49f6e303c0612aa65307568a
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getBinDir2
                    eta) -}
-d361e972878c6b6b0f1c265935c3d120
+74d434efed532973c0a6ded6e122db85
   getBinDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -125,31 +125,31 @@ d361e972878c6b6b0f1c265935c3d120
                              wild
                              eta
                         GHC.Types.True -> (# eta, Paths_create_app.bindir #) } } } } }) -}
-6779e1f5b33c574e7d5fac65b1e4dfbb
+74dfc7aa6f6ed06bd5f742488344b6ac
   getBinDir3 :: GHC.Types.IO GHC.Base.String
   {- Unfolding: (GHC.Magic.lazy
                    @ (GHC.Types.IO GHC.Base.String)
                    Paths_create_app.getBinDir4
                      `cast`
                    (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R))) -}
-49a54a2dac4b8584b28faab967ce8002
+1131aa7270e5e76789b56a5d2ced7855
   getBinDir4 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
   {- Arity: 1,
      Unfolding: (System.Environment.getEnv1
                    Paths_create_app.getBinDir5) -}
-405d976843894b27d04cf54be678ca81
+4daa75a121d13b6504cceeb3edb4e762
   getBinDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "create_app_bindir"#) -}
-e025adf6a3b0fad8119927c431a33fad
+6da069cbe17e627e213f20e16200e8a3
   getDataDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getDataDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-718e60d829faefbfc517dd85d3b6f6e4
+01bf2459adf37928721cc91b73594802
   getDataDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -164,7 +164,7 @@ e025adf6a3b0fad8119927c431a33fad
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getDataDir2
                    eta) -}
-1b0cc11bb3c3a4210e3c483afc05a7de
+21a3e94ef9f3663e974d533216fdd737
   getDataDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -200,24 +200,24 @@ e025adf6a3b0fad8119927c431a33fad
                              wild
                              eta
                         GHC.Types.True -> (# eta, Paths_create_app.datadir #) } } } } }) -}
-b58947905e6792058840d838194727cc
+6037aa8ff0b65f6dfe46839b49581943
   getDataDir3 :: GHC.Types.IO GHC.Base.String
   {- Unfolding: (GHC.Magic.lazy
                    @ (GHC.Types.IO GHC.Base.String)
                    Paths_create_app.getDataDir4
                      `cast`
                    (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R))) -}
-ececd94e7d8ccd0d9219afb02dc2ba29
+a9c3c659aea908baec096ab981943936
   getDataDir4 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
   {- Arity: 1,
      Unfolding: (System.Environment.getEnv1
                    Paths_create_app.getDataDir5) -}
-cbdb4ea43e9d0a8f254059555928633f
+9eef408692531014345102747fa51ab1
   getDataDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "create_app_datadir"#) -}
-072486f5595a7c1970cf78546ac053c8
+adaf679f4cc72e5a3ca90e40d25c3e34
   getDataFileName :: GHC.IO.FilePath -> GHC.Types.IO GHC.IO.FilePath
   {- Arity: 2, Strictness: <L,U><S,U>,
      Unfolding: InlineRule (0, True, True)
@@ -225,7 +225,7 @@ cbdb4ea43e9d0a8f254059555928633f
                   `cast`
                 (<GHC.IO.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <GHC.IO.FilePath>_R)) -}
-bbe223f7fcc7eb36cc2ce9819285ad9f
+a5c132116da0f12d5e5d0deee0bc7623
   getDataFileName1 ::
     GHC.IO.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -246,14 +246,14 @@ bbe223f7fcc7eb36cc2ce9819285ad9f
                       @ GHC.Types.Char
                       ipv1
                       (GHC.CString.unpackAppendCString# "/"# name) #) }) -}
-e15f87fad654ac938283d64211a6198a
+d18df1979d9c388b9aecfb9ac0dc3ab5
   getDynLibDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getDynLibDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-610d027875613ef81d0e876b11b6ffb1
+fab985603a594f7135b2cf581cd15901
   getDynLibDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -268,7 +268,7 @@ e15f87fad654ac938283d64211a6198a
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getDynLibDir2
                    eta) -}
-1193c81ff3055a558067a370c7a84a37
+9f483c9eb9b084142aacc895dd564e91
   getDynLibDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -305,32 +305,32 @@ e15f87fad654ac938283d64211a6198a
                              eta
                         GHC.Types.True
                         -> (# eta, Paths_create_app.dynlibdir #) } } } } }) -}
-2ec3e6ab55e7eb23d50cdb8c074fa40a
+e144698d20b69ca0ddea2c7f687ddfba
   getDynLibDir3 :: GHC.Types.IO GHC.Base.String
   {- Unfolding: (GHC.Magic.lazy
                    @ (GHC.Types.IO GHC.Base.String)
                    Paths_create_app.getDynLibDir4
                      `cast`
                    (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R))) -}
-0fd5c84abd4a3f817ccfaf0c1af22e73
+50701792efff8aaa27cc085f37e1c781
   getDynLibDir4 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
   {- Arity: 1,
      Unfolding: (System.Environment.getEnv1
                    Paths_create_app.getDynLibDir5) -}
-c20c86da19b72b1f132c935bc9eb602a
+8783a51576c4fc044daed90e72e172c5
   getDynLibDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "create_app_dynlibdir"#) -}
-aadee8a0da1f1e6ad753af38d8f49ed5
+906b836e32054119c46d7ee8d2732b6e
   getLibDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getLibDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-3989aa51fded762f103fef35d9dd6a6f
+9590bc996fb75d1ff61559025606e12a
   getLibDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -345,7 +345,7 @@ aadee8a0da1f1e6ad753af38d8f49ed5
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getLibDir2
                    eta) -}
-78803250c3fbc2802816207cd4fd31fa
+864ca72c05ced0a06aa4e743d1bde9df
   getLibDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -381,31 +381,31 @@ aadee8a0da1f1e6ad753af38d8f49ed5
                              wild
                              eta
                         GHC.Types.True -> (# eta, Paths_create_app.libdir #) } } } } }) -}
-3cfe234346d51a2c3e3b920c04ff029e
+8d283157d049e1fb4e938aeef06337e7
   getLibDir3 :: GHC.Types.IO GHC.Base.String
   {- Unfolding: (GHC.Magic.lazy
                    @ (GHC.Types.IO GHC.Base.String)
                    Paths_create_app.getLibDir4
                      `cast`
                    (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R))) -}
-150c38dffe906eb06630b882c109d79a
+1ce386c9b50452662ee50f9c5980bf0a
   getLibDir4 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
   {- Arity: 1,
      Unfolding: (System.Environment.getEnv1
                    Paths_create_app.getLibDir5) -}
-20268266bcce5ad596f8141e9c18e993
+030131f7cd123a52826a5cdd4234caf7
   getLibDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "create_app_libdir"#) -}
-ac83871fdab15d9077537facc55a54a4
+831bc180d6170d24a6cca91506bdb245
   getLibexecDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getLibexecDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-39b6de12f07ab1e2895cbba63bee3a4b
+40778af981cfa8fedc5fd870388cafa4
   getLibexecDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -420,7 +420,7 @@ ac83871fdab15d9077537facc55a54a4
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getLibexecDir2
                    eta) -}
-2a5a8941f145a39b643aa136eddf1ddb
+5868e24f589bf757fed5d6d8cc9d6e5c
   getLibexecDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -457,32 +457,32 @@ ac83871fdab15d9077537facc55a54a4
                              eta
                         GHC.Types.True
                         -> (# eta, Paths_create_app.libexecdir #) } } } } }) -}
-f4c72d887ee102eb6bfc9957c2bd781f
+fe6a7810b79afb79018c5a0c2f8c8984
   getLibexecDir3 :: GHC.Types.IO GHC.Base.String
   {- Unfolding: (GHC.Magic.lazy
                    @ (GHC.Types.IO GHC.Base.String)
                    Paths_create_app.getLibexecDir4
                      `cast`
                    (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R))) -}
-ffbbe5129c9c99cba25a2da6808cd679
+dd46653aa68d6d3db686bd19eece1f49
   getLibexecDir4 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
   {- Arity: 1,
      Unfolding: (System.Environment.getEnv1
                    Paths_create_app.getLibexecDir5) -}
-020a50e9dd877db430340a521ac099ac
+eea2aa98f7b537a0fc286fe83e638ee7
   getLibexecDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "create_app_libexecdir"#) -}
-2c6759bcd037f17192c7e833dd019056
+9db1db2842d1f681313b1d38d77f8e03
   getSysconfDir :: GHC.Types.IO GHC.IO.FilePath
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Paths_create_app.getSysconfDir1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-b6208850eb6c4510795bc64b6f2479aa
+81fe552b68d7eddadc18ee24406a66a7
   getSysconfDir1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
@@ -497,7 +497,7 @@ b6208850eb6c4510795bc64b6f2479aa
                    (GHC.Types.N:IO[0] <GHC.Base.String>_R)
                    Paths_create_app.getSysconfDir2
                    eta) -}
-4968a65d889e0bccd638a628b3cf59cc
+0173410525dfef281073c4942eef5c66
   getSysconfDir2 ::
     GHC.Exception.SomeException
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -534,74 +534,74 @@ b6208850eb6c4510795bc64b6f2479aa
                              eta
                         GHC.Types.True
                         -> (# eta, Paths_create_app.sysconfdir #) } } } } }) -}
-4680cc7a7181928ee29729e0548ab173
+b00fe7b5cb9f7ec589e26ca2c2a1502e
   getSysconfDir3 :: GHC.Types.IO GHC.Base.String
   {- Unfolding: (GHC.Magic.lazy
                    @ (GHC.Types.IO GHC.Base.String)
                    Paths_create_app.getSysconfDir4
                      `cast`
                    (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R))) -}
-4feb517a07a659cd4edb7a50708bac3f
+9b9130c9a7fef53f3a29bc3bb4561faa
   getSysconfDir4 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)
   {- Arity: 1,
      Unfolding: (System.Environment.getEnv1
                    Paths_create_app.getSysconfDir5) -}
-7e5f36f974588f1bb0a6d8468ce57d6e
+43275d3a1d51833102545afc9cf47ae9
   getSysconfDir5 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "create_app_sysconfdir"#) -}
-b7e10ec964eec8de13ceef73150348d1
+0bf3a6875fadb49d0904debdabef552f
   libdir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
-                   "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT"#) -}
-8c8da69928a378682c0ee06ac7306c3b
+                   "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/lib/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm"#) -}
+ea34e5f5effb0259c515e66c94a7bfd9
   libexecdir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
                    "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/libexec/x86_64-osx-ghc-8.0.2/create-app-0.1.0.0"#) -}
-47490aecc31bacbca291bd14c75cc9e4
+9310e8a57899e092e04d1be264cbd179
   sysconfdir :: GHC.IO.FilePath
   {- Unfolding: (GHC.CString.unpackCString#
                    "/Users/stevenmaccoun/projects/haskstar/create-haskstar-app/.stack-work/install/x86_64-osx/lts-8.23/8.0.2/etc"#) -}
-fd1fa97e8dc966d30ff2d3c766a19c3e
+d2213ace54be4a420a5b6c2a26c286c7
   version :: Data.Version.Version
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (Data.Version.Version
                    Paths_create_app.version1
                    (GHC.Types.[] @ GHC.Base.String)) -}
-7e83e47a91ec520ad577dc0b476554be
+b763b19e9373bf167b4c9d789e7f41bf
   version1 :: [GHC.Types.Int]
   {- HasNoCafRefs, Strictness: m2,
      Unfolding: (GHC.Types.:
                    @ GHC.Types.Int
                    Paths_create_app.version5
                    Paths_create_app.version2) -}
-984d5f901b582e972cccfd89e2e3d281
+49aa53a5edc55106eda9d18c6db44a7a
   version2 :: [GHC.Types.Int]
   {- HasNoCafRefs, Strictness: m2,
      Unfolding: (GHC.Types.:
                    @ GHC.Types.Int
                    Paths_create_app.version6
                    Paths_create_app.version3) -}
-c115254ffb9aebd06e06036b6075d820
+1ac1d9ee097183cfde2139e9b6738f74
   version3 :: [GHC.Types.Int]
   {- HasNoCafRefs, Strictness: m2,
      Unfolding: (GHC.Types.:
                    @ GHC.Types.Int
                    Paths_create_app.version5
                    Paths_create_app.version4) -}
-c3e9b5979964fc9084ff91601cbb7661
+7ebb186a72e1c5a1f0b8fddc39a9a5a0
   version4 :: [GHC.Types.Int]
   {- HasNoCafRefs, Strictness: m2,
      Unfolding: (GHC.Types.:
                    @ GHC.Types.Int
                    Paths_create_app.version5
                    (GHC.Types.[] @ GHC.Types.Int)) -}
-c6c5160696ac4e7864dfa8520ec20e6c
+91045065c5b4a3a8edaac8c80b726da3
   version5 :: GHC.Types.Int
   {- HasNoCafRefs, Strictness: m, Unfolding: (GHC.Types.I# 0#) -}
-6b34b9e20d3d0639bf67f1782d409df6
+844f9a6b84601996ff08870b30bb472f
   version6 :: GHC.Types.Int
   {- HasNoCafRefs, Strictness: m, Unfolding: (GHC.Types.I# 1#) -}
 vectorised variables:

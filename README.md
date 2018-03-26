@@ -49,7 +49,7 @@ chmod +x create-app
 |   lib    | Status   |
 |----------|:---------|
 | Elm      |   ✅ 
-| Miso (haskell)  |      |
+| [Miso](https://github.com/dmjio/miso)  |      |
 | Reflex? (haskell)    |          |
 | Halogen (purescript)    |          |
 
@@ -57,8 +57,8 @@ chmod +x create-app
 
 |   lib    | Status   |
 |----------|:---------|
-| servant  |   ✅ 
-| selda    |   in progress
+| [Servant](https://hackage.haskell.org/package/servant)  |   ✅ 
+| [Selda](https://selda.link/)   |   in progress
 | yesod?    |          |
 
 
@@ -67,5 +67,5 @@ chmod +x create-app
 |   lib    | Status   |
 |----------|:---------|
 | Rails migration |      |
-
+| Persistent? |          |
 

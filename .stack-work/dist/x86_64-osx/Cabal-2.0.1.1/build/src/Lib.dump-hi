@@ -1,11 +1,11 @@
 
 ==================== FINAL INTERFACE ====================
-2018-03-25 21:19:45.74807 UTC
+2018-03-25 23:55:26.110192 UTC
 
-interface create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT:Lib 8002
-  interface hash: bdb086d1602c9ab9d23545cc33001e85
-  ABI hash: c638dbe885ed5d7aa117f36e7bc89332
-  export-list hash: 8dad6e8b0e7beb916a3c72a929b5104d
+interface create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm:Lib 8002
+  interface hash: bc72ceea2ec39944f56626e19eee7aa1
+  ABI hash: 668cd44181101a1eb398234a6ea99374
+  export-list hash: bc865f1cd6020ebd5de839abe231e030
   orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
   flag hash: 24d08bf1fca4cd3ed34e3c4d3a3d84eb
   sig of: Nothing
@@ -141,128 +141,128 @@ import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle 2d73177f5fb84
 import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle.Format 05de819ce957bff17f753aa8e4be38f7
 import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle.Line 7a8609f631adab632ff0766dd1748a47
 import  -/  turtle-1.3.6@turtle-1.3.6-XlN6ql6rbNF57mlD2v5fz:Turtle.Prelude 81005099d00b6aa79cbb29650d683a79
-1b51e24455b603e29d014dbb6ca2fba4
+71a1d6f1a339dcf0b157ad03eb150175
   $tc'BACK_END :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   13329882316273810044##
-                   17285506180631790891##
+                   11237060812147939424##
+                   13864023516728671442##
                    Lib.$trModule
                    Lib.$tc'BACK_END1) -}
-6d77a2b27382208a7084b878c44a6aac
+7a6a118e6a1dfda6a0888466f28d8334
   $tc'BACK_END1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "'BACK_END"#) -}
-56cd8a90d9b3eb49793bfb4972d7e4e1
+01170cf487a60002d865c48d948cf443
   $tc'DirSetup :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   6784742235953548576##
-                   11343799518302766781##
+                   12249063848439127623##
+                   17714116769608140053##
                    Lib.$trModule
                    Lib.$tc'DirSetup1) -}
-90d3a4a4461b36fa769835df692a3522
+2ae782209418107e1c69118d060b15cd
   $tc'DirSetup1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "'DirSetup"#) -}
-81678e1485e6e02e464e8e6ed19d3e44
+b23b6eb60e2c6c700b1b45126a086c33
   $tc'FRONT_END :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   10775448529439015946##
-                   15420174786072388709##
+                   3839601190191201117##
+                   748339126412467822##
                    Lib.$trModule
                    Lib.$tc'FRONT_END1) -}
-cf7a283d92214a8c818903a0e283ec86
+d3bd989d8dbc57fb8a873454ba91d1f0
   $tc'FRONT_END1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "'FRONT_END"#) -}
-194048d2143c0bcd9969c2f86087103d
+6484c3fd33fde6c9fa527f30df689d3a
   $tc'Keep :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   14232823500737698795##
-                   10483026784498752830##
+                   17286948021104113713##
+                   12596222439487764738##
                    Lib.$trModule
                    Lib.$tc'Keep1) -}
-729cfea8a4615a3a69f32bb635db174a
+b995750b615482610890fa572731cb9b
   $tc'Keep1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "'Keep"#) -}
-edfe8ba080dd0c4bab215f7f89d6a427
+5b1f5b7fb7e9769d243f506f6e2a265b
   $tc'Replace :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   17912752448169094788##
-                   4930597903138190987##
+                   11094129813712651894##
+                   8091998123995439827##
                    Lib.$trModule
                    Lib.$tc'Replace1) -}
-f47cbdce119f58f156d03f7cb7caa1a1
+c71616a13e4e5ef7a36de8d4e0fa2d65
   $tc'Replace1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "'Replace"#) -}
-d23468690d97785e3315296d6d029d2c
+83c66218e83012001ff43797cf463e7f
   $tc'Valid :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   2817926531775378645##
-                   3192148156206745233##
+                   5365342292923114348##
+                   15342100279308624421##
                    Lib.$trModule
                    Lib.$tc'Valid1) -}
-6fcf2f4e930f4217715454314f8891ea
+63f663161070a97dbb3d0352b6e38bbb
   $tc'Valid1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "'Valid"#) -}
-403936df62bcc9d7c1167207ce11167e
+7df4ab49fb733f44bf9eb986c9d841de
   $tcDirSetup :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   7432020754138267929##
-                   14331838391349416756##
+                   3999449829237139812##
+                   2478430975354547167##
                    Lib.$trModule
                    Lib.$tcDirSetup1) -}
-e358a68c0cb0925e28b9b5d607aa23be
+ec26ea4f6f20b992293556f9a36d9d0d
   $tcDirSetup1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "DirSetup"#) -}
-8424dd04db897b276e01eb96fbc5e7d7
+0bf5343b1d981e2c9d84be5727060d25
   $tcDirStackType :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   9154423213237593962##
-                   13451821565921139538##
+                   11842959856979616803##
+                   17925994729151360688##
                    Lib.$trModule
                    Lib.$tcDirStackType1) -}
-334520a9fbcc20908687f3b045d82ad5
+865974c4794a67f64f9e6b9919163ac0
   $tcDirStackType1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "DirStackType"#) -}
-8e207eaf916b0c9bfdffc29a66a6abf2
+d204cfab589d8edaca53f40f55fc69cc
   $tcValidateResult :: GHC.Types.TyCon
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.TyCon
-                   14526585909813166625##
-                   4966610456450124944##
+                   17807625981805552365##
+                   15028337061502277500##
                    Lib.$trModule
                    Lib.$tcValidateResult1) -}
-f0924565dfa1c418632ed4ed5ecfbefe
+0014609212d3e15ac61906747a8f86cb
   $tcValidateResult1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "ValidateResult"#) -}
-68535236f2f2bac7ddc83565991cd3d1
+bf2926016d6791699994c4010afa6b0c
   $trModule :: GHC.Types.Module
   {- HasNoCafRefs, Strictness: m,
      Unfolding: (GHC.Types.Module Lib.$trModule2 Lib.$trModule1) -}
-ffce57f37179b90ca083d9c28e9538cc
+0cc5bcc63461b90616ee968d41c94f23
   $trModule1 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS "Lib"#) -}
-b85c355e5b9d500b00c38b61f5bb035b
+d89b56b89aab898ee105775d03a62fd0
   $trModule2 :: GHC.Types.TrName
   {- HasNoCafRefs, Strictness: m1,
      Unfolding: (GHC.Types.TrNameS
-                   "create-app-0.1.0.0-L3nOpeU0vGo3Ijlue7VRPT"#) -}
-a07643d06b671f1511a6d195484ecb53
+                   "create-app-0.1.0.0-OcFFDFPaN4DOt17bSwIOm"#) -}
+830dbc432ad754b54ce7270b9d5bb2c8
   $wgetDir ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup
@@ -334,16 +334,16 @@ a07643d06b671f1511a6d195484ecb53
                                           ww6
                                           ww7
                                           ww8 } } } } } } } #)) -}
-e26c35ecd2512ad1612c5b891e07af9e
+50224f7c9920287f86d313b94a9178a4
   data DirSetup
     = DirSetup {dirStackType :: Lib.DirStackType,
                 dirName :: Data.Text.Internal.Text,
                 gitDir :: Data.Text.Internal.Text}
-57e86f367f69f0b763ff26c4d2044cc6
+e60e746616d7b55c2f4782c0051ce6fa
   data DirStackType = FRONT_END | BACK_END
-68767c989316e4fb5a4c81c66d076c9a
+3afbc010689f45e61742e142d1aefc70
   data ValidateResult = Valid | Replace | Keep
-91d6d1cee554a37d8daa0e4a31be09a1
+c9d8d776be5e62c3d657eb461851ba29
   asLocal :: (Data.String.IsString m, GHC.Base.Monoid m) => m -> m
   {- Arity: 3,
      Strictness: <L,1*C1(U)><S(LC(C(S))L),1*U(A,1*C1(C1(U)),A)><L,U>,
@@ -357,10 +357,10 @@ e26c35ecd2512ad1612c5b891e07af9e
                    $dMonoid
                    ($dIsString `cast` (Data.String.N:IsString[0] <m>_N) Lib.asLocal1)
                    dirName1) -}
-643d9ce070dd65b9eefa40f6109f9276
+1a69341407c8459b66d02caa950aa0db
   asLocal1 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "./"#) -}
-398a418139721181313e50452694665a
+b170cd348a3183a60141a8ff2f020706
   askToRun :: Control.Monad.IO.Class.MonadIO m => m () -> m ()
   {- Arity: 2, Strictness: <S(SL),U(1*U,C(U))><L,U>,
      Unfolding: (\ @ (m :: * -> *)
@@ -470,15 +470,15 @@ e26c35ecd2512ad1612c5b891e07af9e
                                         GHC.Prim.realWorld# of wild4 { (#,#) ds11 ds12 ->
                                  case GHC.Prim.narrow32Int# ds12 of wild5 {
                                    DEFAULT -> $j GHC.Prim.void# 0# -> eta } } } } } }))) -}
-51cd7e6173254237071be5863d7fa4b7
+4829086d696213b4e911c5883803debc
   askToRun1 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.askToRun2) -}
-27742fcfa80789eba2673a19c629ca7a
+f104315b2603fcea7961637730b9d5df
   askToRun10 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "Please entery (y) or (n)"#) -}
-a19914ff19ea321a849c435d5ed0b4ca
+5ba5153bd9cec1d0576fa15b2cd3ccf1
   askToRun11 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
@@ -486,25 +486,25 @@ a19914ff19ea321a849c435d5ed0b4ca
      Unfolding: (Data.Text.IO.hPutStrLn1
                    GHC.IO.Handle.FD.stdout
                    Lib.askToRun12 `cast` (Turtle.Line.N:Line[0])) -}
-15896a2f7f12fb19278b632c17a05f5d
+26d450dc680cf207fecb25384cc67220
   askToRun12 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.askToRun13) -}
-8cc0d69aea41a94e6662ae50a7976d76
+3c9fc4c355fab9b3529727f1da1c344a
   askToRun13 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no"#) -}
-489e7654fbfa0cd1e3e02bc6b98739fb
+6ae5b220655c9a8f41115d168956b656
   askToRun2 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "n"#) -}
-f79a17fb94ecda6e0d2b8c67db9a368b
+a8718f2c1c85fe725be80d912ba87b45
   askToRun3 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.askToRun4) -}
-20fc62ade7623ae7bd75e77a7f5d4f25
+efbe291d770b8ab9d34ae58a301f1393
   askToRun4 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "y"#) -}
-6ff2771e43476d45a161db5be7d39035
+1fbe91812120ecebe6dff4fa1ff3144f
   askToRun5 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
@@ -512,15 +512,15 @@ f79a17fb94ecda6e0d2b8c67db9a368b
      Unfolding: (Data.Text.IO.hPutStrLn1
                    GHC.IO.Handle.FD.stdout
                    Lib.askToRun6 `cast` (Turtle.Line.N:Line[0])) -}
-7354106669dd1731f340af142337e6be
+41fff166021145a68accad0cee667d7b
   askToRun6 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.askToRun7) -}
-86318f6e7721eae8d759745d720a7a32
+132574ca5c8bf14fa88c9c37a3bfd6b6
   askToRun7 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "You can boot up each server by running ./run.sh"#) -}
-1b6a32f89002fd7c45ea454d119de687
+4d480b8a1eb4d23b9843ac0fc34cff63
   askToRun8 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
@@ -528,25 +528,25 @@ f79a17fb94ecda6e0d2b8c67db9a368b
      Unfolding: (Data.Text.IO.hPutStrLn1
                    GHC.IO.Handle.FD.stdout
                    Lib.askToRun9 `cast` (Turtle.Line.N:Line[0])) -}
-fe44d18c583ad519a6ae87a5757685ec
+84a26a9266a6c9e853776fd401ebf71d
   askToRun9 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.askToRun10) -}
-928b4a9d1c145819f27acef64161e315
+e04907656d82befd9f4d8eece25e075a
   backendDirConfig :: Lib.DirSetup
   {- Strictness: m,
      Unfolding: (Lib.DirSetup
                    Lib.BACK_END
                    Lib.backendDirConfig2
                    Lib.backendDirConfig1) -}
-f77adcb1c50977b809db6b86dbf7f931
+dbf5386c176f972715ec20d49b4d88fc
   backendDirConfig1 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString#
                    "git@github.com:smaccoun/haskstar-haskell.git"#) -}
-0332db3379a3b5d7204c89898ff2b726
+45316354d88c99cdd98d6a299a8f4254
   backendDirConfig2 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString# "back-end"#) -}
-aeb53b6759c2c4a069e3007ab0355937
+d63f53d1186c7970cbffff74b7b339b0
   buildBackEnd ::
     Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U>,
@@ -555,7 +555,7 @@ aeb53b6759c2c4a069e3007ab0355937
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-126a0f94179b3b7f9277b238946b55ed
+5e9c229f90596f2a06fe6ea35476b607
   buildBackEnd1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -632,14 +632,14 @@ aeb53b6759c2c4a069e3007ab0355937
                       (GHC.Types.N:IO[0] <GHC.IO.Exception.ExitCode>_R)
                         ipv2 of ds3 { (#,#) ipv4 ipv5 ->
                  (# ipv4, GHC.Tuple.() #) } } }) -}
-d7945d225db93a32f5af8f838178094e
+0a7f7ec8bfc6a3b5ae28ecd126a16d7a
   buildBackEnd10 :: Data.Text.Internal.Text
   {- Unfolding: (case GHC.Magic.runRW#
                         @ 'GHC.Types.PtrRepLifted
                         @ Data.Text.Internal.Text
                         Lib.buildBackEnd11 of ds1 { (#,#) ipv ipv1 ->
                  ipv1 }) -}
-3b4d0b97141c6f7afefec592c1bad898
+a402fce8a74bba0d17accd43cdde4658
   buildBackEnd11 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld,
@@ -657,13 +657,13 @@ d7945d225db93a32f5af8f838178094e
                    Lib.buildBackEnd12
                    0#
                    ipv }) -}
-6b0fec6cda369d447c8b090b1af22706
+8788816c3595d276abf3cc0334c266a2
   buildBackEnd12 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "\n\
                    \\n\
                    \***********************************************\n"#) -}
-90007b1912719e5a90e5d34194b1fc5a
+bbd048f16eb4692c81aa0733acd9bf91
   buildBackEnd2 :: GHC.Types.IO GHC.IO.Exception.ExitCode
   {- Unfolding: (Lib.buildBackEnd3
                    (Turtle.Shell.$fAlternativeShell4 @ Turtle.Line.Line)
@@ -673,7 +673,7 @@ d7945d225db93a32f5af8f838178094e
                          <Control.Foldl.FoldM GHC.Types.IO Turtle.Line.Line r>_R
                          ->_R Sym (GHC.Types.N:IO[0] <r>_R))
                         (Sym (Turtle.Shell.N:Shell[0] <Turtle.Line.Line>_R)))) -}
-cc4b0aebdad71a6530c938872dbbc986
+b4c0df02f3eed8c018b0357a3fc1684a
   buildBackEnd3 ::
     Turtle.Shell.Shell Turtle.Line.Line
     -> GHC.Types.IO GHC.IO.Exception.ExitCode
@@ -681,14 +681,14 @@ cc4b0aebdad71a6530c938872dbbc986
                    @ GHC.Types.IO
                    Control.Monad.IO.Class.$fMonadIOIO
                    Lib.buildBackEnd4) -}
-c7d8b59ae2b92f5456efe31c3d04bb87
+8c5d0c491ce7c39e5fd5f9b70d94b86c
   buildBackEnd4 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString# "stack build"#) -}
-3cbb803f4e0d92c12807fbdcddcf80ae
+bc02b4c3a055b643c7f81a44339efb6e
   buildBackEnd5 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString#
                    "BUILDING BACK END"#) -}
-501db99d79085137bfe95b394dbd54b3
+04e763e52bde78a9bfe4b7692b22f9ea
   buildBackEnd6 ::
     Data.Text.Internal.Text
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -712,14 +712,14 @@ c7d8b59ae2b92f5456efe31c3d04bb87
                    GHC.IO.Handle.FD.stdout
                    Lib.buildBackEnd7
                    ipv4 } } }) -}
-c7b64e84af048a6cd19a5fddf1c591db
+f6af9798607d0ca576917180a519ce5c
   buildBackEnd7 :: Data.Text.Internal.Text
   {- Unfolding: (case GHC.Magic.runRW#
                         @ 'GHC.Types.PtrRepLifted
                         @ Data.Text.Internal.Text
                         Lib.buildBackEnd8 of ds1 { (#,#) ipv ipv1 ->
                  ipv1 }) -}
-11837fb917d94a71a928ace21b5d911d
+ffd4b4442a047544f2578c2f2df4ab90
   buildBackEnd8 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld,
@@ -737,12 +737,12 @@ c7b64e84af048a6cd19a5fddf1c591db
                    Lib.buildBackEnd9
                    0#
                    ipv }) -}
-64e03fa5744bee2c293a470358a3ab2c
+5b760f71e9cf0e5c5b3f8e03b512cc75
   buildBackEnd9 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "***********************************************\n\
                    \\n"#) -}
-9ab655e797c1a6c2d71c23fd77ba1119
+e2164f480b623aa4b91e2ef17f4dc335
   buildFrontEnd ::
     Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U>,
@@ -751,7 +751,7 @@ c7b64e84af048a6cd19a5fddf1c591db
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-1bf933158adb9c28de5b05169f375455
+15a285b42e65a8eeb09d697f514d6fd9
   buildFrontEnd1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -840,7 +840,7 @@ c7b64e84af048a6cd19a5fddf1c591db
                       (GHC.Types.N:IO[0] <GHC.IO.Exception.ExitCode>_R)
                         ipv6 of ds5 { (#,#) ipv8 ipv9 ->
                  (# ipv8, GHC.Tuple.() #) } } } } }) -}
-b0e42a2db533b026c1891812b2ddb541
+e4f58b0938028a57ba90e72ec9e78612
   buildFrontEnd2 :: GHC.Types.IO GHC.IO.Exception.ExitCode
   {- Unfolding: (Lib.buildFrontEnd3
                    (Turtle.Shell.$fAlternativeShell4 @ Turtle.Line.Line)
@@ -850,7 +850,7 @@ b0e42a2db533b026c1891812b2ddb541
                          <Control.Foldl.FoldM GHC.Types.IO Turtle.Line.Line r>_R
                          ->_R Sym (GHC.Types.N:IO[0] <r>_R))
                         (Sym (Turtle.Shell.N:Shell[0] <Turtle.Line.Line>_R)))) -}
-34bbd7ba28099ef15ad8b42d76e45006
+5fe46bd0c31a39aca6865af9b5c845ab
   buildFrontEnd3 ::
     Turtle.Shell.Shell Turtle.Line.Line
     -> GHC.Types.IO GHC.IO.Exception.ExitCode
@@ -858,11 +858,11 @@ b0e42a2db533b026c1891812b2ddb541
                    @ GHC.Types.IO
                    Control.Monad.IO.Class.$fMonadIOIO
                    Lib.buildFrontEnd4) -}
-4c99952ce79fe5959289ca7e09302632
+e2fdd314328a85e7033c63d7fb59aa7a
   buildFrontEnd4 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString#
                    "elm-package install --yes"#) -}
-16a57f4790a6bd83f2bc643dfa99d2ab
+589191ca4455164e42bc6e2d503d6648
   buildFrontEnd5 :: GHC.Types.IO GHC.IO.Exception.ExitCode
   {- Unfolding: (Lib.buildFrontEnd6
                    (Turtle.Shell.$fAlternativeShell4 @ Turtle.Line.Line)
@@ -872,7 +872,7 @@ b0e42a2db533b026c1891812b2ddb541
                          <Control.Foldl.FoldM GHC.Types.IO Turtle.Line.Line r>_R
                          ->_R Sym (GHC.Types.N:IO[0] <r>_R))
                         (Sym (Turtle.Shell.N:Shell[0] <Turtle.Line.Line>_R)))) -}
-1721c7035aac8aad5e651f6f30d63647
+4c6747c69840916279639363043ddbe7
   buildFrontEnd6 ::
     Turtle.Shell.Shell Turtle.Line.Line
     -> GHC.Types.IO GHC.IO.Exception.ExitCode
@@ -880,17 +880,17 @@ b0e42a2db533b026c1891812b2ddb541
                    @ GHC.Types.IO
                    Control.Monad.IO.Class.$fMonadIOIO
                    Lib.buildFrontEnd7) -}
-4e1d2dc3224bc4bf554a25caa2d1e6f2
+8a3e984b7a7a82df55d606273e888c3e
   buildFrontEnd7 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString# "yarn install"#) -}
-555eec67799a59517c56935a5423b05a
+cc2c0acc7456b94d2312d31998886911
   buildFrontEnd8 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString# "front-end"#) -}
-3c0dcfb9d5f39f1e0edc9eeb2453fa68
+71ad9ce84c904512210dfb34cb347522
   buildFrontEnd9 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString#
                    "BUILDING FRONT END"#) -}
-590f0cbf12da1394c6a406dad906441c
+de14399801397af9c87cf0cce40ec919
   dirName :: Lib.DirSetup -> Data.Text.Internal.Text
   RecSel Left Lib.DirSetup
   {- Arity: 1, HasNoCafRefs,
@@ -898,25 +898,25 @@ b0e42a2db533b026c1891812b2ddb541
      Unfolding: InlineRule (1, True, False)
                 (\ (ds :: Lib.DirSetup) ->
                  case ds of wild { Lib.DirSetup ds1 ds2 ds3 -> ds2 }) -}
-51b5dc9a0cafb69f815267600cedd71a
+c562f2bb098d1c9794dd275bbcba32a3
   dirStackType :: Lib.DirSetup -> Lib.DirStackType
   RecSel Left Lib.DirSetup
   {- Arity: 1, HasNoCafRefs, Strictness: <S(SLL),1*U(1*U,A,A)>,
      Unfolding: InlineRule (1, True, False)
                 (\ (ds :: Lib.DirSetup) ->
                  case ds of wild { Lib.DirSetup ds1 ds2 ds3 -> ds1 }) -}
-686465d8f2cb3a1dd200b5006aa67a18
+96650413b18d7a41b34421716b71ef4c
   frontendDirConfig :: Lib.DirSetup
   {- Strictness: m,
      Unfolding: (Lib.DirSetup
                    Lib.FRONT_END
                    Lib.buildFrontEnd8
                    Lib.frontendDirConfig1) -}
-530714beb370cef68d2e1998ba3927bd
+5bce21f9594355da9377c1dae312edeb
   frontendDirConfig1 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString#
                    "git@github.com:smaccoun/haskstar-elm.git"#) -}
-aff4e8e1c28e7d44964cfa06d4ec8c76
+5443b4680699db28fac0c622ed52933a
   getDir ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup
@@ -927,7 +927,7 @@ aff4e8e1c28e7d44964cfa06d4ec8c76
      Unfolding: InlineRule (2, True, False)
                 (\ (w :: Filesystem.Path.Internal.FilePath) (w1 :: Lib.DirSetup) ->
                  case Lib.$wgetDir w w1 of ww { (#,#) ww1 ww2 -> (ww1, ww2) }) -}
-7a769e8434ce74cea29fa9de1752d23e
+522a720745ddd5b455b4146eba3af7ab
   getTemplate ::
     Filesystem.Path.Internal.FilePath
     -> Data.Text.Internal.Text -> Lib.DirSetup -> GHC.Types.IO ()
@@ -940,7 +940,7 @@ aff4e8e1c28e7d44964cfa06d4ec8c76
                  ->_R <Data.Text.Internal.Text>_R
                  ->_R <Lib.DirSetup>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-187391fd3c88a56220d277cdc1b7ccf1
+08532ff9df2bd186d991d3412079d1ba
   getTemplate1 ::
     Filesystem.Path.Internal.FilePath
     -> Data.Text.Internal.Text
@@ -949,7 +949,7 @@ aff4e8e1c28e7d44964cfa06d4ec8c76
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
   {- Arity: 4,
      Strictness: <L,U(U,U,U,U)><L,U(U,U,U)><L,1*U(A,A,1*U(U,U,U))><S,U> -}
-fb07f31bb47bedcd747250172229776c
+68b17d86b624c3575cc91fb487217176
   gitDir :: Lib.DirSetup -> Data.Text.Internal.Text
   RecSel Left Lib.DirSetup
   {- Arity: 1, HasNoCafRefs,
@@ -957,7 +957,7 @@ fb07f31bb47bedcd747250172229776c
      Unfolding: InlineRule (1, True, False)
                 (\ (ds :: Lib.DirSetup) ->
                  case ds of wild { Lib.DirSetup ds1 ds2 ds3 -> ds3 }) -}
-6f43bda898397fe7b7367202c7c9c82c
+a7f73f4553456ed998d903e07188fa03
   majorCommentBlock :: Data.Text.Internal.Text -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,1*U(U,U,U)><S,U>,
      Unfolding: InlineRule (0, True, True)
@@ -965,7 +965,7 @@ fb07f31bb47bedcd747250172229776c
                   `cast`
                 (<Data.Text.Internal.Text>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-c9c4a649cd8a3dd415ae06b5dfa5056e
+074a1267a62869cf4ae6c062463f7104
   runBackEnd :: Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U>,
      Unfolding: InlineRule (0, True, True)
@@ -973,13 +973,13 @@ c9c4a649cd8a3dd415ae06b5dfa5056e
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-ad43cae785062a77e2009241393b0f2f
+e965fead5f4250d46267961f631012be
   runBackEnd1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U> -}
-8a12f5319b4df10dd8302404d2308179
+cc6006c166563f9ab8427466d2a75eb5
   runFrontEnd :: Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U>,
      Unfolding: InlineRule (0, True, True)
@@ -987,13 +987,13 @@ ad43cae785062a77e2009241393b0f2f
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-3806162734dde028fff317979e901dcf
+8c8a24fcd3ffd16eb26152dc518af04e
   runFrontEnd1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
   {- Arity: 2, Strictness: <L,U(1*U,1*U,U,U)><S,U> -}
-314a2d12f19b012e0c8737af62824f52
+23cdd3d69cad94da12a851a1e5955c0b
   runServers :: Filesystem.Path.Internal.FilePath -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <L,U(U,U,U,U)><S,U>,
      Unfolding: InlineRule (0, True, True)
@@ -1001,7 +1001,7 @@ ad43cae785062a77e2009241393b0f2f
                   `cast`
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-a845df0ef0fb0ebb4a15d41b1abfbf77
+4474748ded23ce04950ebd99a3e9b52c
   runServers1 ::
     Filesystem.Path.Internal.FilePath
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -1012,7 +1012,7 @@ a845df0ef0fb0ebb4a15d41b1abfbf77
                    (s :: GHC.Prim.State# GHC.Prim.RealWorld)[OneShot] ->
                  case Lib.runBackEnd1 topDir s of ds1 { (#,#) ipv ipv1 ->
                  Lib.runFrontEnd1 topDir ipv }) -}
-0229b36c39802dfc75b54026907ecefb
+8f6f29870da3fff0ab15c7e091902bff
   setupDir ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup -> GHC.Types.IO ()
@@ -1024,7 +1024,7 @@ a845df0ef0fb0ebb4a15d41b1abfbf77
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R <Lib.DirSetup>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-e4cee0e88f60b88e89dddd2a8c6a5163
+00ef2a91fdb64d24db89aa40ce019a07
   setupDir1 ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup
@@ -1044,7 +1044,7 @@ e4cee0e88f60b88e89dddd2a8c6a5163
                  case ds of wild1 {
                    Lib.FRONT_END -> Lib.buildFrontEnd1 rootDir ipv
                    Lib.BACK_END -> Lib.buildBackEnd1 rootDir ipv } } }) -}
-289c65e2b3819c12f00fa999f021d642
+51d63705dafc6786a391c3cab6b9c573
   validateAndSetupDir ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup -> GHC.Types.IO ()
@@ -1056,7 +1056,7 @@ e4cee0e88f60b88e89dddd2a8c6a5163
                 (<Filesystem.Path.Internal.FilePath>_R
                  ->_R <Lib.DirSetup>_R
                  ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-bb0ccc12d5d47af6b363453339e51719
+6614c2f8d923eebd153b3e79c4b00ad3
   validateAndSetupDir1 ::
     Filesystem.Path.Internal.FilePath
     -> Lib.DirSetup
@@ -1158,30 +1158,30 @@ bb0ccc12d5d47af6b363453339e51719
                              ipv4 of ds4 { (#,#) ipv6 ipv7 ->
                       (# ipv6, GHC.Tuple.() #) } }
                    Lib.Keep -> (# ipv2, GHC.Tuple.() #) } } }) -}
-c9fef87346bc76a67ce3fe3b77dd5be5
+b87920b02fbbfdee1588a73d9bf276c4
   validateAndSetupDir10 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.validateAndSetupDir11) -}
-81731688e6dc45ca24b0cc8989c27733
+c6ca10ae25e4ecd3817916a7e248dd24
   validateAndSetupDir11 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "Would you like to replace (R) or keep (enter)"#) -}
-dd69a5e9c394392d0e7e5ab530b9a2f9
+b17f2da4021e0c307b787737ef15a6cf
   validateAndSetupDir12 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString#
                    "Found existing directory "#) -}
-bed529ad3cee9744d45b16d248e99083
+7727dd3eccd04c86a0e34c30b085bdf6
   validateAndSetupDir13 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.validateAndSetupDir14) -}
-7c888df5a035321ded5a38dd77356efc
+328323d1e95a6f01520191f0772b3f13
   validateAndSetupDir14 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "Detected valid initial state"#) -}
-520bc8bf8b6d920bf3928fe2cf6f9ad2
+604eb3c1ccf95856f993400b0e615131
   validateAndSetupDir15 :: Data.Text.Internal.Text
   {- Unfolding: (Data.Text.Show.unpackCString# "Setting up "#) -}
-a630a220151c31e99f5110cbab7242e9
+db8ec73c276b9355939890b8970390c0
   validateAndSetupDir2 ::
     Data.Text.Internal.Text
     -> Filesystem.Path.Internal.FilePath
@@ -1283,33 +1283,33 @@ a630a220151c31e99f5110cbab7242e9
                                             '\n'#
                                             ipv12 of ds8 { (#,#) ipv14 ipv15 ->
                                      (# ipv14, Lib.Replace #) } } } } } } } } } } } } } } }) -}
-757997dfdd9042446b962857a0f52ba8
+406f2dd2046432eef077e66a45496a06
   validateAndSetupDir3 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.validateAndSetupDir4) -}
-10324fd0cbf2fe0b8820a7bbea55cd3f
+f866bd4df8ae23dc0ba718fc42fc6484
   validateAndSetupDir4 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "Replacing existing directories"#) -}
-eb48d6d6635d7177211c6e751bf6321b
+08748aec56ecd2d4d033aeeaddda09b0
   validateAndSetupDir5 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.validateAndSetupDir6) -}
-44d3a2ba8657d08a7748b1211be5d6f0
+322e4cccebda86f2e4761be093f8c837
   validateAndSetupDir6 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString#
                    "Keeping existing directory"#) -}
-23738d88df5f87f67056f3d7e615e6da
+ad2627425f3a86769fc742b462cc136b
   validateAndSetupDir7 :: Turtle.Line.Line
   {- Unfolding: (Turtle.Line.$fIsStringLine_$cfromString
                    Lib.validateAndSetupDir8) -}
-10f151493736199b6ceeb128733a8304
+8f3f65c24357c159f3c393431a96fb9c
   validateAndSetupDir8 :: [GHC.Types.Char]
   {- Unfolding: (GHC.CString.unpackCString# "R"#) -}
-fd44b4c24d80ba183fa094f0e5c6f1a3
+d600c66a978bca43b0a3a65975e13c1f
   validateAndSetupDir9 :: GHC.Types.IO Lib.ValidateResult
   {- Strictness: x -}
-8f4cfe45da7dfc5d14532f9a1000716b
+d67d49c02388989cb14faf34e905cc9a
   validateInitialSetup ::
     Data.Text.Internal.Text
     -> Filesystem.Path.Internal.FilePath
