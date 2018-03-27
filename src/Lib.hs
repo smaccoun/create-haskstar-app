@@ -8,16 +8,37 @@ import Turtle
 import Filesystem.Path.CurrentOS (encodeString)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
+import Data.Maybe
 
-prompt :: String -> IO T.Text
-prompt promptQuestion = do
-  putStrLn promptQuestion
-  answer <- TIO.getLine
-  return answer
+prompt :: T.Text -> Maybe T.Text -> IO T.Text
+prompt promptQuestion mbDefault = do
+  let questionExtension = fmap (\d -> " (default " <> d <> ")") mbDefault & fromMaybe ""
+  let question = promptQuestion <> questionExtension <> ": "
+  putStrLn "\n-----------------------"
+  TIO.putStrLn question
+  getAnswer
+  where
+    getAnswer = do
+      mbAnswer <- readline
+      case mbAnswer of
+        Just answer -> do
+          let asText = lineToText answer
+          let didHitEnter = (asText == T.empty)
+          if didHitEnter then
+               case mbDefault of
+                  Just def -> do
+                    TIO.putStrLn $ "---> Nothing entered. Using default " <> def
+                    return def
+                  Nothing -> getAnswer
+          else
+            return (lineToText answer)
+        Nothing ->
+          getAnswer
+
 
 askToRun :: IO () -> IO ()
 askToRun onYes = do
-  answer <- prompt "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no"
+  answer <- prompt "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no" Nothing
   case answer of
      "y" -> onYes
      "n" -> echo "You can boot up each server by running ./run.sh"
@@ -125,10 +146,10 @@ getDBConfig :: IO DBConfig
 getDBConfig = do
   majorCommentBlock "Get DB Configuration"
   echo "Please enter the configuration options you'd like for a db. This db will spun up in docker locally"
-  dbName <- prompt "Enter name of DB"
-  dbSchema <- prompt "Enter default schema"
-  dbUser <- prompt "Enter name of User"
-  dbPassword <- prompt "Enter DB Password"
+  dbName <- prompt "Enter name of DB" Nothing
+  dbSchema <- prompt "Enter default schema" (Just "public")
+  dbUser <- prompt "Enter name of User" (Just "postgres")
+  dbPassword <- prompt "Enter DB Password" (Just "postgres")
   return $
     DBConfig
       {host = "localhost"
