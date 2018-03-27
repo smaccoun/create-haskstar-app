@@ -31,8 +31,9 @@ main = do
   dbConfig <- getDBConfig
 
   setupDir dbConfig appPath backendDirConfig
-  setupDir dbConfig appPath frontendDirConfig
   setupDBDir dbConfig appPath
+  setupDir dbConfig appPath frontendDirConfig
+
 
   askToRun $ runServers appPath
   cd appPath

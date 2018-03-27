@@ -123,16 +123,12 @@ data DBConfig =
 
 getDBConfig :: IO DBConfig
 getDBConfig = do
-  echo "Get DB Configuration"
+  majorCommentBlock "Get DB Configuration"
   echo "Please enter the configuration options you'd like for a db. This db will spun up in docker locally"
-  putStrLn "Enter name of DB"
-  dbName <- TIO.getLine
-  putStrLn "Enter default schema"
-  dbSchema <- TIO.getLine
-  putStrLn "Enter name of User"
-  dbUser <- TIO.getLine
-  echo "Enter DB Password"
-  dbPassword <- TIO.getLine
+  dbName <- prompt "Enter name of DB"
+  dbSchema <- prompt "Enter default schema"
+  dbUser <- prompt "Enter name of User"
+  dbPassword <- prompt "Enter DB Password"
   return $
     DBConfig
       {host = "localhost"
