@@ -28,8 +28,12 @@ main = do
   chmod executable (runOps </> "ttab")
   cptree runOps appPath
   cd appPath
-  setupDir appPath backendDirConfig
-  setupDir appPath frontendDirConfig
+  dbConfig <- getDBConfig
+
+  setupDir dbConfig appPath backendDirConfig
+  setupDir dbConfig appPath frontendDirConfig
+  setupDBDir dbConfig appPath
+
   askToRun $ runServers appPath
   cd appPath
   return ()

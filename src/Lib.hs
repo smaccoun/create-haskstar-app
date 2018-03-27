@@ -73,13 +73,13 @@ getDir rootDir dirSetup =
 
 
 
-setupDir :: Turtle.FilePath -> DirSetup -> IO ()
-setupDir rootDir dirSetup = do
+setupDir :: DBConfig -> Turtle.FilePath -> DirSetup -> IO ()
+setupDir dbConfig rootDir dirSetup = do
   let (dname, dPath) = getDir rootDir dirSetup
   getTemplate rootDir dname dirSetup
   case dirStackType dirSetup of
     FRONT_END -> buildFrontEnd rootDir
-    BACK_END -> buildBackEnd rootDir
+    BACK_END -> buildBackEnd dbConfig rootDir
 
 
 
@@ -91,6 +91,7 @@ getTemplate topDir dname dirSetup = do
     ExitSuccess   -> return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
+buildFrontEnd :: Turtle.FilePath -> IO ()
 buildFrontEnd topDir = do
   majorCommentBlock "BUILDING FRONT END"
   let frontEndPath = getDir topDir frontendDirConfig & snd
@@ -100,30 +101,79 @@ buildFrontEnd topDir = do
   _ <- shell "elm-package install --yes" empty
   return ()
 
-buildBackEnd topDir = do
+buildBackEnd :: DBConfig -> Turtle.FilePath -> IO ()
+buildBackEnd dbConfig topDir = do
   majorCommentBlock "BUILDING BACK END"
   let backendDir = getDir topDir backendDirConfig & snd
   cd backendDir
   _ <- shell "stack build" empty
   majorCommentBlock "SETUP DB CONFIGURATION"
-  _ <- mkBackendEnv backendDir
+  _ <- mkBackendEnv dbConfig backendDir
   return ()
 
-mkBackendEnv :: Turtle.FilePath -> IO ()
-mkBackendEnv backendDir = do
+data DBConfig =
+  DBConfig
+    {host :: T.Text
+    ,port :: Int
+    ,dbName :: T.Text
+    ,dbUser :: T.Text
+    ,dbPassword :: T.Text
+    ,dbSchema :: T.Text
+    }
+
+getDBConfig :: IO DBConfig
+getDBConfig = do
+  echo "Get DB Configuration"
+  echo "Please enter the configuration options you'd like for a db. This db will spun up in docker locally"
   putStrLn "Enter name of DB"
   dbName <- TIO.getLine
   putStrLn "Enter default schema"
-  schema <- TIO.getLine
+  dbSchema <- TIO.getLine
   putStrLn "Enter name of User"
   dbUser <- TIO.getLine
   echo "Enter DB Password"
   dbPassword <- TIO.getLine
+  return $
+    DBConfig
+      {host = "localhost"
+      ,port = 5432
+      ,dbName = dbName
+      ,dbUser = dbUser
+      ,dbPassword = dbPassword
+      ,dbSchema = dbSchema
+      }
+
+setupDBDir :: DBConfig -> Turtle.FilePath -> IO ()
+setupDBDir dbConfig rootDir = do
+  majorCommentBlock "SETTING UP DB"
+  cd rootDir
+  mkdir "db"
+  cd "./db"
+  let dbEnvFile = getDBEnvFile dbConfig rootDir
+  writeTextFile ".env" dbEnvFile
+  cd rootDir
+
+
+getDBEnvFile :: DBConfig -> Turtle.FilePath -> T.Text
+getDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
+  T.intercalate "\n" $
+         [ dbDatabaseLn dbName
+         , dbUserLn dbUser
+         , dbPasswordLn dbPassword
+         ]
+  where
+    dbPasswordLn password = "POSTGRES_PASSWORD=" <> dbPassword
+    dbDatabaseLn dbName   = "POSTGRES_DB=" <> dbName
+    dbUserLn dbUser = "POSTGRES_USER=" <> dbUser
+
+
+mkBackendEnv :: DBConfig -> Turtle.FilePath -> IO ()
+mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir = do
   let textFile = T.intercalate "\n" $
          [ dbHostLn
          , dbPortLn
          , dbDatabaseLn dbName
-         , dbSchemaLn schema
+         , dbSchemaLn dbSchema
          , dbUserLn dbUser
          , dbPasswordLn dbPassword
          ]
@@ -135,7 +185,7 @@ mkBackendEnv backendDir = do
     dbDatabaseLn dbName   = "DB_DATABASE=" <> dbName
     dbSchemaLn schema     = "DB_SCHEMA=" <> schema
     dbUserLn dbUser = "DB_USERNAME=" <> dbUser
-    dbPasswordLn password = "DB_PASSWORD=" <> password
+    dbPasswordLn password = "DB_PASSWORD=" <> dbPassword
 
 
 runFrontEnd :: Turtle.FilePath -> IO ()
@@ -164,44 +214,3 @@ runBackEnd topDir = do
   return ()
 
 
--- POSSIBLY DEPRECATED
-
-data ValidateResult = Valid | Replace | Keep
-
-validateInitialSetup :: Text -> Turtle.FilePath -> IO ValidateResult
-validateInitialSetup dname dPath = do
-  existingDir <- testdir dPath
-  if existingDir then do
-    echo $ unsafeTextToLine $ "Found existing directory " <> dname
-    echo "Would you like to replace (R) or keep (enter)"
-    answer <- readline
-    case answer of
-        Just a ->
-            case a of
-                "R" -> do
-                    echo "Replacing existing directories"
-                    return Replace
-                _ -> do
-                  echo "Keeping existing directory"
-                  return Keep
-  else do
-    echo "Detected valid initial state"
-    return Valid
-
-validateAndSetupDir :: Turtle.FilePath -> DirSetup -> IO ()
-validateAndSetupDir rootDir dirSetup = do
-    let (dname, dPath) = getDir rootDir dirSetup
-    majorCommentBlock $ "Setting up " <> dname
-    validateResult <- validateInitialSetup dname dPath
-    case validateResult of
-        Valid -> do
-            setup
-            return ()
-        Replace -> do
-            rmtree dPath
-            setup
-        Keep -> return ()
-    where
-        setup = do
-            setupDir rootDir dirSetup
-            return ()
