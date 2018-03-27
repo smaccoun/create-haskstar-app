@@ -221,7 +221,7 @@ runBackEnd :: Turtle.FilePath -> IO ()
 runBackEnd topDir = do
   majorCommentBlock "STARTING LOCAL BACK-END"
   cd $ getDir topDir backendDirConfig & snd
-  s <- shell "../ttab stack exec api-exe" empty
+  s <- shell "../ttab ./run.sh" empty
 
   case s of
     ExitSuccess   -> do
