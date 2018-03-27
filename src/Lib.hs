@@ -138,7 +138,7 @@ runFrontEnd topDir = do
 runBackEnd topDir = do
   majorCommentBlock "STARTING LOCAL BACK-END"
   cd $ getDir topDir backendDirConfig & snd
-  s <- shell "../ttab ./run.sh" empty
+  s <- shell "../ttab stack exec api-exe" empty
 
   case s of
     ExitSuccess   -> do

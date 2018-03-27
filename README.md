@@ -65,7 +65,7 @@ Idea is to get stack working for a certain set of configurations, then continual
 # Roadmap
 
 
-### Deployment 
+### Distribution
 
 |   Type   | Status   |
 |----------|:---------|
