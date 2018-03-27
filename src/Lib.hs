@@ -7,19 +7,23 @@ module Lib where
 import Turtle
 import Filesystem.Path.CurrentOS (encodeString)
 import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 
+prompt :: String -> IO T.Text
+prompt promptQuestion = do
+  putStrLn promptQuestion
+  answer <- TIO.getLine
+  return answer
+
+askToRun :: IO () -> IO ()
 askToRun onYes = do
-  echo "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no"
-  maybeAnswer <- readline
-  case maybeAnswer of
-     Just a ->
-       case a of
-         "y" -> onYes
-         "n" -> echo "You can boot up each server by running ./run.sh"
-         _ -> echo "Please entery (y) or (n)"
-     Nothing ->
-        echo "Please entery (y) or (n)"
+  answer <- prompt "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no"
+  case answer of
+     "y" -> onYes
+     "n" -> echo "You can boot up each server by running ./run.sh"
+     _ -> echo "Please entery (y) or (n)"
 
+runServers :: Turtle.FilePath -> IO ()
 runServers topDir = do
     runBackEnd topDir
     runFrontEnd topDir
@@ -101,29 +105,40 @@ buildBackEnd topDir = do
   let backendDir = getDir topDir backendDirConfig & snd
   cd backendDir
   _ <- shell "stack build" empty
+  majorCommentBlock "SETUP DB CONFIGURATION"
   _ <- mkBackendEnv backendDir
   return ()
 
 mkBackendEnv :: Turtle.FilePath -> IO ()
 mkBackendEnv backendDir = do
-  echo "Enter name of DB"
---   dbName <- readline
---   echo "Enter name of User"
---   dbUser <- readline
---   echo "Enter DB Password"
---   dbPassword <- readline
-  let textFile = T.intercalate "\n" [dbHostLine, dbPortLine, dbDatabase, dbSchema, dbUserEnv , dbPasswordEnv ]
+  putStrLn "Enter name of DB"
+  dbName <- TIO.getLine
+  putStrLn "Enter default schema"
+  schema <- TIO.getLine
+  putStrLn "Enter name of User"
+  dbUser <- TIO.getLine
+  echo "Enter DB Password"
+  dbPassword <- TIO.getLine
+  let textFile = T.intercalate "\n" $
+         [ dbHostLn
+         , dbPortLn
+         , dbDatabaseLn dbName
+         , dbSchemaLn schema
+         , dbUserLn dbUser
+         , dbPasswordLn dbPassword
+         ]
   writeTextFile (backendDir </> ".env") textFile
 
   where
-    dbHostLine    = "DB_HOST=localhost"
-    dbPortLine    = "DB_PORT=5432"
-    dbDatabase    = "DB_DATABASE=test"
-    dbSchema      = "DB_SCHEMA=public"
-    dbUserEnv     = "DB_USERNAME=postgres"
-    dbPasswordEnv = "DB_PASSWORD=postgres"
+    dbHostLn    = "DB_HOST=localhost"
+    dbPortLn    = "DB_PORT=5432"
+    dbDatabaseLn dbName   = "DB_DATABASE=" <> dbName
+    dbSchemaLn schema     = "DB_SCHEMA=" <> schema
+    dbUserLn dbUser = "DB_USERNAME=" <> dbUser
+    dbPasswordLn password = "DB_PASSWORD=" <> password
 
 
+runFrontEnd :: Turtle.FilePath -> IO ()
 runFrontEnd topDir = do
   majorCommentBlock "STARTING WEB SERVER"
   cd $ getDir topDir frontendDirConfig & snd
@@ -135,6 +150,7 @@ runFrontEnd topDir = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
 
+runBackEnd :: Turtle.FilePath -> IO ()
 runBackEnd topDir = do
   majorCommentBlock "STARTING LOCAL BACK-END"
   cd $ getDir topDir backendDirConfig & snd
