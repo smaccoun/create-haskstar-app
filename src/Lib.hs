@@ -62,18 +62,18 @@ data DirStackType = FRONT_END | BACK_END
 frontendDirConfig :: DirSetup
 frontendDirConfig =
   DirSetup
-	  {dirStackType = FRONT_END
-	  ,dirName = "front-end"
-	  ,gitDir = "git@github.com:smaccoun/haskstar-elm.git"
-	  }
+      {dirStackType = FRONT_END
+      ,dirName = "front-end"
+      ,gitDir = "git@github.com:smaccoun/haskstar-elm.git"
+      }
 
 backendDirConfig :: DirSetup
 backendDirConfig =
   DirSetup
-	  {dirStackType = BACK_END
-	  ,dirName = "back-end"
-	  ,gitDir = "git@github.com:smaccoun/haskstar-haskell.git"
-	  }
+      {dirStackType = BACK_END
+      ,dirName = "back-end"
+      ,gitDir = "git@github.com:smaccoun/haskstar-haskell.git"
+      }
 
 asLocal dirName = "./" <> dirName
 
