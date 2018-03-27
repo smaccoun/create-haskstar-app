@@ -3,14 +3,19 @@
   Create-Haskstar-App 
 </h1>
 
-## Currently WIP. Contributions highly welcome!
+
 
 ## tl;dr
-Automatically build and deploy fullstack haskell webapps in one command!
-Batteries included, even devops!
 
-Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options
 
+Automatically build and deploy full-stack haskell WebApps in one command!
+Batteries included, even devOps!
+
+The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
+
+(Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options)
+
+#### Currently Very WIP, but I will be working on this full time for a while. Contributions highly welcome!
 
 
 ## Why?
@@ -25,9 +30,9 @@ the eventual goal of this is to make the full setup process highly customizable.
 
 ## Setup
 
---TODO: Work on nix build
+--TODO: Work on nix build, homebrew
 
-SIf you are on OSX, simply run the following and follow the prompts!
+If you are on OSX, simply run the following and follow the prompts!
 ```bash
 git clone git@github.com:smaccoun/create-haskstar-app.git
 cd create-haskstar-app
@@ -36,7 +41,7 @@ chmod +x create-app
 ./create-app my-app
 ```
 
-### Manual
+#### --Manual
 
 To manually build
 ```bash
@@ -45,6 +50,16 @@ To manually build
 chmod +x create-app
 ./create-app my-app
 ```
+
+# Development Philosophy
+
+Major pluggable parts (such as Elm or Miso) will each be kept in a separate repo
+that haskstar will build from (e.g. see [haskstar-elm](https://github.com/smaccoun/haskstar-elm)). 
+That way these can be used also be used as standalone templates
+
+I am working on this full time and will take a very iterative approach. 
+Idea is to get stack working for a certain set of configurations, then continually abstract until nearly anything is plug-in-able
+
 
 
 # Roadmap

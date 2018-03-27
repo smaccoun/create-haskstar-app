@@ -26,7 +26,6 @@ main = do
   let runOps =  (parent executablePathT) </> "ops"
   putStrLn $ encodeString runOps
   chmod executable (runOps </> "ttab")
-  echo "Meow"
   cptree runOps appPath
   cd appPath
   setupDir appPath backendDirConfig
