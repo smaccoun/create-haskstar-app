@@ -79,7 +79,7 @@ setupDir dbConfig rootDir dirSetup = do
 
 
 getTemplate topDir dname dirSetup = do
-  majorCommentBlock $ "Setting up " <> dname
+  subCommentBlock $ "Setting up " <> dname
   cd topDir
   setupResult <- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
   case setupResult of
@@ -88,7 +88,7 @@ getTemplate topDir dname dirSetup = do
 
 buildFrontEnd :: Turtle.FilePath -> IO ()
 buildFrontEnd topDir = do
-  majorCommentBlock "BUILDING FRONT END"
+  subCommentBlock "Building front-end"
   let frontEndPath = getDir topDir frontendDirConfig & snd
   putStrLn $ encodeString frontEndPath
   cd frontEndPath
@@ -98,7 +98,7 @@ buildFrontEnd topDir = do
 
 buildBackEnd :: DBConfig -> Turtle.FilePath -> IO ()
 buildBackEnd dbConfig topDir = do
-  majorCommentBlock "BUILDING BACK END"
+  subCommentBlock "Building back-end"
   let backendDir = getDir topDir backendDirConfig & snd
   cd backendDir
   _ <- shell "stack build" empty
@@ -118,8 +118,7 @@ data DBConfig =
 
 getDBConfig :: IO DBConfig
 getDBConfig = do
-  majorCommentBlock "Get DB Configuration"
-  echo "Please enter the configuration options you'd like for a db. This db will spun up in docker locally"
+  instructionCommentBlock "First setup the DB configuration you would like"
   dbName <- prompt "Enter name of DB" Nothing
   dbSchema <- prompt "Enter default schema" (Just "public")
   dbUser <- prompt "Enter name of User" (Just "postgres")

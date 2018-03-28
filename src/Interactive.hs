@@ -37,5 +37,19 @@ didHitEnter line =
 majorCommentBlock :: Text -> IO ()
 majorCommentBlock msg = do
   printf "\n\n***********************************************\n"
-  echo $ unsafeTextToLine msg
+  printf ("      "%s%"                              \n") msg
   printf "***********************************************\n\n"
+
+
+subCommentBlock :: Text -> IO ()
+subCommentBlock msg = do
+  printf ("\n\n"%s%"                              \n") msg
+  printf "*******************************************************\n\n"
+
+
+instructionCommentBlock :: Text -> IO ()
+instructionCommentBlock msg = do
+  printf "*******************************************************\n"
+  printf ("*  "%s%"   *\n") msg
+  printf "*                                                    *\n"
+  printf "*******************************************************\n"

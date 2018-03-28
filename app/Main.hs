@@ -4,12 +4,15 @@
 
 module Main where
 
-import Lib
+
 import Turtle
 import Filesystem.Path.CurrentOS (fromText, encodeString)
 import System.Environment (getExecutablePath)
 import Filesystem.Path
 import qualified Data.Text as T
+
+import Lib
+import Interactive
 
 parser :: Parser (Text, Maybe Text)
 parser = (,) <$> argText "app-name" "Name of directory to put your app in"
@@ -28,8 +31,10 @@ main = do
   chmod executable (runOps </> "ttab")
   cptree runOps appPath
   cd appPath
+  majorCommentBlock "INITIAL SETUP"
   dbConfig <- getDBConfig
 
+  majorCommentBlock "BACK-END"
   setupDir dbConfig appPath backendDirConfig
   setupDBDir dbConfig appPath
   setupDir dbConfig appPath frontendDirConfig
