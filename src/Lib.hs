@@ -141,7 +141,15 @@ setupDBDir dbConfig rootDir = do
   cd "./db"
   let dbEnvFile = getDBEnvFile dbConfig rootDir
   writeTextFile ".env" dbEnvFile
-  cd rootDir
+  dockerRunResult <- shell dockerRunCmd empty
+  case dockerRunResult of
+    ExitSuccess   -> do
+        instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dockerRunCmd
+        cd rootDir
+        return ()
+    ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)
+  where
+    dockerRunCmd = "docker run --name my-app-db  -p 5432:5432 -h 127.0.0.1 --env-file .env -d postgres"
 
 
 getDBEnvFile :: DBConfig -> Turtle.FilePath -> T.Text
