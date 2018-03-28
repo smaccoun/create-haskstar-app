@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b61b3b22339cf2b08f23aeb513ffe3d1e39e2bf8f12f8da047da1003b37342db
+-- hash: 27ef8b69b66b003980e48870491eb3383d160cb7369f6d6a4ed25c8449211364
 
 name:           create-app
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
     , text
     , turtle
   exposed-modules:
+      Interactive
       Lib
   other-modules:
       Paths_create_app
