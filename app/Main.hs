@@ -26,17 +26,21 @@ main = do
   let appPath = curDir </> fromText (appNameOption)
   mkdir appPath
   let executablePathT = executablePath & T.pack & fromText
-  let runOps =  (parent executablePathT) </> "ops"
+      runOps =  (parent executablePathT) </> "ops"
   putStrLn $ encodeString runOps
   chmod executable (runOps </> "ttab")
   cptree runOps appPath
+
+  _ <- shell "cat logoAscii.txt" Turtle.empty
   cd appPath
   majorCommentBlock "INITIAL SETUP"
   dbConfig <- getDBConfig
 
   majorCommentBlock "BACK-END"
   setupDir dbConfig appPath backendDirConfig
+  majorCommentBlock "DB"
   setupDBDir dbConfig appPath
+  majorCommentBlock "FRONT-END"
   setupDir dbConfig appPath frontendDirConfig
 
 

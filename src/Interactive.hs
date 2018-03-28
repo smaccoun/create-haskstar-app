@@ -53,3 +53,4 @@ instructionCommentBlock msg = do
   printf ("*  "%s%"   *\n") msg
   printf "*                                                    *\n"
   printf "*******************************************************\n"
+
