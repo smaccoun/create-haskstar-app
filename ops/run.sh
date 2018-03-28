@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 cd ./back-end
-./ttab && stack exec api-ex
+../ttab ./run.sh 
 
 cd ../front-end
-./ttab yarn start
+../ttab yarn start
 
 cd ..
 
