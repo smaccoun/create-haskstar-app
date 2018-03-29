@@ -5,14 +5,16 @@
 module Main where
 
 
-import Turtle
-import Filesystem.Path.CurrentOS (fromText, encodeString)
-import System.Environment (getExecutablePath)
-import Filesystem.Path
-import qualified Data.Text as T
+import           Control.Monad.Reader (runReaderT)
+import qualified Data.Text                  as T
+import           Filesystem.Path
+import           Filesystem.Path.CurrentOS  (encodeString, fromText)
+import           System.Environment         (getExecutablePath)
+import           Turtle
 
-import Lib
-import Interactive
+import           Context
+import           Interactive
+import           Lib
 
 parser :: Parser (Text, Maybe Text)
 parser = (,) <$> argText "app-name" "Name of directory to put your app in"
@@ -28,7 +30,8 @@ main = do
   mkdir appPath
   let executablePathT = executablePath & T.pack & fromText
       runOps =  (parent executablePathT) </> "ops"
-  putStrLn $ encodeString runOps
+
+  let context = Context appPath executablePathT
   chmod executable (runOps </> "ttab")
   cptree runOps appPath
 
@@ -37,17 +40,23 @@ main = do
   majorCommentBlock "INITIAL SETUP"
   dbConfig <- getDBConfig
 
-  majorCommentBlock "BACK-END"
-  setupDir dbConfig appPath backendDirConfig
-  majorCommentBlock "DB"
-  setupDBDir dbConfig appPath
-  majorCommentBlock "FRONT-END"
-  setupDir dbConfig appPath frontendDirConfig
+  runReaderT (setupAllSubDirectories dbConfig) context
 
 
   askToRun $ runServers appPath
   cd appPath
   return ()
+
+
+setupAllSubDirectories :: DBConfig -> App ()
+setupAllSubDirectories dbConfig = do
+  appPath <- getAppRootDir
+  liftIO $ majorCommentBlock "BACK-END"
+  setupDir dbConfig backendDirConfig
+  liftIO $ majorCommentBlock "DB"
+  setupDBDir dbConfig
+  liftIO $ majorCommentBlock "FRONT-END"
+  setupDir dbConfig frontendDirConfig
 
 
 preValidate :: IO ()

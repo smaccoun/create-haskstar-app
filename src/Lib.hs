@@ -9,10 +9,8 @@ import Filesystem.Path.CurrentOS (encodeString)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 
-
 import Interactive
-
-
+import Context
 
 askToRun :: IO () -> IO ()
 askToRun onYes = do
@@ -66,44 +64,46 @@ getDir rootDir dirSetup =
     dPath = rootDir </> (fromText dname)
 
 
-
-
-setupDir :: DBConfig -> Turtle.FilePath -> DirSetup -> IO ()
-setupDir dbConfig rootDir dirSetup = do
-  let (dname, dPath) = getDir rootDir dirSetup
-  getTemplate rootDir dname dirSetup
+setupDir :: DBConfig -> DirSetup -> App ()
+setupDir dbConfig dirSetup = do
+  appRootDir' <- getAppRootDir
+  let (dname, dPath) = getDir appRootDir' dirSetup
+  getTemplate dname dirSetup
   case dirStackType dirSetup of
-    FRONT_END -> buildFrontEnd rootDir
-    BACK_END -> buildBackEnd dbConfig rootDir
+    FRONT_END -> buildFrontEnd
+    BACK_END -> buildBackEnd dbConfig
 
 
-
-getTemplate topDir dname dirSetup = do
-  subCommentBlock $ "Setting up " <> dname
-  cd topDir
+getTemplate :: Text -> DirSetup -> App ()
+getTemplate dname dirSetup = do
+  liftIO $ subCommentBlock $ "Setting up " <> dname
+  fromAppRootDir
   setupResult <- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
   case setupResult of
     ExitSuccess   -> return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
-buildFrontEnd :: Turtle.FilePath -> IO ()
-buildFrontEnd topDir = do
-  subCommentBlock "Building front-end"
+buildFrontEnd :: App ()
+buildFrontEnd = do
+  topDir <- getAppRootDir
+  liftIO $ subCommentBlock "Building front-end"
   let frontEndPath = getDir topDir frontendDirConfig & snd
-  putStrLn $ encodeString frontEndPath
+  liftIO $ putStrLn $ encodeString frontEndPath
   cd frontEndPath
   _ <- shell "yarn install" empty
   _ <- shell "elm-package install --yes" empty
   return ()
 
-buildBackEnd :: DBConfig -> Turtle.FilePath -> IO ()
-buildBackEnd dbConfig topDir = do
-  subCommentBlock "Building back-end"
+buildBackEnd :: DBConfig -> App ()
+buildBackEnd dbConfig = do
+  liftIO $ subCommentBlock "Building back-end"
+  fromAppRootDir
+  topDir <- getAppRootDir
   let backendDir = getDir topDir backendDirConfig & snd
   cd backendDir
   _ <- shell "stack build" empty
-  majorCommentBlock "SETUP DB CONFIGURATION"
-  _ <- mkBackendEnv dbConfig backendDir
+  liftIO $ majorCommentBlock "SETUP DB CONFIGURATION"
+  _ <- liftIO $ mkBackendEnv dbConfig backendDir
   return ()
 
 data DBConfig =
@@ -133,18 +133,19 @@ getDBConfig = do
       ,dbSchema = dbSchema
       }
 
-setupDBDir :: DBConfig -> Turtle.FilePath -> IO ()
-setupDBDir dbConfig rootDir = do
-  majorCommentBlock "SETTING UP DB"
-  cd rootDir
+setupDBDir :: DBConfig -> App ()
+setupDBDir dbConfig = do
+  liftIO $ majorCommentBlock "SETTING UP DB"
+  rootDir <- getAppRootDir
+  fromAppRootDir
   mkdir "db"
   cd "./db"
   let dbEnvFile = getDBEnvFile dbConfig rootDir
-  writeTextFile ".env" dbEnvFile
+  liftIO $ writeTextFile ".env" dbEnvFile
   dockerRunResult <- shell dockerRunCmd empty
   case dockerRunResult of
     ExitSuccess   -> do
-        instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dockerRunCmd
+        liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dockerRunCmd
         cd rootDir
         return ()
     ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)

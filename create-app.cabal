@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 27ef8b69b66b003980e48870491eb3383d160cb7369f6d6a4ed25c8449211364
+-- hash: a4c77b30b45c05b716b033614e1d5215f7cb446d8fc818af4758130fcc57bda6
 
 name:           create-app
 version:        0.1.0.0
@@ -30,10 +30,12 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , mtl
     , system-filepath
     , text
     , turtle
   exposed-modules:
+      Context
       Interactive
       Lib
   other-modules:
@@ -48,6 +50,7 @@ executable create-app
   build-depends:
       base >=4.7 && <5
     , create-app
+    , mtl
     , system-filepath
     , text
     , turtle
@@ -64,6 +67,7 @@ test-suite build-test
   build-depends:
       base >=4.7 && <5
     , create-app
+    , mtl
     , system-filepath
     , text
     , turtle
