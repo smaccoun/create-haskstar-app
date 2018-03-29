@@ -2,9 +2,5 @@
 .stack-work
 .build
 
-front-end
-back-end
-db
-
 create-app.hi
 create-app.o

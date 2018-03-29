@@ -20,6 +20,7 @@ parser = (,) <$> argText "app-name" "Name of directory to put your app in"
 
 main :: IO ()
 main = do
+  preValidate
   (appNameOption, mbfrontEndOption) <- options "Options" parser
   executablePath <- getExecutablePath
   curDir <- pwd
@@ -47,3 +48,11 @@ main = do
   askToRun $ runServers appPath
   cd appPath
   return ()
+
+
+preValidate :: IO ()
+preValidate = do
+  validateDockerInstall <- shell "which docker" Turtle.empty
+  case validateDockerInstall of
+    ExitSuccess   -> return ()
+    ExitFailure n -> die ("Failed to detect docker in system. Please install docker first before running haskstar: " <> repr n)
