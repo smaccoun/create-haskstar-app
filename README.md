@@ -24,13 +24,15 @@ Designed to automate all the redundant, not-so-fun parts of setting up a stack.
 This is almost like a framework - monolithic and highly opinionated - 
 designed to largely get production ready haskell-based apps up and running quickly!
 
-As all monolithic frameworks come with certain drawbacks (too much magic, difference of opinions on the "right way", etc)
+As all monolithic frameworks come with certain drawbacks (too much magic, difference of opinions on the "right way**, etc**
 the eventual goal of this is to make the full setup process highly customizable.
 
 
 ## Setup
 
 --TODO: Work on nix build, homebrew
+
+**NOTE** *You must have docker installed to fully boot the app locally*
 
 If you are on OSX, simply run the following and follow the prompts!
 ```bash
@@ -113,11 +115,12 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 ### ---------Back-End-----------
 
-|   lib    | Status   |
-|----------|:---------|
-| [Servant](https://hackage.haskell.org/package/servant)  |   ✅ 
-| [Selda](https://selda.link/)   |   in progress
-| yesod?    |          |
+| lib                                                    | Status      |
+|--------------------------------------------------------|-------------|
+| [Servant](https://hackage.haskell.org/package/servant) | ✅          |
+| [Beam](https://tathougies.github.io/beam/)             | in progress |
+| [Selda](https://selda.link/)   |  ?? 
+| yesod?                                                 |             |
 
 
 ### ---------DB-----------
