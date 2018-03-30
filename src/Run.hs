@@ -42,6 +42,19 @@ runBackEnd = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
 
+runMigrations :: App ()
+runMigrations = do
+  liftIO $ majorCommentBlock "RUNNING INITIAL MIGRATIONS"
+  fromAppRootDir
+  cd "back-end"
+  s <- runWithTTab "./run.sh"
+  case s of
+    ExitSuccess   -> liftIO $ do
+        printf "\nSuccessfully started api. Logs will be output to console\n"
+        return ()
+    ExitFailure n -> die (" failed with exit code: " <> repr n)
+  return ()
+
 
 runServers :: App ()
 runServers = do

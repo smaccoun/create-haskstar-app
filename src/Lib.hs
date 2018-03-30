@@ -54,17 +54,19 @@ setupDir :: DBConfig -> DirSetup -> App ()
 setupDir dbConfig dirSetup = do
   appRootDir' <- getAppRootDir
   let (dname, dPath) = getDir appRootDir' dirSetup
-  getTemplate dname dirSetup
+  getTemplate dPath dirSetup
   case dirStackType dirSetup of
     FRONT_END -> buildFrontEnd
     BACK_END -> buildBackEnd dbConfig
 
 
-getTemplate :: Text -> DirSetup -> App ()
-getTemplate dname dirSetup = do
+getTemplate :: Turtle.FilePath -> DirSetup -> App ()
+getTemplate dPath dirSetup = do
+  let dname = T.pack $ encodeString $ filename dPath
   liftIO $ subCommentBlock $ "Setting up " <> dname
   fromAppRootDir
   setupResult <- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
+  liftIO $ rmtree (dPath </> fromText ".git")
   case setupResult of
     ExitSuccess   -> return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
