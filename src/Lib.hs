@@ -11,11 +11,7 @@ import qualified Data.Text.IO as TIO
 
 import Interactive
 import Context
-
-
-
-
-
+---------------------------------------------------------------
 
 data DirSetup =
   DirSetup
@@ -42,9 +38,8 @@ backendDirConfig =
       ,gitDir = "git@github.com:smaccoun/haskstar-haskell.git"
       }
 
+asLocal :: Text -> Text
 asLocal dirName = "./" <> dirName
-
-
 
 
 getDir :: Turtle.FilePath -> DirSetup -> (Text, Turtle.FilePath)
@@ -130,6 +125,9 @@ setupDBDir dbConfig = do
   rootDir <- getAppRootDir
   fromAppRootDir
   mkdir "db"
+  templateDir' <- getTemplateDir
+  let simpleMigrationDir = templateDir' </> fromText "db" </> fromText "migrations" </> fromText "haskell" </> fromText "pg-simple"
+  cptree simpleMigrationDir "./db"
   cd "./db"
   let dbEnvFile = getDBEnvFile dbConfig rootDir
   liftIO $ writeTextFile ".env" dbEnvFile
@@ -137,6 +135,8 @@ setupDBDir dbConfig = do
   case dockerRunResult of
     ExitSuccess   -> do
         liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dockerRunCmd
+        _ <- shell "stack build" empty
+        _ <- shell "./run.sh" empty
         cd rootDir
         return ()
     ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)

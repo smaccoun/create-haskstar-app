@@ -12,6 +12,7 @@ data Context =
     {appRootDir :: Turtle.FilePath
     ,exeRootDir :: Turtle.FilePath
     ,opsDir     :: Turtle.FilePath
+    ,templatesDir :: Turtle.FilePath
     ,curOS      :: OS
     }
 
@@ -35,6 +36,11 @@ getOpsDir :: App Turtle.FilePath
 getOpsDir = do
   config <- ask
   return $ opsDir config
+
+getTemplateDir :: App Turtle.FilePath
+getTemplateDir = do
+  config <- ask
+  return $ templatesDir config
 
 getTTab :: App Turtle.FilePath
 getTTab = do

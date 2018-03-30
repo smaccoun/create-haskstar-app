@@ -33,8 +33,8 @@ main = do
   mkdir appPath
   let executablePathT = executablePath & T.pack & fromText
       opsDir' =  (parent executablePathT) </> "ops"
-
-  let context = Context appPath executablePathT opsDir' curOS
+      templatesDir' =  (parent executablePathT) </> "templates"
+  let context = Context appPath executablePathT opsDir' templatesDir' curOS
   chmod executable (opsDir' </> "ttab")
   cptree opsDir' appPath
 
@@ -56,10 +56,10 @@ setupAndRunDirectories dbConfig = do
 setupAllSubDirectories :: DBConfig -> App ()
 setupAllSubDirectories dbConfig = do
   appPath <- getAppRootDir
-  liftIO $ majorCommentBlock "BACK-END"
-  setupDir dbConfig backendDirConfig
   liftIO $ majorCommentBlock "DB"
   setupDBDir dbConfig
+  liftIO $ majorCommentBlock "BACK-END"
+  setupDir dbConfig backendDirConfig
   liftIO $ majorCommentBlock "FRONT-END"
   setupDir dbConfig frontendDirConfig
 
