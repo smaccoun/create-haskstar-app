@@ -12,18 +12,9 @@ import qualified Data.Text.IO as TIO
 import Interactive
 import Context
 
-askToRun :: IO () -> IO ()
-askToRun onYes = do
-  answer <- prompt "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no" Nothing
-  case answer of
-     "y" -> onYes
-     "n" -> echo "You can boot up each server by running ./run.sh"
-     _ -> echo "Please entery (y) or (n)"
 
-runServers :: Turtle.FilePath -> IO ()
-runServers topDir = do
-    runBackEnd topDir
-    runFrontEnd topDir
+
+
 
 
 data DirSetup =
@@ -186,30 +177,5 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
     dbUserLn dbUser = "DB_USERNAME=" <> dbUser
     dbPasswordLn password = "DB_PASSWORD=" <> dbPassword
 
-
-runFrontEnd :: Turtle.FilePath -> IO ()
-runFrontEnd topDir = do
-  majorCommentBlock "STARTING WEB SERVER"
-  cd $ getDir topDir frontendDirConfig & snd
-  s <- shell "../ttab yarn start " empty
-  case s of
-    ExitSuccess   -> do
-        printf "\nSuccessfully started server. Go to localhost:3000\n"
-        return ()
-    ExitFailure n -> die (" failed with exit code: " <> repr n)
-  return ()
-
-runBackEnd :: Turtle.FilePath -> IO ()
-runBackEnd topDir = do
-  majorCommentBlock "STARTING LOCAL BACK-END"
-  cd $ getDir topDir backendDirConfig & snd
-  s <- shell "../ttab ./run.sh" empty
-
-  case s of
-    ExitSuccess   -> do
-        printf "\nSuccessfully started api. Logs will be output to console\n"
-        return ()
-    ExitFailure n -> die (" failed with exit code: " <> repr n)
-  return ()
 
 

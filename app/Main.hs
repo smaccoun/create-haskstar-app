@@ -5,16 +5,18 @@
 module Main where
 
 
-import           Control.Monad.Reader (runReaderT)
-import qualified Data.Text                  as T
+import           Control.Monad.Reader      (runReaderT)
+import qualified Data.Text                 as T
+import           Distribution.System
 import           Filesystem.Path
-import           Filesystem.Path.CurrentOS  (encodeString, fromText)
-import           System.Environment         (getExecutablePath)
+import           Filesystem.Path.CurrentOS (encodeString, fromText)
+import           System.Environment        (getExecutablePath)
 import           Turtle
 
 import           Context
 import           Interactive
 import           Lib
+import           Run
 
 parser :: Parser (Text, Maybe Text)
 parser = (,) <$> argText "app-name" "Name of directory to put your app in"
@@ -23,30 +25,33 @@ parser = (,) <$> argText "app-name" "Name of directory to put your app in"
 main :: IO ()
 main = do
   preValidate
+  let curOS = buildOS
   (appNameOption, mbfrontEndOption) <- options "Options" parser
   executablePath <- getExecutablePath
   curDir <- pwd
   let appPath = curDir </> fromText (appNameOption)
   mkdir appPath
   let executablePathT = executablePath & T.pack & fromText
-      runOps =  (parent executablePathT) </> "ops"
+      opsDir' =  (parent executablePathT) </> "ops"
 
-  let context = Context appPath executablePathT
-  chmod executable (runOps </> "ttab")
-  cptree runOps appPath
+  let context = Context appPath executablePathT opsDir' curOS
+  chmod executable (opsDir' </> "ttab")
+  cptree opsDir' appPath
 
   _ <- shell "cat logoAscii.txt" Turtle.empty
   cd appPath
   majorCommentBlock "INITIAL SETUP"
   dbConfig <- getDBConfig
 
-  runReaderT (setupAllSubDirectories dbConfig) context
+  runReaderT (setupAndRunDirectories dbConfig) context
 
-
-  askToRun $ runServers appPath
   cd appPath
   return ()
 
+setupAndRunDirectories :: DBConfig -> App ()
+setupAndRunDirectories dbConfig = do
+  (setupAllSubDirectories dbConfig)
+  (askToRun runServers)
 
 setupAllSubDirectories :: DBConfig -> App ()
 setupAllSubDirectories dbConfig = do

@@ -25,6 +25,7 @@ dependencies:
 - system-filepath
 - text
 - mtl
+- Cabal
 
 library:
   source-dirs: src

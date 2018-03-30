@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a4c77b30b45c05b716b033614e1d5215f7cb446d8fc818af4758130fcc57bda6
+-- hash: c2dd164bfd19ba9605164478ba285fe14a63ae35ce5a145bd3ec2749d24cb322
 
 name:           create-app
 version:        0.1.0.0
@@ -29,7 +29,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      Cabal
+    , base >=4.7 && <5
     , mtl
     , system-filepath
     , text
@@ -38,6 +39,7 @@ library
       Context
       Interactive
       Lib
+      Run
   other-modules:
       Paths_create_app
   default-language: Haskell2010
@@ -48,7 +50,8 @@ executable create-app
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      Cabal
+    , base >=4.7 && <5
     , create-app
     , mtl
     , system-filepath
@@ -65,7 +68,8 @@ test-suite build-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      Cabal
+    , base >=4.7 && <5
     , create-app
     , mtl
     , system-filepath
