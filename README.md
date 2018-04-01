@@ -115,6 +115,13 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 ### ---------Back-End-----------
 
+#### Features
+| feature                          | Status      |
+|--------------------------------------------------------|-------------|
+| Automatic Swagger UI generation  | ✅          |
+| Automatic Swagger UI server      | ✅          |
+
+#### Libraries
 | lib                                                    | Status      |
 |--------------------------------------------------------|-------------|
 | [Servant](https://hackage.haskell.org/package/servant) | ✅          |
