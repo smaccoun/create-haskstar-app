@@ -22,8 +22,8 @@ data PGConnect = PGConnect {
 instance FromEnv PGConnect where
   fromEnv =
      PGConnect  <$> env "POSTGRES_USER"
-		<*> env "POSTGRES_PASSWORD"
-		<*> env "POSTGRES_DB"
+        <*> env "POSTGRES_PASSWORD"
+        <*> env "POSTGRES_DB"
 
 mapConInfo :: PGConnect -> ConnectInfo
 mapConInfo (PGConnect _ pgPass pgDB) =

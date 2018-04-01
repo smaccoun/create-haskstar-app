@@ -35,6 +35,7 @@ runBackEnd = do
   fromAppRootDir
   cd "back-end"
   s <- runWithTTab "./run.sh"
+  _ <- runWithTTab "./docs/runDocsServer.sh"
   case s of
     ExitSuccess   -> liftIO $ do
         printf "\nSuccessfully started api. Logs will be output to console\n"
