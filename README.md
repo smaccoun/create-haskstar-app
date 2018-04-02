@@ -18,7 +18,17 @@ The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end a
 #### Currently Very WIP, but I will be working on this full time for a while. Contributions highly welcome!
 
 
-## Why?
+## GOALS
+
+#### Major Goals:
+
+- Quick scaffolding of full-stack apps with Haskell as a back-end for rapid prototyping that can turn into full scale apps
+- Simplify and reduce time spent on devOps and deploying to cloud
+- Decent level of customization, especially on the front-end
+- Provide template of best practices and best libraries for haskell based webApps (and respective front-ends)
+- Most batteries included - preset with all the libraries and configuration common to most or all webapps (authentication/login, styling framweworks, forms)
+- Solid tooling (e.g. auto generated REST apis from code, hot reloading, etc)
+
 
 Designed to automate all the redundant, not-so-fun parts of setting up a stack.
 This is almost like a framework - monolithic and highly opinionated - 
@@ -30,9 +40,22 @@ the eventual goal of this is to make the full setup process highly customizable.
 
 ## Setup
 
---TODO: Work on nix build, homebrew
+--TODO: Work on nix build, homebrew, hackage.
 
-**NOTE** *You must have docker installed to fully boot the app locally*
+
+**NOTE** *The first build may take a VERY long time, especially if you do not have lts-9.4*
+**After the first time builds should be quite fast! Grab a coffee during the initial setup! **
+
+**Prerequisites**
+You must have the following installed
+
+- Docker
+- npm
+- yarn
+- stack
+
+
+
 
 If you are on OSX, simply run the following and follow the prompts!
 ```bash
