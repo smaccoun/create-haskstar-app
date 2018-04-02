@@ -89,32 +89,13 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 # Roadmap
 
-
-### Distribution
-
-|   Type   | Status   |
-|----------|:---------|
-| OSX Binary     |   ✅     |
-| Homebrew | In progress   |
-| Nix      |      |
-| ....     |      |
-
-### ---------Dev Ops-----------
-
-|   Platforms | Status   |
-|----------|:---------|
-| CircleCI |          |
-| AWS      |   In progress    |
-| GCloud   |      |
-
-
 ### ---------Front-End-----------
 
 #### Frameworks
 |   lib    | Status   |
 |----------|:---------|
 | Elm      |   ✅ 
-| [Miso](https://github.com/dmjio/miso)  |      |
+| [Miso](https://github.com/dmjio/miso)  | Coming soon |
 | Reflex? (haskell)    |          |
 | Halogen (purescript)    |          |
 
@@ -138,19 +119,21 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 ### ---------Back-End-----------
 
+#### Libraries
+| lib                                                    | Status      |
+|--------------------------------------------------------|-------------|
+| [Servant](https://hackage.haskell.org/package/servant) | ✅          |
+| [Beam](https://tathougies.github.io/beam/)             | ✅          |
+| [Selda](https://selda.link/)   |  ?? 
+| yesod?                                                 |             |
+
 #### Features
 | feature                          | Status      |
 |--------------------------------------------------------|-------------|
 | Automatic Swagger UI generation  | ✅          |
 | Automatic Swagger UI server      | ✅          |
 
-#### Libraries
-| lib                                                    | Status      |
-|--------------------------------------------------------|-------------|
-| [Servant](https://hackage.haskell.org/package/servant) | ✅          |
-| [Beam](https://tathougies.github.io/beam/)             | in progress |
-| [Selda](https://selda.link/)   |  ?? 
-| yesod?                                                 |             |
+
 
 
 ### ---------DB-----------
@@ -162,3 +145,20 @@ Idea is to get stack working for a certain set of configurations, then continual
 | Rails migration |      |
 | Persistent? |          |
 
+
+### Distribution
+
+|   Type   | Status   |
+|----------|:---------|
+| OSX Binary     |   ✅     |
+| Homebrew | In progress   |
+| Nix      |      |
+| ....     |      |
+
+### ---------Dev Ops-----------
+
+|   Platforms | Status   |
+|----------|:---------|
+| CircleCI |          |
+| AWS      |   In progress    |
+| GCloud   |      |
