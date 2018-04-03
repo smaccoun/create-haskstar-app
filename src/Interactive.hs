@@ -4,10 +4,10 @@
 
 module Interactive where
 
-import Turtle
-import qualified Data.Text as T
+import           Data.Maybe
+import qualified Data.Text    as T
 import qualified Data.Text.IO as TIO
-import Data.Maybe
+import           Turtle
 
 prompt :: T.Text -> Maybe T.Text -> IO T.Text
 prompt promptQuestion mbDefault = do
@@ -53,4 +53,3 @@ instructionCommentBlock msg = do
   printf ("*  "%s%"   *\n") msg
   printf "*                                                    *\n"
   printf "*******************************************************\n"
-

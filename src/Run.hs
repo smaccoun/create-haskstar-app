@@ -6,12 +6,12 @@ module Run where
 
 import           Context
 import           Data.Text                 (pack)
-import           Filesystem.Path.CurrentOS (encodeString)
 import           Distribution.System
+import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Turtle
 
-runFrontEnd :: App ()
+runFrontEnd :: ScriptRunContext ()
 runFrontEnd = do
   liftIO $ majorCommentBlock "STARTING WEB SERVER"
   fromAppRootDir
@@ -21,7 +21,7 @@ runFrontEnd = do
   s <-
     case curOS' of
       OSX -> runWithTTab runCmd
-      _ -> runAsBackground runCmd
+      _   -> runAsBackground runCmd
   case s of
     ExitSuccess -> do
         liftIO $ printf ("\nSuccessfully started server. Go to localhost:3000\n")
@@ -29,7 +29,7 @@ runFrontEnd = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
 
-runBackEnd :: App ()
+runBackEnd :: ScriptRunContext ()
 runBackEnd = do
   liftIO $ majorCommentBlock "STARTING LOCAL BACK-END"
   fromAppRootDir
@@ -42,7 +42,7 @@ runBackEnd = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
 
-runMigrations :: App ()
+runMigrations :: ScriptRunContext ()
 runMigrations = do
   liftIO $ majorCommentBlock "RUNNING INITIAL MIGRATIONS"
   fromAppRootDir
@@ -56,12 +56,12 @@ runMigrations = do
   return ()
 
 
-runServers :: App ()
+runServers :: ScriptRunContext ()
 runServers = do
     runBackEnd
     runFrontEnd
 
-askToRun :: App () -> App ()
+askToRun :: ScriptRunContext () -> ScriptRunContext ()
 askToRun onYes = do
   answer <- liftIO $ prompt "Setup Complete! Would you like to boot up the servers? (y) yes, (n) no" Nothing
   case answer of
@@ -70,7 +70,7 @@ askToRun onYes = do
      _   -> liftIO $ echo "Please entery (y) or (n)"
 
 
-runWithTTab :: Text -> App ExitCode
+runWithTTab :: Text -> ScriptRunContext ExitCode
 runWithTTab cmd = do
   ttabBaseCmd <- getTTab
   let asTextTTab = pack $ encodeString ttabBaseCmd
@@ -78,11 +78,8 @@ runWithTTab cmd = do
   s <- liftIO $ shell ttabCmd empty
   return s
 
-runAsBackground :: Text -> App ExitCode
+runAsBackground :: Text -> ScriptRunContext ExitCode
 runAsBackground cmd = do
   let asBackground = cmd <> " &"
   s <- liftIO $ shell asBackground empty
   return s
-
-
-

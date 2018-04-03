@@ -4,20 +4,20 @@
 
 module Lib where
 
-import Turtle
-import Filesystem.Path.CurrentOS (encodeString)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
+import qualified Data.Text                 as T
+import qualified Data.Text.IO              as TIO
+import           Filesystem.Path.CurrentOS (encodeString)
+import           Turtle
 
-import Interactive
-import Context
+import           Context
+import           Interactive
 ---------------------------------------------------------------
 
 data DirSetup =
   DirSetup
     {dirStackType :: DirStackType
-    ,dirName :: Text
-    ,gitDir :: Text
+    ,dirName      :: Text
+    ,gitDir       :: Text
     }
 
 data DirStackType = FRONT_END | BACK_END
@@ -50,17 +50,14 @@ getDir rootDir dirSetup =
     dPath = rootDir </> (fromText dname)
 
 
-setupDir :: DBConfig -> DirSetup -> App ()
+setupDir :: DBConfig -> DirSetup -> ScriptRunContext ()
 setupDir dbConfig dirSetup = do
   appRootDir' <- getAppRootDir
   let (dname, dPath) = getDir appRootDir' dirSetup
   getTemplate dPath dirSetup
-  case dirStackType dirSetup of
-    FRONT_END -> buildFrontEnd
-    BACK_END -> buildBackEnd dbConfig
 
 
-getTemplate :: Turtle.FilePath -> DirSetup -> App ()
+getTemplate :: Turtle.FilePath -> DirSetup -> ScriptRunContext ()
 getTemplate dPath dirSetup = do
   let dname = T.pack $ encodeString $ filename dPath
   liftIO $ subCommentBlock $ "Setting up " <> dname
@@ -71,7 +68,7 @@ getTemplate dPath dirSetup = do
     ExitSuccess   -> return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
-buildFrontEnd :: App ()
+buildFrontEnd :: ScriptRunContext ()
 buildFrontEnd = do
   topDir <- getAppRootDir
   liftIO $ subCommentBlock "Building front-end"
@@ -82,7 +79,7 @@ buildFrontEnd = do
   _ <- shell "elm-package install --yes" empty
   return ()
 
-buildBackEnd :: DBConfig -> App ()
+buildBackEnd :: DBConfig -> ScriptRunContext ()
 buildBackEnd dbConfig = do
   liftIO $ subCommentBlock "Building back-end"
   fromAppRootDir
@@ -94,14 +91,19 @@ buildBackEnd dbConfig = do
   _ <- liftIO $ mkBackendEnv dbConfig backendDir
   return ()
 
+buildFrontAndBackend :: DBConfig -> ScriptRunContext ()
+buildFrontAndBackend dbConfig = do
+  buildFrontEnd
+  buildBackEnd dbConfig
+
 data DBConfig =
   DBConfig
-    {host :: T.Text
-    ,port :: Int
-    ,dbName :: T.Text
-    ,dbUser :: T.Text
+    {host       :: T.Text
+    ,port       :: Int
+    ,dbName     :: T.Text
+    ,dbUser     :: T.Text
     ,dbPassword :: T.Text
-    ,dbSchema :: T.Text
+    ,dbSchema   :: T.Text
     }
 
 getDBConfig :: IO DBConfig
@@ -121,7 +123,7 @@ getDBConfig = do
       ,dbSchema = dbSchema
       }
 
-setupDBDir :: DBConfig -> App ()
+setupDBDir :: DBConfig -> ScriptRunContext ()
 setupDBDir dbConfig = do
   liftIO $ majorCommentBlock "SETTING UP DB"
   rootDir <- getAppRootDir
@@ -178,6 +180,3 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
     dbSchemaLn schema     = "DB_SCHEMA=" <> schema
     dbUserLn dbUser = "DB_USERNAME=" <> dbUser
     dbPasswordLn password = "DB_PASSWORD=" <> dbPassword
-
-
-

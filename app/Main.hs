@@ -20,7 +20,7 @@ import           Run
 
 parser :: Parser (Text, Maybe Text)
 parser = (,) <$> argText "app-name" "Name of directory to put your app in"
-             <*> optional (optText "front-end"  'a' "Choise of front-end")
+             <*> optional (optText "front-end"  'a' "Choice of front-end")
 
 main :: IO ()
 main = do
@@ -43,17 +43,37 @@ main = do
   majorCommentBlock "INITIAL SETUP"
   dbConfig <- getDBConfig
 
-  runReaderT (setupAndRunDirectories dbConfig) context
+  io (setupAllSubDirectories dbConfig) context
+  shouldBuild <- askToBuild
+  if shouldBuild then do
+    io (buildFrontAndBackend dbConfig) context
+    io (askToRun runServers) context
+  else
+    echo "Complete! Please follow the docs for running your application"
 
   cd appPath
   return ()
 
-setupAndRunDirectories :: DBConfig -> App ()
-setupAndRunDirectories dbConfig = do
-  (setupAllSubDirectories dbConfig)
-  (askToRun runServers)
 
-setupAllSubDirectories :: DBConfig -> App ()
+io :: ScriptRunContext () -> Context -> IO ()
+io action context =
+    runReaderT action context
+
+askToBuild :: IO Bool
+askToBuild = do
+  majorCommentBlock "Setup complete! You now have a fullstack Haskell setup!"
+  answer <- prompt "Would you like to now build the project? (y) yes, (n) no" Nothing
+  case answer of
+     "y" -> return True
+     "n" -> do
+        echo "To build the back-end, cd into back-end and run `./run.sh`. For the front-end, cd into front-end and run `yarn start`"
+        return False
+     _   -> do
+        echo "Please entery (y) or (n)"
+        return False
+
+
+setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
 setupAllSubDirectories dbConfig = do
   appPath <- getAppRootDir
   liftIO $ majorCommentBlock "DB"
