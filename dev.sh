@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+if [ -z "$1" ]
+  then 
+     APP_NAME="example-app"
+  else
+    APP_NAME="$1"
+fi
+
+echo "CREATING $APP_NAME"
+
 echo "Closing existing docker instances..."
 docker stop my-app-db
 docker rm my-app-db
