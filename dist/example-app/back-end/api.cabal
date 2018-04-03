@@ -1,0 +1,146 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: b9ab146151c4bdb84e210ee2499bc66285abe2613a903d71496f15ebc389085a
+
+name:           api
+version:        0.1.0.0
+description:    Please see the README on Github at <https://github.com/smaccoun/api#readme>
+homepage:       https://github.com/smaccoun/api#readme
+bug-reports:    https://github.com/smaccoun/api/issues
+author:         Steven MacCoun
+maintainer:     theraccoun@gmail.com
+copyright:      2018 Steven MacCoun
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/smaccoun/api
+
+library
+  hs-source-dirs:
+      src
+  default-extensions: OverloadedStrings NoImplicitPrelude ScopedTypeVariables FlexibleContexts FlexibleInstances MultiParamTypeClasses RecordWildCards NamedFieldPuns DeriveGeneric DuplicateRecordFields TypeOperators DataKinds
+  build-depends:
+      aeson
+    , attoparsec
+    , base >=4.7 && <5
+    , bytestring
+    , beam-core
+    , beam-migrate
+    , beam-postgres
+    , data-default
+    , fast-logger
+    , jose
+    , mtl
+    , natural-transformation
+    , postgresql-simple
+    , protolude
+    , resource-pool
+    , servant
+    , servant-server
+    , servant-auth
+    , servant-auth-server
+    , servant-swagger
+    , servant-swagger-ui
+    , servant-auth-swagger
+    , swagger2
+    , text
+    , transformers
+    , uuid
+    , wai
+    , wai-cors
+    , wai-extra
+    , warp
+    , word8
+  exposed-modules:
+      Api.User
+      Api.API
+      Api.Login
+      App
+      AppPrelude
+      Config.AppConfig
+      Lib
+      DB.Transaction
+      Models.User
+      DBSchema
+  other-modules:
+      Paths_api
+  default-language: Haskell2010
+
+executable api-exe
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  default-extensions: OverloadedStrings NoImplicitPrelude ScopedTypeVariables FlexibleContexts FlexibleInstances MultiParamTypeClasses RecordWildCards NamedFieldPuns DeriveGeneric DuplicateRecordFields TypeOperators DataKinds
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , api
+    , attoparsec
+    , base >=4.7 && <5
+    , beam-core
+    , beam-migrate
+    , beam-postgres
+    , data-default
+    , fast-logger
+    , mtl
+    , natural-transformation
+    , postgresql-simple
+    , protolude
+    , resource-pool
+    , servant
+    , servant-server
+    , text
+    , transformers
+    , wai
+    , wai-cors
+    , wai-extra
+    , warp
+    , word8
+  other-modules:
+      Paths_api
+  default-language: Haskell2010
+
+test-suite api-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  default-extensions: OverloadedStrings NoImplicitPrelude ScopedTypeVariables FlexibleContexts FlexibleInstances MultiParamTypeClasses RecordWildCards NamedFieldPuns DeriveGeneric DuplicateRecordFields TypeOperators DataKinds
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , api
+    , attoparsec
+    , base >=4.7 && <5
+    , beam-core
+    , beam-migrate
+    , beam-postgres
+    , data-default
+    , fast-logger
+    , mtl
+    , natural-transformation
+    , postgresql-simple
+    , protolude
+    , resource-pool
+    , servant
+    , servant-server
+    , text
+    , transformers
+    , wai
+    , wai-cors
+    , wai-extra
+    , warp
+    , word8
+  other-modules:
+      Paths_api
+  default-language: Haskell2010

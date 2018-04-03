@@ -1,6 +1,6 @@
 <h1 align="center">
   <img src="./logo.png"/><br>
-  Create-Haskstar-App 
+  Create-Haskstar-App
 </h1>
 
 
@@ -31,7 +31,7 @@ The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end a
 
 
 Designed to automate all the redundant, not-so-fun parts of setting up a stack.
-This is almost like a framework - monolithic and highly opinionated - 
+This is almost like a framework - monolithic and highly opinionated -
 designed to largely get production ready haskell-based apps up and running quickly!
 
 As all monolithic frameworks come with certain drawbacks (too much magic, difference of opinions on the "right way**, etc**
@@ -70,19 +70,18 @@ chmod +x create-app
 
 To manually build
 ```bash
-./build.sh   # Runs stack build and moves binary to local dir
+./dev.sh   # Runs stack build and moves binary to local dir
 
-chmod +x create-app
-./create-app my-app
+cd example-app
 ```
 
 # Development Philosophy
 
 Major pluggable parts (such as Elm or Miso) will each be kept in a separate repo
-that haskstar will build from (e.g. see [haskstar-elm](https://github.com/smaccoun/haskstar-elm)). 
+that haskstar will build from (e.g. see [haskstar-elm](https://github.com/smaccoun/haskstar-elm)).
 That way these can be used also be used as standalone templates
 
-I am working on this full time and will take a very iterative approach. 
+I am working on this full time and will take a very iterative approach.
 Idea is to get stack working for a certain set of configurations, then continually abstract until nearly anything is plug-in-able
 
 
@@ -94,7 +93,7 @@ Idea is to get stack working for a certain set of configurations, then continual
 #### Frameworks
 |   lib    | Status   |
 |----------|:---------|
-| Elm      |   ✅ 
+| Elm      |   ✅
 | [Miso](https://github.com/dmjio/miso)  | Coming soon |
 | Reflex? (haskell)    |          |
 | Halogen (purescript)    |          |
@@ -124,7 +123,7 @@ Idea is to get stack working for a certain set of configurations, then continual
 |--------------------------------------------------------|-------------|
 | [Servant](https://hackage.haskell.org/package/servant) | ✅          |
 | [Beam](https://tathougies.github.io/beam/)             | ✅          |
-| [Selda](https://selda.link/)   |  ?? 
+| [Selda](https://selda.link/)   |  ??
 | yesod?                                                 |             |
 
 #### Features
