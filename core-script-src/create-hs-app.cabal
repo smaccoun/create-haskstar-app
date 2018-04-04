@@ -4,7 +4,7 @@
 --
 -- hash: d6e813adeb0a31c4b99870bbdc40424e48830890e29ee6aed0f12db830637644
 
-name:           create-app
+name:           create-hs-app
 version:        0.1.0.0
 description:    Please see the README on Github at <https://github.com/smaccoun/build#readme>
 homepage:       https://github.com/smaccoun/build#readme
@@ -48,7 +48,7 @@ library
       Paths_create_app
   default-language: Haskell2010
 
-executable create-app
+executable create-hs-app
   main-is: Main.hs
   hs-source-dirs:
       app
@@ -56,7 +56,7 @@ executable create-app
   build-depends:
       Cabal
     , base >=4.7 && <5
-    , create-app
+    , create-hs-app
     , mtl
     , system-filepath
     , text
@@ -74,7 +74,7 @@ test-suite build-test
   build-depends:
       Cabal
     , base >=4.7 && <5
-    , create-app
+    , create-hs-app
     , mtl
     , system-filepath
     , text

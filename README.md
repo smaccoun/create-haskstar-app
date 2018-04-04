@@ -38,7 +38,7 @@ As all monolithic frameworks come with certain drawbacks (too much magic, differ
 the eventual goal of this is to make the full setup process highly customizable.
 
 
-## Setup
+## Installation
 
 --TODO: Work on nix build, homebrew, hackage.
 
@@ -47,32 +47,23 @@ the eventual goal of this is to make the full setup process highly customizable.
 **After the first time builds should be quite fast! Grab a coffee during the initial setup! **
 
 **Prerequisites**
-You must have the following installed
+You must have the following installed in order to run the app
 
 - Docker
 - npm
 - yarn
 - stack
 
-
-
-
-If you are on OSX, simply run the following and follow the prompts!
-```bash
-git clone git@github.com:smaccoun/create-haskstar-app.git
-cd create-haskstar-app
-
-chmod +x create-app
-./create-app my-app
-```
-
-#### --Manual
-
+**Install**
 To manually build
 ```bash
-./dev.sh   # Runs stack build and moves binary to local dir
+./install.sh   # Runs stack install
+```
 
-cd example-app
+**Run!**
+You should now just be able to run:
+```bash
+create-hs-app my-app-name
 ```
 
 # Development Philosophy

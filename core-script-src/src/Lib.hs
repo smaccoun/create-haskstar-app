@@ -57,11 +57,10 @@ setupDir dbConfig dirSetup = do
   getTemplate dPath dirSetup
 
 gitCloneShallow :: Text -> IO ExitCode
-gitCloneShallow gitRepo = do
-  let cloneCmd = "git clone --depth 1 " <> gitRepo
-  print $ "CLONE COMMAND: " <> cloneCmd
-  result <- shell cloneCmd empty
-  return result
+gitCloneShallow gitRepo =
+  shell cloneCmd empty
+  where
+     cloneCmd = "git clone --depth 1 " <> gitRepo
 
 getTemplate :: Turtle.FilePath -> DirSetup -> ScriptRunContext ()
 getTemplate dPath dirSetup = do

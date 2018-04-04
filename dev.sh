@@ -22,7 +22,7 @@ echo "Cleaning out existing dist directory and loading bundles"
 rm -rf ./dist/*
 
 cd ./dist
-(env=DEVELOPMENT && ~/.local/bin/create-app example-app)
+(env=DEVELOPMENT && create-hs-app example-app)
 echo "FINISHED RUNNING"
 rm -rf ../example-app
 cp -r example-app ../

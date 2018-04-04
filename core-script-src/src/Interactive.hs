@@ -53,3 +53,7 @@ instructionCommentBlock msg = do
   printf ("*  "%s%"   *\n") msg
   printf "*                                                    *\n"
   printf "*******************************************************\n"
+
+showWelcomeMessage :: IO ExitCode
+showWelcomeMessage =
+  shell "cat logoAscii.txt" Turtle.empty

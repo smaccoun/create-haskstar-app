@@ -40,20 +40,14 @@ main = do
   majorCommentBlock "Grabbing required templates"
   mkdir "templates"
   _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git"
-  majorCommentBlock "Grabbing templates"
   cptree "./create-haskstar-app/templates" "./templates"
-  majorCommentBlock "LOGO TIME"
---  cp "./create-haskstar-app/logoAscii.txt" "./"
-  majorCommentBlock "Removing scaffold dir"
   rmtree "create-haskstar-app"
-  majorCommentBlock "MEOW"
 
   let templatesDir' = appDir </> "templates"
       opsDir' =  templatesDir' </> "ops"
+      ttab = (opsDir' </> "ttab")
       context = Context runEnv appDir executablePath opsDir' templatesDir' curOS
-
-  _ <- shell "cat logoAscii.txt" Turtle.empty
-  let ttab = (opsDir' </> "ttab")
+      
   chmod executable ttab
   let appOpsDir = (appDir </> decodeString "ops")
   mkdir appOpsDir
