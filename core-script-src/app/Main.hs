@@ -15,9 +15,12 @@ import           System.Environment        (getExecutablePath)
 import           Turtle
 
 import           Context
+import           DBConfig
+import           DirSetup
 import           Interactive
 import           Lib
 import           Run
+import           StackBuild
 
 parser :: Parser (Text, Maybe Text)
 parser = (,) <$> argText "app-name" "Name of directory to put your app in"
@@ -47,7 +50,7 @@ main = do
       opsDir' =  templatesDir' </> "ops"
       ttab = (opsDir' </> "ttab")
       context = Context runEnv appDir executablePath opsDir' templatesDir' curOS
-      
+
   chmod executable ttab
   let appOpsDir = (appDir </> decodeString "ops")
   mkdir appOpsDir
@@ -55,7 +58,7 @@ main = do
 
   cd appDir
   majorCommentBlock "INITIAL SETUP"
-  dbConfig <- getDBConfig
+  dbConfig <- promptDBConfig
 
   io (setupAllSubDirectories dbConfig) context
   shouldBuild <- askToBuild
@@ -67,35 +70,6 @@ main = do
 
   cd appDir
   return ()
-
-io :: ScriptRunContext () -> Context -> IO ()
-io action context =
-    runReaderT action context
-
-askToBuild :: IO Bool
-askToBuild = do
-  majorCommentBlock "Setup complete! You now have a fullstack Haskell setup!"
-  answer <- prompt "Would you like to now build the project? (y) yes, (n) no" Nothing
-  case answer of
-     "y" -> return True
-     "n" -> do
-        echo "To build the back-end, cd into back-end and run `./run.sh`. For the front-end, cd into front-end and run `yarn start`"
-        return False
-     _   -> do
-        echo "Please entery (y) or (n)"
-        return False
-
-
-setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
-setupAllSubDirectories dbConfig = do
-  appDir <- getAppRootDir
-  liftIO $ majorCommentBlock "DB"
-  setupDBDir dbConfig
-  liftIO $ majorCommentBlock "BACK-END"
-  setupDir dbConfig backendDirConfig
-  liftIO $ majorCommentBlock "FRONT-END"
-  setupDir dbConfig frontendDirConfig
-
 
 preValidate :: IO ()
 preValidate = do

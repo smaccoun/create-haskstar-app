@@ -44,6 +44,9 @@ library
       Interactive
       Lib
       Run
+      DBConfig
+      DirSetup
+      StackBuild
   other-modules:
       Paths_create_app
   default-language: Haskell2010

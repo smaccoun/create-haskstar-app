@@ -19,6 +19,7 @@ stack install
 cd ../
 
 echo "Cleaning out existing dist directory and loading bundles"
+rm -rf example-app
 rm -rf ./dist/*
 
 cd ./dist

@@ -33,6 +33,18 @@ didHitEnter :: String -> Bool
 didHitEnter line =
   T.pack line == T.empty
 
+askToBuild :: IO Bool
+askToBuild = do
+  majorCommentBlock "Setup complete! You now have a fullstack Haskell setup!"
+  answer <- prompt "Would you like to now build the project? (y) yes, (n) no" Nothing
+  case answer of
+     "y" -> return True
+     "n" -> do
+        echo "To build the back-end, cd into back-end and run `./run.sh`. For the front-end, cd into front-end and run `yarn start`"
+        return False
+     _   -> do
+        echo "Please entery (y) or (n)"
+        return False
 
 majorCommentBlock :: Text -> IO ()
 majorCommentBlock msg = do
