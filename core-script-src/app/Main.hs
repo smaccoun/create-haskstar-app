@@ -36,31 +36,15 @@ main = do
       runEnv = Development
       appDir = curDir </> fromText (appNameOption)
   executablePath <- fmap (ExecutablePath . decodeString) getExecutablePath
-
-  mkdir appDir
-  cd appDir
-
-  majorCommentBlock "Grabbing required templates"
-  mkdir "templates"
-  _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git"
-  cptree "./create-haskstar-app/templates" "./templates"
-  rmtree "create-haskstar-app"
-
-  let templatesDir' = appDir </> "templates"
-      opsDir' =  templatesDir' </> "ops"
-      ttab = (opsDir' </> "ttab")
-      context = Context runEnv appDir executablePath opsDir' templatesDir' curOS
-
-  chmod executable ttab
-  let appOpsDir = (appDir </> decodeString "ops")
-  mkdir appOpsDir
-  cptree opsDir' appOpsDir
-
-  cd appDir
   majorCommentBlock "INITIAL SETUP"
   dbConfig <- promptDBConfig
 
+  mkdir appDir
+  let context = setContext runEnv appDir executablePath curOS
+
+  -- | Setup Ops, DB, Front-End, Back-End directories
   io (setupAllSubDirectories dbConfig) context
+
   shouldBuild <- askToBuild
   if shouldBuild then do
     io (buildFrontAndBackend dbConfig) context

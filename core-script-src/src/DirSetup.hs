@@ -13,6 +13,17 @@ import           Interactive
 import           Lib
 import           Turtle
 
+setupOpsDir :: ScriptRunContext ()
+setupOpsDir = do
+  fromAppRootDir
+  liftIO $ do
+    majorCommentBlock "Grabbing required templates"
+    mktree "./ops/db"
+    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git"
+    cptree "./create-haskstar-app/templates/ops" "./ops"
+    cptree "./create-haskstar-app/templates/db" "./ops/db"
+    rmtree "create-haskstar-app"
+
 data DirSetup =
   DirSetup
     {dirStackType :: DirStackType
@@ -60,8 +71,9 @@ getDir rootDir dirSetup =
     dname = dirName dirSetup
     dPath = rootDir </> (fromText dname)
 
-setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
-setupAllSubDirectories dbConfig = do
+-- | Setup DB, Front-End, Back-End directories without building them
+setupCoreDirectories :: DBConfig -> ScriptRunContext ()
+setupCoreDirectories dbConfig = do
   appDir <- getAppRootDir
   liftIO $ majorCommentBlock "DB"
   setupDBDir dbConfig
@@ -69,6 +81,12 @@ setupAllSubDirectories dbConfig = do
   setupDir dbConfig backendDirConfig
   liftIO $ majorCommentBlock "FRONT-END"
   setupDir dbConfig frontendDirConfig
+
+setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
+setupAllSubDirectories dbConfig = do
+  setupOpsDir
+  setupCoreDirectories dbConfig
+
 
 setupDir :: DBConfig -> DirSetup -> ScriptRunContext ()
 setupDir dbConfig dirSetup = do
@@ -103,8 +121,8 @@ setupDBDir dbConfig = do
   rootDir <- getAppRootDir
   fromAppRootDir
   mkdir "db"
-  templateDir' <- getTemplateDir
-  let simpleMigrationDir = templateDir' </> fromText "db" </> fromText "migrations" </> fromText "haskell" </> fromText "pg-simple"
+  opsDir' <- getOpsDir
+  let simpleMigrationDir = opsDir' </> fromText "db" </> fromText "migrations" </> fromText "haskell" </> fromText "pg-simple"
   cptree simpleMigrationDir "./db"
   cd "./db"
   let dbEnvFile = getDBEnvFile dbConfig rootDir

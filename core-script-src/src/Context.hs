@@ -16,13 +16,19 @@ newtype ExecutablePath = ExecutablePath { unExecutablePath :: Turtle.FilePath }
 
 data Context =
   Context
-    {env          :: Env
-    ,appRootDir   :: Turtle.FilePath
-    ,exeRootDir   :: ExecutablePath
-    ,opsDir       :: Turtle.FilePath
-    ,templatesDir :: Turtle.FilePath
-    ,curOS        :: OS
+    {env        :: Env
+    ,appRootDir :: Turtle.FilePath
+    ,exeRootDir :: ExecutablePath
+    ,opsDir     :: Turtle.FilePath
+    ,curOS      :: OS
     }
+
+setContext :: Env -> Turtle.FilePath -> ExecutablePath -> OS -> Context
+setContext runEnv appDir executablePath curOS =
+  Context runEnv appDir executablePath opsDir' curOS
+  where
+    opsDir' =  appDir </> decodeString "ops"
+    ttab = (opsDir' </> decodeString "ttab")
 
 
 getAppRootDir :: ScriptRunContext Turtle.FilePath
@@ -44,11 +50,6 @@ getOpsDir :: ScriptRunContext Turtle.FilePath
 getOpsDir = do
   config <- ask
   return $ opsDir config
-
-getTemplateDir :: ScriptRunContext Turtle.FilePath
-getTemplateDir = do
-  config <- ask
-  return $ templatesDir config
 
 getTTab :: ScriptRunContext Turtle.FilePath
 getTTab = do
