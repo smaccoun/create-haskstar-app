@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c2dd164bfd19ba9605164478ba285fe14a63ae35ce5a145bd3ec2749d24cb322
+-- hash: d6e813adeb0a31c4b99870bbdc40424e48830890e29ee6aed0f12db830637644
 
 name:           create-app
 version:        0.1.0.0
@@ -13,9 +13,13 @@ author:         Steven MacCoun
 maintainer:     theraccoun@gmail.com
 copyright:      2018 Steven MacCoun
 license:        BSD3
-license-file:   LICENSE
+license-file:   ../LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
+
+tested-with:        GHC == 8.4.1
+                    GHC == 8.2.2
+                    GHC == 8.0.2
 
 extra-source-files:
     ChangeLog.md

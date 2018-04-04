@@ -1,6 +1,7 @@
 .idea
 .stack-work
 .build
+.dist
 
 create-app.hi
 create-app.o

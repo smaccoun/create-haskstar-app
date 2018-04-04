@@ -56,13 +56,19 @@ setupDir dbConfig dirSetup = do
   let (dname, dPath) = getDir appRootDir' dirSetup
   getTemplate dPath dirSetup
 
+gitCloneShallow :: Text -> IO ExitCode
+gitCloneShallow gitRepo = do
+  let cloneCmd = "git clone --depth 1 " <> gitRepo
+  print $ "CLONE COMMAND: " <> cloneCmd
+  result <- shell cloneCmd empty
+  return result
 
 getTemplate :: Turtle.FilePath -> DirSetup -> ScriptRunContext ()
 getTemplate dPath dirSetup = do
   let dname = T.pack $ encodeString $ filename dPath
   liftIO $ subCommentBlock $ "Setting up " <> dname
   fromAppRootDir
-  setupResult <- shell ("git clone " <> gitDir dirSetup <> " " <> dname) empty
+  setupResult <- liftIO $ gitCloneShallow $ gitDir dirSetup <> " " <> dname
   liftIO $ rmtree (dPath </> fromText ".git")
   case setupResult of
     ExitSuccess   -> return ()

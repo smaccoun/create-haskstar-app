@@ -26,35 +26,40 @@ parser = (,) <$> argText "app-name" "Name of directory to put your app in"
 main :: IO ()
 main = do
   preValidate
-  let curOS = buildOS
+
   (appNameOption, mbfrontEndOption) <- options "Options" parser
-  executablePath <- fmap (ExecutablePath . decodeString) getExecutablePath
   curDir <- pwd
+  let curOS = buildOS
+      runEnv = Development
+      appDir = curDir </> fromText (appNameOption)
+  executablePath <- fmap (ExecutablePath . decodeString) getExecutablePath
 
-  let runEnv = Development
-      appPath = curDir </> fromText (appNameOption)
-      parentExcutable = parent (unExecutablePath executablePath)
-      templatesDir' = parentExcutable  </> "templates"
+  mkdir appDir
+  cd appDir
 
+  majorCommentBlock "Grabbing required templates"
+  mkdir "templates"
+  _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git"
+  majorCommentBlock "Grabbing templates"
+  cptree "./create-haskstar-app/templates" "./templates"
+  majorCommentBlock "LOGO TIME"
+--  cp "./create-haskstar-app/logoAscii.txt" "./"
+  majorCommentBlock "Removing scaffold dir"
+  rmtree "create-haskstar-app"
+  majorCommentBlock "MEOW"
+
+  let templatesDir' = appDir </> "templates"
       opsDir' =  templatesDir' </> "ops"
-      context = Context runEnv appPath executablePath opsDir' templatesDir' curOS
-
-  putStrLn $ "TEMPLATES DIR" <> encodeString templatesDir'
-  putStrLn $ "OPPS DIR" <> encodeString opsDir'
-  mkdir appPath
+      context = Context runEnv appDir executablePath opsDir' templatesDir' curOS
 
   _ <- shell "cat logoAscii.txt" Turtle.empty
   let ttab = (opsDir' </> "ttab")
-  putStrLn $ "TTAB: " <> encodeString ttab
   chmod executable ttab
-  putStrLn $ "APP PATH: " <> encodeString appPath
-  let appOpsDir = (appPath </> decodeString "ops")
-  putStrLn $ "APP OPS DIR: " <> encodeString appOpsDir
+  let appOpsDir = (appDir </> decodeString "ops")
   mkdir appOpsDir
-  putStrLn $ "APP OPS DIR: " <> encodeString appOpsDir
   cptree opsDir' appOpsDir
 
-  cd appPath
+  cd appDir
   majorCommentBlock "INITIAL SETUP"
   dbConfig <- getDBConfig
 
@@ -66,7 +71,7 @@ main = do
   else
     echo "Complete! Please follow the docs for running your application"
 
-  cd appPath
+  cd appDir
   return ()
 
 io :: ScriptRunContext () -> Context -> IO ()
@@ -89,7 +94,7 @@ askToBuild = do
 
 setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
 setupAllSubDirectories dbConfig = do
-  appPath <- getAppRootDir
+  appDir <- getAppRootDir
   liftIO $ majorCommentBlock "DB"
   setupDBDir dbConfig
   liftIO $ majorCommentBlock "BACK-END"
