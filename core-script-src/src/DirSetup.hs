@@ -7,6 +7,11 @@ module DirSetup where
 import           Context
 import           Data.Text                 (Text, intercalate, pack)
 import qualified Data.Text                 as T
+import qualified Data.Aeson as A
+import Servant.Auth.Server (generateKey)
+import qualified Data.ByteString.Lazy as LBS
+import Data.Text.Lazy.Builder (toLazyText)
+import Data.Text.Encoding (decodeUtf8)
 import           DBConfig
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
@@ -93,9 +98,14 @@ setupDir dbConfig dirSetup = do
   appRootDir' <- getAppRootDir
   let (dname, dPath) = getDir appRootDir' dirSetup
   getTemplate dPath dirSetup
+  case dirStackType dirSetup of
+    BACK_END -> liftIO $ mkBackendEnv dbConfig dPath
+    FRONT_END -> return ()
+
 
 mkBackendEnv :: DBConfig -> Turtle.FilePath -> IO ()
 mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir = do
+  jwkKey <- generateKey
   let textFile = T.intercalate "\n" $
          [ dbHostLn
          , dbPortLn
@@ -103,6 +113,7 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
          , dbSchemaLn dbSchema
          , dbUserLn dbUser
          , dbPasswordLn dbPassword
+         , jwkLine jwkKey
          ]
   writeTextFile (backendDir </> ".env") textFile
 
@@ -113,6 +124,7 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
     dbSchemaLn schema     = "DB_SCHEMA=" <> schema
     dbUserLn dbUser = "DB_USERNAME=" <> dbUser
     dbPasswordLn password = "DB_PASSWORD=" <> dbPassword
+    jwkLine jwkKey = "AUTH_JWK=" <> (T.replace "\"" "\\\"" . decodeUtf8 . LBS.toStrict . A.encode $ jwkKey)
 
 
 setupDBDir :: DBConfig -> ScriptRunContext ()

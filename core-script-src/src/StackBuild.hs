@@ -32,8 +32,6 @@ buildBackEnd dbConfig = do
   let backendDir = getDir topDir backendDirConfig & snd
   cd backendDir
   _ <- shell "stack build" empty
-  liftIO $ majorCommentBlock "SETUP DB CONFIGURATION"
-  _ <- liftIO $ mkBackendEnv dbConfig backendDir
   return ()
 
 buildFrontAndBackend :: DBConfig -> ScriptRunContext ()

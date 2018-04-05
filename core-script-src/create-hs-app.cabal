@@ -35,7 +35,10 @@ library
   build-depends:
       Cabal
     , base >=4.7 && <5
+    , bytestring
     , mtl
+    , servant-auth-server
+    , aeson
     , system-filepath
     , text
     , turtle
