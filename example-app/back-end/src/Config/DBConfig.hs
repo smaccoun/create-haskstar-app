@@ -12,7 +12,7 @@ import           Prelude                    (read)
 data DBConfig =
   DBConfig
     {dbHost     :: T.Text
-    ,dbPort     :: Int
+    ,dbPort     :: Integer
     ,dbDatabase :: T.Text
     ,dbSchema   :: Maybe T.Text
     ,dbUsername :: T.Text
@@ -41,9 +41,11 @@ getDBConnectionInfo _ = do
 
 
 connInfoToPG :: DBConfig -> PGS.ConnectInfo
-connInfoToPG connInfo = PGS.defaultConnectInfo
-                        { PGS.connectHost = T.unpack . dbHost $ connInfo
-                        , PGS.connectUser = T.unpack . dbUsername $ connInfo
-                        , PGS.connectPassword = T.unpack . dbPassword $ connInfo
-                        , PGS.connectDatabase = T.unpack . dbDatabase $ connInfo
-                        }
+connInfoToPG (DBConfig dbHost dbPort dbDatabase _ dbUsername dbPassword) =
+  PGS.defaultConnectInfo
+        { PGS.connectHost = T.unpack dbHost
+        , PGS.connectUser = T.unpack dbUsername
+        , PGS.connectPort = fromInteger dbPort
+        , PGS.connectPassword = T.unpack dbPassword
+        , PGS.connectDatabase = T.unpack dbDatabase
+        }

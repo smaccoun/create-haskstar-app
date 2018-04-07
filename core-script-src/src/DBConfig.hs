@@ -62,3 +62,4 @@ getDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
     dbPasswordLn password = "POSTGRES_PASSWORD=" <> dbPassword
     dbDatabaseLn dbName   = "POSTGRES_DB=" <> dbName
     dbUserLn dbUser = "POSTGRES_USER=" <> dbUser
+    dbPortLn dbPort = "POSTGRES_PORT=" <> show port

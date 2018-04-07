@@ -1,12 +1,10 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, h1, img, a)
-import Html.Attributes exposing (src, href, target)
-
+import Html exposing (Html, a, div, h1, img, text)
+import Html.Attributes exposing (href, src, target)
+import RemoteData exposing (RemoteData(..), WebData)
 import Server.Config as SC
 import Server.RequestUtils as SR
-
-import RemoteData exposing (WebData, RemoteData(..))
 
 
 ---- PROGRAM ----
@@ -21,25 +19,31 @@ main =
         , subscriptions = always Sub.none
         }
 
+
+
 ---- MODEL ----
 
+
 type alias Model =
-    {context : SC.Context
-    ,remoteResponse : String
+    { context : SC.Context
+    , remoteResponse : String
     }
+
 
 initialModel : Model
 initialModel =
-    {context =
-       {apiBaseUrl = "http://localhost:8080"}
+    { context =
+        { apiBaseUrl = "http://localhost:8080" }
     , remoteResponse = ""
     }
 
+
 initialCmds : Cmd Msg
 initialCmds =
-  Cmd.batch
-    [Cmd.map HandleResponse (SR.getRequestString initialModel.context "/" |> RemoteData.sendRequest)
-    ]
+    Cmd.batch
+        [ Cmd.map HandleResponse (SR.getRequestString initialModel.context "/" |> RemoteData.sendRequest)
+        ]
+
 
 init : ( Model, Cmd Msg )
 init =
@@ -47,7 +51,10 @@ init =
     , initialCmds
     )
 
+
+
 ---- UPDATE ----
+
 
 type Msg
     = HandleResponse (WebData String)
@@ -59,13 +66,17 @@ update msg model =
         HandleResponse remoteResponse ->
             case remoteResponse of
                 Success a ->
-                    ( {model | remoteResponse = "SUCCESSFULLY RETRIEVED: " ++ a} , Cmd.none )
+                    ( { model | remoteResponse = "SUCCESSFULLY RETRIEVED: " ++ a }, Cmd.none )
+
                 Loading ->
-                    ( {model | remoteResponse = "LOADING....."} , Cmd.none )
+                    ( { model | remoteResponse = "LOADING....." }, Cmd.none )
+
                 Failure e ->
-                    ( {model | remoteResponse = "Failed to load"} , Cmd.none )
+                    ( { model | remoteResponse = "Failed to load" }, Cmd.none )
+
                 NotAsked ->
-                    ( {model | remoteResponse = "Not Asked"} , Cmd.none )
+                    ( { model | remoteResponse = "Not Asked" }, Cmd.none )
+
 
 
 ---- VIEW ----
@@ -77,10 +88,6 @@ view model =
         [ img [ src "/haskstarLogo.png" ] []
         , img [ src "/logo.svg" ] []
         , h1 [] [ text "Create Haskstar App!" ]
-        , div [] [text <| "Server Response (localhost:8080/) " ++ model.remoteResponse]
-        , a [href "localhost:8080/swagger-ui", target "_blank"] [text "Click here to see all API endpoints (localhost:8080/swagger-ui)"]
+        , div [] [ text <| "Server Response (localhost:8080/) " ++ model.remoteResponse ]
+        , a [ href "http://localhost:8080/swagger-ui", target "_blank" ] [ text "Click here to see all API endpoints (localhost:8080/swagger-ui)" ]
         ]
-
-
-
-

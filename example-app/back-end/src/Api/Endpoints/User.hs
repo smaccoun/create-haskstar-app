@@ -7,7 +7,7 @@ import           Control.Lens         hiding (element)
 import qualified Crypto.Scrypt        as S
 import           Data.Text.Encoding   (encodeUtf8)
 import           Database.Beam
-import qualified Database.Schema      as Schema
+import           Database.Schema      (userTable)
 import           Database.Tables.User
 import           Database.Transaction
 import           Models.Credentials   (Email (..), Password (..))
@@ -16,14 +16,8 @@ import           Servant
 
 type UserAPI = RResourceAPI "users" UserResponse UserID
 
-userAPI :: Proxy User
-userAPI = Proxy
-
 userServer :: UserResponse -> ServerT UserAPI AppM
 userServer _ = rResourceServer getUsers getUser
-
-userTable :: DatabaseEntity be Schema.MyAppDb (TableEntity UserT)
-userTable = Schema.appDb ^. Schema.users
 
 getUsers :: AppM [UserResponse]
 getUsers = do

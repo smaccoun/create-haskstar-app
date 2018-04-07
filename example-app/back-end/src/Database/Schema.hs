@@ -18,3 +18,9 @@ instance Database be MyAppDb
 
 appDb :: DatabaseSettings be MyAppDb
 appDb = defaultDbSettings
+
+
+{- CONVENIENCE TABLE ACCESS -}
+
+userTable :: DatabaseEntity be MyAppDb (TableEntity UserT)
+userTable = appDb ^. users
