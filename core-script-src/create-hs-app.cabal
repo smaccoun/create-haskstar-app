@@ -40,6 +40,7 @@ library
     , servant-auth-server
     , aeson
     , system-filepath
+    , regex-compat
     , text
     , turtle
   exposed-modules:

@@ -4,6 +4,7 @@ module DBConfig where
 
 import qualified Data.Text   as T
 import           Interactive
+import           Text.Regex
 import           Turtle
 
 data DBConfig =
@@ -15,6 +16,22 @@ data DBConfig =
     ,dbPassword :: T.Text
     ,dbSchema   :: T.Text
     }
+
+
+mkDBConfig :: Text -> DBConfig
+mkDBConfig appName =
+    DBConfig
+      {host = "localhost"
+      ,port = 6543
+      ,dbName = T.replace "-" "_" appName
+      ,dbUser = "postgres"
+      ,dbPassword = "postgres"
+      ,dbSchema = "public"
+      }
+
+showDBInfo :: DBConfig -> IO ()
+showDBInfo (DBConfig host port dbName dbUser dbPassword dbSchema) =
+  subCommentBlock $ "Spinning up a local db instance in Docker with DB name " <> dbName <> " on port " <> (T.pack $ show port) <> " with username " <> dbUser <> " and password " <> dbPassword
 
 promptDBConfig :: IO DBConfig
 promptDBConfig = do

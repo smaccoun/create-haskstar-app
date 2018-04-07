@@ -5,17 +5,17 @@
 module DirSetup where
 
 import           Context
+import qualified Data.Aeson                as A
+import qualified Data.ByteString.Lazy      as LBS
 import           Data.Text                 (Text, intercalate, pack)
 import qualified Data.Text                 as T
-import qualified Data.Aeson as A
-import Servant.Auth.Server (generateKey)
-import qualified Data.ByteString.Lazy as LBS
-import Data.Text.Lazy.Builder (toLazyText)
-import Data.Text.Encoding (decodeUtf8)
+import           Data.Text.Encoding        (decodeUtf8)
+import           Data.Text.Lazy.Builder    (toLazyText)
 import           DBConfig
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
+import           Servant.Auth.Server       (generateKey)
 import           Turtle
 
 setupOpsDir :: ScriptRunContext ()
@@ -99,7 +99,7 @@ setupDir dbConfig dirSetup = do
   let (dname, dPath) = getDir appRootDir' dirSetup
   getTemplate dPath dirSetup
   case dirStackType dirSetup of
-    BACK_END -> liftIO $ mkBackendEnv dbConfig dPath
+    BACK_END  -> liftIO $ mkBackendEnv dbConfig dPath
     FRONT_END -> return ()
 
 
@@ -149,4 +149,5 @@ setupDBDir dbConfig = do
         return ()
     ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)
   where
-    dockerRunCmd = "docker run --name my-app-db  -p 5432:5432 -h 127.0.0.1 --env-file .env -d postgres"
+    portBind =  (show $ port dbConfig) <> ":5432"
+    dockerRunCmd = T.pack $ "docker run --name my-app-db  -p " <> portBind <> " -h 127.0.0.1 --env-file .env -d postgres"

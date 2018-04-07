@@ -37,7 +37,8 @@ main = do
       appDir = curDir </> fromText (appNameOption)
   executablePath <- fmap (ExecutablePath . decodeString) getExecutablePath
   majorCommentBlock "INITIAL SETUP"
-  dbConfig <- promptDBConfig
+  let dbConfig = mkDBConfig appNameOption
+  showDBInfo dbConfig
 
   mkdir appDir
   let context = setContext runEnv appDir executablePath curOS
