@@ -46,11 +46,11 @@ runMigrations :: ScriptRunContext ()
 runMigrations = do
   liftIO $ majorCommentBlock "RUNNING INITIAL MIGRATIONS"
   fromAppRootDir
-  cd "back-end"
-  s <- runWithTTab "./run.sh"
+  cd "db"
+  s <- shell "./run.sh" empty
   case s of
     ExitSuccess   -> liftIO $ do
-        printf "\nSuccessfully started api. Logs will be output to console\n"
+        printf "\nSuccessfully ran initial migration. \n"
         return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
@@ -58,6 +58,7 @@ runMigrations = do
 
 runServers :: ScriptRunContext ()
 runServers = do
+    runMigrations
     runBackEnd
     runFrontEnd
 

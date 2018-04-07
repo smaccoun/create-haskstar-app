@@ -1,22 +1,23 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
-{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
 
 module Lib where
 
-import Database.PostgreSQL.Simple
-import Database.PostgreSQL.Simple.Migration
-import System.Envy
-import GHC.Generics
+import           Database.PostgreSQL.Simple
+import           Database.PostgreSQL.Simple.Migration
+import           GHC.Generics
+import           System.Envy
 
 ------------------------------------------------------------------------------
 data PGConnect = PGConnect {
       pgUser :: String
     , pgPass :: String
     , pgDB   :: String
+    , pgPort :: Integer
   } deriving (Generic, Show)
 
 instance FromEnv PGConnect where
@@ -24,17 +25,18 @@ instance FromEnv PGConnect where
      PGConnect  <$> env "POSTGRES_USER"
         <*> env "POSTGRES_PASSWORD"
         <*> env "POSTGRES_DB"
+        <*> env "POSTGRES_PORT"
 
 mapConInfo :: PGConnect -> ConnectInfo
-mapConInfo (PGConnect _ pgPass pgDB) =
-  defaultConnectInfo { connectPassword = pgPass, connectDatabase=pgDB }
+mapConInfo (PGConnect _ pgPass pgDB pgPort) =
+  defaultConnectInfo { connectPassword = pgPass, connectDatabase=pgDB, connectPort = fromInteger pgPort }
 
 getConnInfo :: IO (ConnectInfo)
 getConnInfo = do
   env <- decodeEnv
   let asPGS = fmap mapConInfo env
   case asPGS of
-    Left e -> error $ show e
+    Left e        -> error $ show e
     Right conInfo -> return conInfo
 
 initialize :: IO (MigrationResult String)
@@ -52,4 +54,3 @@ simpleMigration = do
     con <- connect conInfo
     withTransaction con $ runMigration $
         MigrationContext (MigrationDirectory dir) True con
-
