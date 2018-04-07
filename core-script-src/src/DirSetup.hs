@@ -108,7 +108,7 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
   jwkKey <- generateKey
   let textFile = T.intercalate "\n" $
          [ dbHostLn
-         , dbPortLn
+         , T.pack $ dbPortLn port
          , dbDatabaseLn dbName
          , dbSchemaLn dbSchema
          , dbUserLn dbUser
@@ -119,7 +119,7 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
 
   where
     dbHostLn    = "DB_HOST=localhost"
-    dbPortLn    = "DB_PORT=5432"
+    dbPortLn dbPort = "DB_PORT=" <> show dbPort
     dbDatabaseLn dbName   = "DB_DATABASE=" <> dbName
     dbSchemaLn schema     = "DB_SCHEMA=" <> schema
     dbUserLn dbUser = "DB_USERNAME=" <> dbUser
