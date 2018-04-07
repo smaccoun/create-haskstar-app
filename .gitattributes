@@ -1,3 +1,0 @@
-core-script-src/app/Main.hs linguist-vendored
-example-app linguist-vendored=false
-example-app linguist-detectable=false
