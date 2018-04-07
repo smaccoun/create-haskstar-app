@@ -1,0 +1,1 @@
+# Elm front-end template for [create-haskstar-app](git@github.com:smaccoun/create-haskstar-app.git)
