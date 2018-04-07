@@ -1,0 +1,2 @@
+example-app/front-end/* linguist-vendored
+core-script-src/* linguist-language=haskell
