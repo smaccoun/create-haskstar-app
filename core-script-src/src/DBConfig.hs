@@ -10,7 +10,7 @@ import           Turtle
 data DBConfig =
   DBConfig
     {host       :: T.Text
-    ,port       :: Int
+    ,port       :: Integer
     ,dbName     :: T.Text
     ,dbUser     :: T.Text
     ,dbPassword :: T.Text
@@ -33,23 +33,6 @@ showDBInfo :: DBConfig -> IO ()
 showDBInfo (DBConfig host port dbName dbUser dbPassword dbSchema) =
   subCommentBlock $ "Spinning up a local db instance in Docker with DB name " <> dbName <> " on port " <> (T.pack $ show port) <> " with username " <> dbUser <> " and password " <> dbPassword
 
-promptDBConfig :: IO DBConfig
-promptDBConfig = do
-  instructionCommentBlock "First setup the DB configuration you would like"
-  dbName <- prompt "Enter name of DB" Nothing
-  dbSchema <- prompt "Enter default schema" (Just "public")
-  dbUser <- prompt "Enter name of User" (Just "postgres")
-  dbPassword <- prompt "Enter DB Password" (Just "postgres")
-  return $
-    DBConfig
-      {host = "localhost"
-      ,port = 5432
-      ,dbName = dbName
-      ,dbUser = dbUser
-      ,dbPassword = dbPassword
-      ,dbSchema = dbSchema
-      }
-
 
 getDBEnvFile :: DBConfig -> Turtle.FilePath -> T.Text
 getDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
@@ -57,9 +40,10 @@ getDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
          [ dbDatabaseLn dbName
          , dbUserLn dbUser
          , dbPasswordLn dbPassword
+         , dbPortLn port
          ]
   where
     dbPasswordLn password = "POSTGRES_PASSWORD=" <> dbPassword
     dbDatabaseLn dbName   = "POSTGRES_DB=" <> dbName
     dbUserLn dbUser = "POSTGRES_USER=" <> dbUser
-    dbPortLn dbPort = "POSTGRES_PORT=" <> show port
+    dbPortLn dbPort = T.pack $ "POSTGRES_PORT=" <> show port
