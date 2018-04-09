@@ -9,4 +9,4 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (email, password)
-VALUES ('haskman@hasktar.com', crypt('new password', gen_salt('bf')));
+VALUES ('haskman@hasktar.com', '14|8|1|O07xqtvhYQrcuMvBFTY/jP/MuXRFs1qZW2gmBdNIBbc=|TCJXrS9mYRxS+ehscGynilbvdgylCojycY2WnTSd8+HlXdTZq4MCY0EtuSt3ZvojIx7UUdVhyUjBnzTOQsGaig==');
