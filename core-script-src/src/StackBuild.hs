@@ -17,7 +17,7 @@ buildFrontEnd :: ScriptRunContext ()
 buildFrontEnd = do
   topDir <- getAppRootDir
   liftIO $ subCommentBlock "Building front-end"
-  let frontEndPath = getDir topDir frontendDirConfig & snd
+  let frontEndPath = getDir topDir elmConfig & snd
   liftIO $ putStrLn $ encodeString frontEndPath
   cd frontEndPath
   _ <- shell "yarn install" empty

@@ -22,15 +22,17 @@ import           Lib
 import           Run
 import           StackBuild
 
-parser :: Parser (Text, Maybe Text)
-parser = (,) <$> argText "app-name" "Name of directory to put your app in"
+parser :: Parser (Text, Maybe Text, Maybe Text)
+parser = (,,)
+             <$> argText "app-name" "Name of directory to put your app in"
              <*> optional (optText "front-end"  'a' "Choice of front-end")
+             <*> optional (optText "template"  'a' "Choice of template")
 
 main :: IO ()
 main = do
   preValidate
 
-  (appNameOption, mbfrontEndOption) <- options "Options" parser
+  (appNameOption, mbfrontEndOption, mbTemplate) <- options "Options" parser
   curDir <- pwd
   let curOS = buildOS
       runEnv = Development
@@ -41,7 +43,7 @@ main = do
   showDBInfo dbConfig
 
   mkdir appDir
-  let context = setContext runEnv appDir executablePath curOS
+  let context = setContext runEnv appDir executablePath curOS mbTemplate
 
   -- | Setup Ops, DB, Front-End, Back-End directories
   io (setupAllSubDirectories dbConfig) context

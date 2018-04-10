@@ -21,14 +21,14 @@ data Context =
     ,exeRootDir :: ExecutablePath
     ,opsDir     :: Turtle.FilePath
     ,curOS      :: OS
+    ,mbTemplate :: Maybe Text
     }
 
-setContext :: Env -> Turtle.FilePath -> ExecutablePath -> OS -> Context
-setContext runEnv appDir executablePath curOS =
-  Context runEnv appDir executablePath opsDir' curOS
+setContext :: Env -> Turtle.FilePath -> ExecutablePath -> OS -> Maybe Text -> Context
+setContext runEnv appDir executablePath curOS mbTemplate =
+  Context runEnv appDir executablePath opsDir' curOS mbTemplate
   where
     opsDir' =  appDir </> decodeString "ops"
-    ttab = (opsDir' </> decodeString "ttab")
 
 
 getAppRootDir :: ScriptRunContext Turtle.FilePath

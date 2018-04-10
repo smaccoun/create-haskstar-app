@@ -38,8 +38,8 @@ data DirSetup =
 
 data DirStackType = FRONT_END | BACK_END
 
-frontendDirConfig :: DirSetup
-frontendDirConfig =
+elmConfig :: DirSetup
+elmConfig =
   DirSetup
       {dirStackType = FRONT_END
       ,dirName = "front-end"
@@ -85,7 +85,7 @@ setupCoreDirectories dbConfig = do
   liftIO $ majorCommentBlock "BACK-END"
   setupDir dbConfig backendDirConfig
   liftIO $ majorCommentBlock "FRONT-END"
-  setupDir dbConfig frontendDirConfig
+  setupDir dbConfig elmConfig
 
 setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
 setupAllSubDirectories dbConfig = do
