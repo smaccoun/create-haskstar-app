@@ -43,7 +43,7 @@ main = do
   showDBInfo dbConfig
 
   mkdir appDir
-  let context = setContext runEnv appDir executablePath curOS mbTemplate
+  let context = Context runEnv appDir executablePath curOS mbTemplate
 
   -- | Setup Ops, DB, Front-End, Back-End directories
   io (setupAllSubDirectories dbConfig) context

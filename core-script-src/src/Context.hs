@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Context where
 
@@ -19,17 +20,9 @@ data Context =
     {env        :: Env
     ,appRootDir :: Turtle.FilePath
     ,exeRootDir :: ExecutablePath
-    ,opsDir     :: Turtle.FilePath
     ,curOS      :: OS
     ,mbTemplate :: Maybe Text
     }
-
-setContext :: Env -> Turtle.FilePath -> ExecutablePath -> OS -> Maybe Text -> Context
-setContext runEnv appDir executablePath curOS mbTemplate =
-  Context runEnv appDir executablePath opsDir' curOS mbTemplate
-  where
-    opsDir' =  appDir </> decodeString "ops"
-
 
 getAppRootDir :: ScriptRunContext Turtle.FilePath
 getAppRootDir = do
@@ -48,8 +41,8 @@ getCurOS = do
 
 getOpsDir :: ScriptRunContext Turtle.FilePath
 getOpsDir = do
-  config <- ask
-  return $ opsDir config
+  Context{..} <- ask
+  return $ appRootDir </> decodeString "ops"
 
 getTTab :: ScriptRunContext Turtle.FilePath
 getTTab = do
