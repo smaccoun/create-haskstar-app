@@ -1,6 +1,7 @@
 #!/usr/bin/env runhaskell
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module DirSetup where
 
@@ -24,7 +25,7 @@ setupOpsDir = do
   liftIO $ do
     majorCommentBlock "Grabbing required templates"
     mktree "./ops/db"
-    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git"
+    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" Nothing
     cptree "./create-haskstar-app/templates/ops" "./ops"
     cptree "./create-haskstar-app/templates/db" "./ops/db"
     rmtree "create-haskstar-app"
@@ -62,7 +63,8 @@ getTemplate dPath dirSetup = do
   let dname = pack $ encodeString $ filename dPath
   liftIO $ subCommentBlock $ "Setting up " <> dname
   fromAppRootDir
-  setupResult <- liftIO $ gitCloneShallow $ gitDir dirSetup <> " " <> dname
+  mbTemplate <- getMbTemplate
+  setupResult <- liftIO $ gitCloneShallow (gitDir dirSetup <> " " <> dname) mbTemplate
   liftIO $ rmtree (dPath </> fromText ".git")
   case setupResult of
     ExitSuccess   -> return ()

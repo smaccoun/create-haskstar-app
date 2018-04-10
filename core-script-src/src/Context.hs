@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module Context where
 
@@ -26,13 +27,13 @@ data Context =
 
 getAppRootDir :: ScriptRunContext Turtle.FilePath
 getAppRootDir = do
-  context <- ask
-  return (appRootDir context)
+  Context{appRootDir} <- ask
+  return appRootDir
 
 fromAppRootDir :: ScriptRunContext ()
 fromAppRootDir = do
-  context <- ask
-  cd (appRootDir context)
+  appRootDir <- getAppRootDir
+  cd appRootDir
 
 getCurOS :: ScriptRunContext OS
 getCurOS = do
@@ -41,10 +42,15 @@ getCurOS = do
 
 getOpsDir :: ScriptRunContext Turtle.FilePath
 getOpsDir = do
-  Context{..} <- ask
+  Context{appRootDir} <- ask
   return $ appRootDir </> decodeString "ops"
 
 getTTab :: ScriptRunContext Turtle.FilePath
 getTTab = do
   opsDir' <- getOpsDir
   return $ opsDir' </> decodeString "ttab"
+
+getMbTemplate :: ScriptRunContext (Maybe Text)
+getMbTemplate = do
+  Context{mbTemplate} <- ask
+  return mbTemplate

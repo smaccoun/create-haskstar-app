@@ -55,7 +55,7 @@ viewInputField labelValue form =
 
 
 errorFor field =
-    case Debug.log "ERROR: " field.liveError of
+    case field.liveError of
         Just error ->
             -- replace toString with your own translations
             div [ style [ ( "color", "red" ) ] ] [ text (toString error) ]
