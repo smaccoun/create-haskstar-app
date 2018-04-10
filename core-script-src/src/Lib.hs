@@ -19,9 +19,10 @@ io action context =
     runReaderT action context
 
 gitCloneShallow :: Text -> Maybe Text -> IO ExitCode
-gitCloneShallow gitRepo mbTemplate =
+gitCloneShallow gitRepo mbTemplate = do
+  _ <- subCommentBlock $ "Cloning: " <> cloneCmd
   shell cloneCmd empty
   where
      gitBaseCloneCmd = "git clone --depth 1 "
-     withBranch = fmap (\t -> "-b " <> t) mbTemplate & fromMaybe ""
+     withBranch = fmap (\t -> "-b " <> t <> "  ") mbTemplate & fromMaybe ""
      cloneCmd = gitBaseCloneCmd <> withBranch <> gitRepo
