@@ -1,0 +1,91 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build:lts-9.4
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: stack-cache-{{ arch }}-{{ checksum "api/azara-api.cabal" }}
+
+      - run:
+          name: install node, webpack, yarn
+          command: |
+            sudo apt-get -y --purge remove nodejs
+            sudo apt-get update
+            sudo apt-get install apt-transport-https
+            curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+            sudo apt-get update
+            sudo apt-get install -y nodejs
+            sudo npm install -g webpack
+            sudo npm install -g webpack-cli
+            sudo apt-get install -y yarn
+
+      - run:
+          name: install postgresql
+          command: sudo apt-get -y install postgresql postgresql-contrib
+
+      - run:
+          name: install_pip
+          command: |
+            sudo apt-get -y install python-pip
+            sudo apt-get install python-dev
+            pip install --upgrade botocore
+
+      - run:
+          name: install_awscli
+          command: sudo apt-get -y install awscli
+
+      - run:
+          name: install_awsebcli
+          command: pip install --upgrade --user awsebcli
+
+      - run:
+          name: run tests
+          command: |
+            sudo /etc/init.d/postgresql restart
+            (cd / && sudo -u postgres psql postgres -c "CREATE USER root WITH PASSWORD 'root';")
+            (cd / && sudo -u postgres psql postgres -c "ALTER USER root WITH SUPERUSER;")
+            createdb root
+            (cd db && stack config set system-ghc --global true && stack -j1 --no-terminal --skip-ghc-check install && ./dev-test.sh root)
+            (cd api && stack --no-terminal --system-ghc --skip-ghc-check -j1 test)
+
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: install docker
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+
+      - run:
+          name: deploy
+          no_output_timeout: 120m
+          command: |
+            (cd web && yarn install)
+            ./deploy-staging.sh $CIRCLE_SHA1
+
+      - save_cache:
+          key: stack-cache-{{ arch }}-{{ checksum "api/azara-api.cabal" }}
+          paths:
+            - api/.stack-work
+
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+
