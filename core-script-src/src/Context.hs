@@ -1,16 +1,26 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Context where
 
-import           Control.Monad.Reader      (ReaderT, ask)
+import           Control.Monad.Reader      (ReaderT, ask, MonadReader)
 import           Distribution.System
 import           Filesystem.Path.CurrentOS
 import           GHC.Generics
 import           Turtle
 
-type ScriptRunContext = ReaderT Context IO
+newtype ScriptRunContext a =
+  ScriptRunContext {unScriptRunContext :: ReaderT Context IO a
+  }
+  deriving (
+     Functor
+     , Applicative
+     , Monad
+     , MonadReader Context
+     , MonadIO
+     )
 
 data Env = Development | Production deriving (Generic)
 

@@ -15,7 +15,7 @@ import           Interactive
 ---------------------------------------------------------------
 
 io :: ScriptRunContext () -> Context -> IO ()
-io action context =
+io (ScriptRunContext action) context =
     runReaderT action context
 
 gitCloneShallow :: Text -> Maybe Text -> IO ExitCode
