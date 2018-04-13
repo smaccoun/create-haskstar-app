@@ -46,20 +46,20 @@ askToBuild = do
         echo "Please entery (y) or (n)"
         return False
 
-majorCommentBlock :: Text -> IO ()
+majorCommentBlock :: (MonadIO m) => Text -> m ()
 majorCommentBlock msg = do
   printf "\n\n***********************************************\n"
   printf ("      "%s%"                              \n") msg
   printf "***********************************************\n\n"
 
 
-subCommentBlock :: Text -> IO ()
+subCommentBlock :: MonadIO m => Text -> m ()
 subCommentBlock msg = do
   printf ("\n\n"%s%"                              \n") msg
   printf "*******************************************************\n\n"
 
 
-instructionCommentBlock :: Text -> IO ()
+instructionCommentBlock :: MonadIO m => Text -> m ()
 instructionCommentBlock msg = do
   printf "*******************************************************\n"
   printf ("*  "%s%"   *\n") msg

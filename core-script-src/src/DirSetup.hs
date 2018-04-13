@@ -82,11 +82,11 @@ getDir rootDir dirSetup =
 setupCoreDirectories :: DBConfig -> ScriptRunContext ()
 setupCoreDirectories dbConfig = do
   appDir <- getAppRootDir
-  liftIO $ majorCommentBlock "DB"
+  majorCommentBlock "DB"
   setupDBDir dbConfig
-  liftIO $ majorCommentBlock "BACK-END"
+  majorCommentBlock "BACK-END"
   setupDir dbConfig backendDirConfig
-  liftIO $ majorCommentBlock "FRONT-END"
+  majorCommentBlock "FRONT-END"
   setupDir dbConfig elmConfig
 
 setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
