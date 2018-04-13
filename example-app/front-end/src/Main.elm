@@ -1,20 +1,17 @@
 module Main exposing (..)
 
 import Bulma.CDN exposing (..)
-import Bulma.Columns exposing (..)
-import Bulma.Elements as Elements
-import Bulma.Layout exposing (..)
-import Bulma.Modifiers exposing (Size(..))
-import Components.LoginPanel as LoginPanel
-import Form exposing (Form)
+import Bulma.Components exposing (navbar, navbarEnd, navbarItemLink, navbarLink, navbarMenu, navbarModifiers)
+import Components.Navbar exposing (viewNavbar)
 import Html exposing (Html, a, div, h1, img, main_, text)
-import Html.Attributes exposing (href, src, style, target)
 import Link
 import Navigation
-import Pages.Admin.Home as AdminHome
-import Pages.Index exposing (AppPage(..), locationToPage)
+import Pages.Admin.Index as AdminIndex
+import Pages.Index exposing (AppPage(..), AppPageMsg(..), locationToPage)
+import Pages.LoginPage as LoginPage
+import Pages.Welcome exposing (viewWelcomeScreen)
+import Ports exposing (receiveToken, saveToken)
 import RemoteData exposing (RemoteData(..), WebData)
-import Server.Api.AuthAPI exposing (performLogin)
 import Server.Config as SC
 import Server.RequestUtils as SR
 import Task
@@ -26,6 +23,7 @@ import Task
 type alias Flags =
     { environment : String
     , apiBaseUrl : String
+    , jwtToken : Maybe String
     }
 
 
@@ -53,21 +51,25 @@ type alias Model =
 init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
 init flags location =
     let
-        { apiBaseUrl } =
+        { apiBaseUrl, jwtToken } =
             flags
 
         initialContext =
-            { apiBaseUrl = apiBaseUrl, jwtToken = Nothing }
+            { apiBaseUrl = apiBaseUrl, jwtToken = jwtToken }
+
+        ( initPage, initPageCmd ) =
+            locationToPage initialContext location
 
         model =
             { context = initialContext
             , remoteResponse = ""
-            , currentPage = locationToPage initialContext location
+            , currentPage = initPage
             }
 
         initialCmds =
             Cmd.batch
                 [ Cmd.map HandleResponse (SR.getRequestString model.context "" |> RemoteData.sendRequest)
+                , Cmd.map PageMsgW initPageCmd
                 ]
     in
     ( model
@@ -83,12 +85,8 @@ type Msg
     = UrlChange Navigation.Location
     | NewUrl String
     | HandleResponse (WebData String)
-    | PageMsgW PageMsg
-    | ReceiveLogin (WebData String)
-
-
-type PageMsg
-    = LoginPageMsg LoginPanel.Msg
+    | PageMsgW AppPageMsg
+    | ReceiveToken String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -96,10 +94,10 @@ update msg model =
     case msg of
         UrlChange location ->
             let
-                newPage =
+                ( newPage, newPageCmd ) =
                     locationToPage model.context location
             in
-            ( { model | currentPage = newPage }, Cmd.none )
+            ( { model | currentPage = newPage }, Cmd.map PageMsgW newPageCmd )
 
         NewUrl destination ->
             let
@@ -122,46 +120,24 @@ update msg model =
                 NotAsked ->
                     ( { model | remoteResponse = "Not Asked" }, Cmd.none )
 
-        ReceiveLogin loginResponse ->
-            case loginResponse of
-                Success jwtToken ->
-                    let
-                        curContext =
-                            model.context
+        ReceiveToken jwtToken ->
+            let
+                curContext =
+                    model.context
 
-                        newContext =
-                            { curContext | jwtToken = Just jwtToken }
-                    in
-                    ( { model | context = newContext }
-                    , Task.perform (always (NewUrl "/admin/home")) (Task.succeed ())
-                    )
-
-                _ ->
-                    ( model, Cmd.none )
+                updatedContext =
+                    { curContext | jwtToken = Just jwtToken }
+            in
+            { model | context = updatedContext }
+                ! [ Task.perform (always (NewUrl "/admin/home")) (Task.succeed ()) ]
 
         PageMsgW pageMsg ->
-            case pageMsg of
-                LoginPageMsg loginPageMsg ->
-                    case model.currentPage of
-                        LoginPage loginPageModel ->
-                            let
-                                ( uLoginModel, cmd ) =
-                                    LoginPanel.update loginPageMsg loginPageModel
-                            in
-                            ( { model | currentPage = LoginPage uLoginModel }
-                            , Cmd.batch
-                                [ Cmd.map (\w -> PageMsgW (LoginPageMsg w)) cmd
-                                , case loginPageMsg of
-                                    LoginPanel.ReceiveLogin remoteLogin ->
-                                        Task.perform (always (ReceiveLogin remoteLogin)) (Task.succeed ())
-
-                                    _ ->
-                                        Cmd.none
-                                ]
-                            )
-
-                        _ ->
-                            ( model, Cmd.none )
+            let
+                ( page, pageCmd ) =
+                    Pages.Index.update pageMsg model.currentPage
+            in
+            { model | currentPage = page }
+                ! [ Cmd.map PageMsgW pageCmd ]
 
 
 
@@ -172,42 +148,20 @@ view : Model -> Html Msg
 view model =
     main_ []
         [ stylesheet
+        , viewNavbar True True model.currentPage NewUrl
         , case model.currentPage of
             Error404 ->
                 div [] [ text "Error 404: Invalid URL" ]
 
             WelcomeScreen ->
-                viewWelcomeScreen model
+                viewWelcomeScreen model.remoteResponse NewUrl
 
             LoginPage loginPageModel ->
-                section NotSpaced
-                    []
-                    [ div [] [ text "You can login to an admin account by using username 'admin@haskstar.com' and password 'haskman'" ]
-                    , Html.map (\m -> PageMsgW (LoginPageMsg m)) <| LoginPanel.view loginPageModel
-                    ]
+                LoginPage.view (\m -> PageMsgW (LoginPageMsg m)) loginPageModel
 
             AdminPageW adminPage ->
-                AdminHome.view
-        ]
-
-
-viewWelcomeScreen : Model -> Html Msg
-viewWelcomeScreen model =
-    div []
-        [ hero { heroModifiers | size = Small, color = Bulma.Modifiers.Light }
-            []
-            [ heroBody []
-                [ fluidContainer [ style [ ( "width", "300px" ) ] ] [ Elements.easyImage Elements.Natural [] "/haskstarLogo.png" ]
-                ]
-            ]
-        , h1 [] [ text "Create Haskstar App!" ]
-        , section NotSpaced
-            []
-            [ Elements.title Elements.H2 [] [ text "Server Connection" ]
-            , div [] [ text <| "Server Response (localhost:8080/) " ++ model.remoteResponse ]
-            , a [ href "http://localhost:8080/swagger-ui", target "_blank" ] [ text "Click here to see all API endpoints (localhost:8080/swagger-ui)" ]
-            ]
-        , a [ Link.link (NewUrl "login") ] [ text "Go to login page" ]
+                AdminIndex.viewAdminPage model.context adminPage
+                    |> Html.map (\m -> PageMsgW (AdminPageMsg m))
         ]
 
 
@@ -217,4 +171,5 @@ viewWelcomeScreen model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch
+        [ receiveToken ReceiveToken ]

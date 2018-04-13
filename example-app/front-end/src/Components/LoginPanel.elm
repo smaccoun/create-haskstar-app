@@ -1,11 +1,14 @@
 module Components.LoginPanel exposing (..)
 
+import Bulma.Elements exposing (box)
 import Form exposing (Form)
 import Html exposing (Html)
-import RemoteData exposing (WebData)
+import Html.Attributes exposing (style)
+import Ports exposing (saveToken)
+import RemoteData as RD exposing (WebData)
 import Server.Api.AuthAPI exposing (performLogin)
 import Server.Config
-import Types.Login exposing (LoginForm)
+import Types.Login exposing (LoginForm, LoginResponse)
 import Views.LoginPanel as LPV
 
 
@@ -31,14 +34,19 @@ init serverContext =
 
 type Msg
     = FormMsg Form.Msg
-    | ReceiveLogin (WebData String)
+    | ReceiveLogin (WebData LoginResponse)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReceiveLogin remoteData ->
-            ( model, Cmd.none )
+        ReceiveLogin remoteResult ->
+            case remoteResult of
+                RD.Success { jwtToken } ->
+                    ( model, saveToken jwtToken )
+
+                _ ->
+                    ( model, Cmd.none )
 
         FormMsg formMsg ->
             let
@@ -76,4 +84,4 @@ update msg model =
 
 view : Model -> Html Msg
 view { formModel } =
-    Html.map FormMsg <| LPV.view formModel
+    box [ style [ ( "display", "inline-flex" ) ] ] [ Html.map FormMsg <| LPV.view formModel ]

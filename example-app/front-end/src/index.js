@@ -15,6 +15,7 @@ if (window.location.pathname === "/silentCallback") {
 
 function bootApp() {
   var storedToken = Cookies.get('token');
+  console.log("TOKEN! " , storedToken)
 
   console.log(process.env)
   const apiBaseUrl = process.env.ELM_APP_API_URL
@@ -22,10 +23,21 @@ function bootApp() {
   console.log(apiBaseUrl)
   let elmOpts = {
       environment,
-      apiBaseUrl
+      apiBaseUrl,
+      jwtToken: null
     };
 
+  if(storedToken){
+    elmOpts.jwtToken = storedToken    
+  }
+
   var app = Main.fullscreen(elmOpts);
+
+  app.ports.saveToken.subscribe(function(jwtToken){
+    console.log("GOING TO SET THE TOKEN ", jwtToken)
+    Cookies.set('token', jwtToken)
+    app.ports.receiveToken.send(jwtToken)
+  })
 }
 
 registerServiceWorker()

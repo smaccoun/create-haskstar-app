@@ -1,6 +1,7 @@
 module Types.User exposing (..)
 
-import Json.Decode exposing (string)
+import Json.Decode exposing (Decoder, string)
+import Json.Decode.Pipeline exposing (decode, required)
 
 
 type alias User =
@@ -9,8 +10,8 @@ type alias User =
     }
 
 
-userDecoder : Json.Decoder User
+userDecoder : Decoder User
 userDecoder =
     decode User
-        |> required "userId" string
-        |> required "email" string
+        |> required "_id" string
+        |> required "_email" string

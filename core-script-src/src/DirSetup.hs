@@ -22,10 +22,11 @@ import           Turtle
 setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
   fromAppRootDir
+  mbTemplate <- getMbTemplate
   liftIO $ do
     majorCommentBlock "Grabbing required templates"
     mktree "./ops/db"
-    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" Nothing
+    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" mbTemplate
     cptree "./create-haskstar-app/templates/ops" "./ops"
     cptree "./create-haskstar-app/templates/db" "./ops/db"
     rmtree "create-haskstar-app"

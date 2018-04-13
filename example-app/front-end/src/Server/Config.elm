@@ -1,6 +1,10 @@
 module Server.Config exposing (..)
 
 
+type Endpoint
+    = Endpoint String
+
+
 type alias Context =
     { apiBaseUrl : String
     , jwtToken : Maybe String
@@ -8,9 +12,5 @@ type alias Context =
 
 
 apiUrl : Context -> Endpoint -> String
-apiUrl { apiBaseUrl } endpoint =
+apiUrl { apiBaseUrl } (Endpoint endpoint) =
     apiBaseUrl ++ "/" ++ endpoint
-
-
-type alias Endpoint =
-    String

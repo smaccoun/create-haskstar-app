@@ -2,7 +2,11 @@ module Server.RequestUtils exposing (..)
 
 import Http exposing (get)
 import Json.Decode as Json
-import Server.Config as S
+import Server.Config as S exposing (Endpoint(..))
+
+
+type BaseRequestParams a
+    = BaseRequestParams S.Context S.Endpoint (Json.Decoder a)
 
 
 request : S.Context -> String -> String -> Http.Body -> Http.Expect a -> Http.Request a
@@ -24,14 +28,14 @@ request context method url body expect =
         }
 
 
-getRequest : S.Context -> S.Endpoint -> Json.Decoder a -> Http.Request a
-getRequest context url decoder =
-    request context "GET" url Http.emptyBody (Http.expectJson decoder)
+getRequest : S.Context -> Endpoint -> Json.Decoder a -> Http.Request a
+getRequest context (Endpoint endpoint) decoder =
+    request context "GET" endpoint Http.emptyBody (Http.expectJson decoder)
 
 
-postRequest : S.Context -> String -> Http.Body -> Json.Decoder a -> Http.Request a
-postRequest context url body decoder =
-    request context "POST" url body (Http.expectJson decoder)
+postRequest : S.Context -> Endpoint -> Http.Body -> Json.Decoder a -> Http.Request a
+postRequest context (Endpoint endpoint) body decoder =
+    request context "POST" endpoint body (Http.expectJson decoder)
 
 
 patchRequest : S.Context -> String -> Http.Body -> Json.Decoder a -> Http.Request a

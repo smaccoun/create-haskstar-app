@@ -1,20 +1,16 @@
 module Server.Api.UserAPI exposing (..)
 
-import Json.Decode as D exposing (Decoder, string)
 import RemoteData exposing (WebData)
 import Server.Config exposing (apiUrl)
-import Server.RequestUtils exposing (postRequest)
-import Types.User exposing (userDecoder)
+import Server.ResourceAPI exposing (..)
+import Types.User exposing (User, userDecoder)
 
 
-userEndpoint : Server.Config.Endpoint
+userEndpoint : Endpoint
 userEndpoint =
-    "user"
+    Endpoint "user"
 
 
-getUsers : userForm -> Server.Config.Context -> Cmd (WebData String)
-getUsers userForm context =
-    getRequest context
-        userEndpoint
-        userDecoder
-        |> RemoteData.sendRequest
+getUsers : Server.Config.Context -> Cmd (WebData User)
+getUsers context =
+    getContainer context userEndpoint userDecoder
