@@ -26,9 +26,11 @@ rResourceServer listAs getA =
   listAs :<|> getA
 
 {- Create/Read API -}
-type CRResourceAPI (resourceName :: Symbol) a i =
-       RResourceAPI resourceName a i
+type CRResourceAPI (resourceName :: Symbol) a i = resourceName :>
+  (    Get '[JSON] [a]
+  :<|> Capture "id" i    :> Get '[JSON] a
   :<|> ReqBody '[JSON] a :> Post '[JSON] NoContent
+  )
 
 crResourceServer
   :: AppM [a]
@@ -36,4 +38,4 @@ crResourceServer
   -> (a -> AppM NoContent)
   -> ServerT (CRResourceAPI name a i) AppM
 crResourceServer listAs getA postA =
-  (rResourceServer listAs getA) :<|> postA
+  listAs :<|> getA :<|> postA

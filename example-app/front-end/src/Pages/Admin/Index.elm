@@ -42,8 +42,8 @@ update adminPage msg =
                     ( AdminHome updatedPage, Cmd.map HomeMsg pageCmd )
 
 
-viewAdminPage : Server.Config.Context -> AdminPage -> Html AdminPageMsg
-viewAdminPage context adminPage =
+viewAdminPage : AdminPage -> Html AdminPageMsg
+viewAdminPage adminPage =
     case adminPage of
         AdminHome homeModel ->
             Html.map HomeMsg <| Home.view homeModel

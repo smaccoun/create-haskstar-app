@@ -22,7 +22,7 @@ viewNavbar isMenuOpen isMenuDropdownOpen curPage newUrlMsg =
         [ navbarMenu isMenuOpen
             []
             [ navbarEnd []
-                [ navbarItemLink (matchesPage LoginPage) [ Link.link (newUrlMsg "login") ] [ text "Login" ]
+                [ navbarItemLink (matchesPage LoginPage) [ Link.link (newUrlMsg "/login") ] [ text "Login" ]
                 ]
             ]
         ]

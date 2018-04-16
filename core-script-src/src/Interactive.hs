@@ -46,11 +46,19 @@ askToBuild = do
         echo "Please entery (y) or (n)"
         return False
 
+printfln :: MonadIO m => Text -> m ()
+printfln =
+  printf (""%s%" \n")
+
+lineBlockSeperator :: MonadIO m => m ()
+lineBlockSeperator =
+  printf "***********************************************\n\n"
+
 majorCommentBlock :: (MonadIO m) => Text -> m ()
 majorCommentBlock msg = do
   printf "\n\n***********************************************\n"
   printf ("      "%s%"                              \n") msg
-  printf "***********************************************\n\n"
+  lineBlockSeperator
 
 
 subCommentBlock :: MonadIO m => Text -> m ()
@@ -69,3 +77,15 @@ instructionCommentBlock msg = do
 showWelcomeMessage :: IO ExitCode
 showWelcomeMessage =
   shell "cat logoAscii.txt" Turtle.empty
+
+showRunInstructions :: MonadIO m => m ()
+showRunInstructions = do
+  majorCommentBlock "LOCAL RUN INSTRUCTIONS"
+  printfln "Back-End: "
+  lineBlockSeperator
+  printfln "1. cd back-end"
+  printfln "2. ./run.sh"
+  printfln "Front-End: \n"
+  lineBlockSeperator
+  printfln "1. cd front-end"
+  printfln "2. yarn start"

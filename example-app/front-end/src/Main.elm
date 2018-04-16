@@ -149,19 +149,7 @@ view model =
     main_ []
         [ stylesheet
         , viewNavbar True True model.currentPage NewUrl
-        , case model.currentPage of
-            Error404 ->
-                div [] [ text "Error 404: Invalid URL" ]
-
-            WelcomeScreen ->
-                viewWelcomeScreen model.remoteResponse NewUrl
-
-            LoginPage loginPageModel ->
-                LoginPage.view (\m -> PageMsgW (LoginPageMsg m)) loginPageModel
-
-            AdminPageW adminPage ->
-                AdminIndex.viewAdminPage model.context adminPage
-                    |> Html.map (\m -> PageMsgW (AdminPageMsg m))
+        , Html.map PageMsgW <| Pages.Index.view model.currentPage
         ]
 
 

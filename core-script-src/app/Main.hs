@@ -51,9 +51,10 @@ main = do
   shouldBuild <- askToBuild
   if shouldBuild then do
     io (buildFrontAndBackend dbConfig) context
-    io (askToRun runServers) context
   else
-    echo "Complete! Please follow the docs for running your application"
+    return ()
+
+  showRunInstructions
 
   cd appDir
   return ()
