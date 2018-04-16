@@ -4,11 +4,16 @@
 
 module Lib where
 
-import           Control.Monad.Reader (runReaderT)
-import qualified Data.Text            as T
-import qualified Data.Text.IO         as TIO
+import qualified Control.Foldl             as Fold
+import           Control.Monad.Reader      (runReaderT)
+import           Data.List                 (isInfixOf, sort)
+import           Data.Maybe                (fromMaybe)
+import qualified Data.Text                 as T
+import qualified Data.Text.IO              as TIO
+import           Filesystem.Path.CurrentOS (decodeString, encodeString,
+                                            fromText)
+import           System.Environment        (getExecutablePath)
 import           Turtle
-import Data.Maybe (fromMaybe)
 
 import           Context
 import           Interactive
@@ -26,3 +31,19 @@ gitCloneShallow gitRepo mbTemplate = do
      gitBaseCloneCmd = "git clone --depth 1 "
      withBranch = fmap (\t -> "-b " <> t <> "  ") mbTemplate & fromMaybe ""
      cloneCmd = gitBaseCloneCmd <> withBranch <> gitRepo
+
+
+checkValidHASMDir :: IO Bool
+checkValidHASMDir = do
+    directChildren <- fold (ls ".") Fold.list
+    let directChildrenNames = fmap (encodeString . filename) directChildren
+    return $ hasAllDirs directChildrenNames
+    where
+        requiredDirs = sort ["back-end", "front-end", "db"]
+        hasAllDirs allChildrenNames =
+            sort requiredDirs `isInfixOf` sort allChildrenNames
+
+
+getExecutablePath' :: IO ExecutablePath
+getExecutablePath' =
+    fmap (ExecutablePath . decodeString) getExecutablePath

@@ -22,14 +22,11 @@ newtype ScriptRunContext a =
      , MonadIO
      )
 
-data Env = Development | Production deriving (Generic)
-
 newtype ExecutablePath = ExecutablePath { unExecutablePath :: Turtle.FilePath }
 
 data Context =
   Context
-    {env        :: Env
-    ,appRootDir :: Turtle.FilePath
+    {appRootDir :: Turtle.FilePath
     ,exeRootDir :: ExecutablePath
     ,curOS      :: OS
     ,mbTemplate :: Maybe Text

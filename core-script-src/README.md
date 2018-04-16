@@ -8,8 +8,18 @@
 ## tl;dr
 
 
-Automatically build and deploy full-stack haskell WebApps in one command!
-Batteries included, even devOps!
+Automatically develop, test, and deploy full-stack haskell WebApps with one command line util!
+
+```bash
+hasm new example-app
+
+cd example-app
+
+hasm run migrations
+hasm run db
+hasm run front-end
+hasm run back-end
+```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
 
@@ -54,26 +64,12 @@ You must have the following installed
 - yarn
 - stack
 
+# Setup
 
-
-
-If you are on OSX, simply run the following and follow the prompts!
 ```bash
 git clone git@github.com:smaccoun/create-haskstar-app.git
 cd create-haskstar-app
-
-chmod +x create-app
-./create-app my-app
-```
-
-#### --Manual
-
-To manually build
-```bash
-./build.sh   # Runs stack build and moves binary to local dir
-
-chmod +x create-app
-./create-app my-app
+./install.sh
 ```
 
 # Development Philosophy

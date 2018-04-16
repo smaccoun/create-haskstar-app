@@ -23,7 +23,7 @@ rm -rf example-app
 rm -rf ./dist/*
 
 cd ./dist
-(env=DEVELOPMENT && create-hs-app example-app)
+(env=DEVELOPMENT && hasm new example-app)
 echo "FINISHED RUNNING"
 rm -rf ../example-app
 cp -r example-app ../

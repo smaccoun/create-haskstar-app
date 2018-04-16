@@ -5,13 +5,15 @@
 module Main where
 
 
+import           Control.Exception
 import           Control.Monad.Reader      (runReaderT)
+import           Data.List                 (isInfixOf, sort)
 import qualified Data.Text                 as T
 import           Distribution.System
 import           Filesystem.Path
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
-import           System.Environment        (getExecutablePath)
+
 import           Turtle
 
 import           Context
@@ -22,9 +24,30 @@ import           Lib
 import           Run
 import           StackBuild
 
-parser :: Parser (Text, Maybe Text, Maybe Text)
+data ExecutionContext = New Text | Run RunCmd
+
+data RunCmd = RunAPI | RunWeb | RunMigrations
+
+parseCmd :: Parser ExecutionContext
+parseCmd =
+      fmap New (subcommand "new" "Setup new App" $ argText "appName" "Choose a name for your app")
+  <|> fmap Run (subcommand "start" "Run services" parseRunCmd)
+
+parseRunCmd :: Parser RunCmd
+parseRunCmd =
+  arg parseRunText "runCmd" "Choose either 'front-end', 'back-end', or 'migrations'"
+  where
+    parseRunText rt =
+      case rt of
+        "back-end"   -> Just RunAPI
+        "front-end"  -> Just RunWeb
+        "migrations" -> Just RunMigrations
+        _            -> Nothing
+
+
+parser :: Parser (ExecutionContext, Maybe Text, Maybe Text)
 parser = (,,)
-             <$> argText "app-name" "Name of directory to put your app in"
+             <$> parseCmd
              <*> optional (optText "front-end"  'a' "Choice of front-end")
              <*> optional (optText "template"  'a' "Choice of template")
 
@@ -32,18 +55,42 @@ main :: IO ()
 main = do
   preValidate
 
-  (appNameOption, mbfrontEndOption, mbTemplate) <- options "Options" parser
+  (executionArg, mbfrontEndOption, mbTemplate) <- options "Options" parser
+  case executionArg of
+    New appName   -> setupNew appName mbfrontEndOption mbTemplate
+    Run runOption -> runCmd runOption
+
+runCmd :: RunCmd -> IO ()
+runCmd runOption = do
+  isValidHASMDir <- checkValidHASMDir
+  if isValidHASMDir then do
+    appRootDir <- pwd
+    executablePath <- getExecutablePath'
+    let context = Context appRootDir executablePath buildOS Nothing
+    io runCmdInContext context
+  else
+    ioError $ userError "You are not in a valid HASM directory"
+  return ()
+  where
+    runCmdInContext =
+      case runOption of
+        RunAPI        -> runBackEnd
+        RunWeb        -> runFrontEnd
+        RunMigrations -> runMigrations
+
+
+setupNew :: Text -> Maybe Text -> Maybe Text -> IO ()
+setupNew appNameOption mbFrontEndOption mbTemplate = do
   curDir <- pwd
   let curOS = buildOS
-      runEnv = Development
-      appDir = curDir </> fromText (appNameOption)
-  executablePath <- fmap (ExecutablePath . decodeString) getExecutablePath
+      appDir = curDir </> fromText appNameOption
+  executablePath <- getExecutablePath'
   majorCommentBlock "INITIAL SETUP"
   let dbConfig = mkDBConfig appNameOption
   showDBInfo dbConfig
 
   mkdir appDir
-  let context = Context runEnv appDir executablePath curOS mbTemplate
+  let context = Context appDir executablePath curOS mbTemplate
 
   -- | Setup Ops, DB, Front-End, Back-End directories
   io (setupAllSubDirectories dbConfig) context
