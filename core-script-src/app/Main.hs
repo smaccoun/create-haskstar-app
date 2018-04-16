@@ -26,7 +26,7 @@ import           StackBuild
 
 data ExecutionContext = New Text | Run RunCmd
 
-data RunCmd = RunAPI | RunWeb | RunMigrations
+data RunCmd = RunAPI | RunWeb | RunDB | RunMigrations
 
 parseCmd :: Parser ExecutionContext
 parseCmd =
@@ -41,6 +41,7 @@ parseRunCmd =
       case rt of
         "back-end"   -> Just RunAPI
         "front-end"  -> Just RunWeb
+        "db"         -> Just RunDB
         "migrations" -> Just RunMigrations
         _            -> Nothing
 
@@ -76,6 +77,7 @@ runCmd runOption = do
       case runOption of
         RunAPI        -> runBackEnd
         RunWeb        -> runFrontEnd
+        RunDB         -> runDB
         RunMigrations -> runMigrations
 
 

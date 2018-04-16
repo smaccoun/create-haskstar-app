@@ -1,7 +1,7 @@
 #!/usr/bin/env runhaskell
 
+{-# LANGUAGE NamedFieldPuns    #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NamedFieldPuns #-}
 
 module DirSetup where
 
@@ -16,6 +16,7 @@ import           DBConfig
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
+import           Run                       (runDB)
 import           Servant.Auth.Server       (generateKey)
 import           Turtle
 
@@ -140,17 +141,8 @@ setupDBDir dbConfig = do
   let simpleMigrationDir = opsDir' </> fromText "db" </> fromText "migrations" </> fromText "haskell" </> fromText "pg-simple"
   cptree simpleMigrationDir "./db"
   cd "./db"
-  let dbEnvFile = getDBEnvFile dbConfig rootDir
+  let dbEnvFile = textForDBEnvFile dbConfig rootDir
   liftIO $ writeTextFile ".env" dbEnvFile
-  dockerRunResult <- shell dockerRunCmd empty
-  case dockerRunResult of
-    ExitSuccess   -> do
-        liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dockerRunCmd
-        _ <- shell "stack build" empty
-        _ <- shell "./run.sh" empty
-        cd rootDir
-        return ()
-    ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)
-  where
-    portBind =  (show $ port dbConfig) <> ":5432"
-    dockerRunCmd = T.pack $ "docker run --name my-app-db  -p " <> portBind <> " -h 127.0.0.1 --env-file .env -d postgres"
+  runDB
+
+

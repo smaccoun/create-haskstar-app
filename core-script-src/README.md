@@ -15,10 +15,11 @@ hasm new example-app
 
 cd example-app
 
-hasm run migrations
-hasm run db
-hasm run front-end
-hasm run back-end
+hasm start db
+hasm start front-end
+hasm start back-end
+
+hasm start migrations
 ```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
