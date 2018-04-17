@@ -1,9 +1,12 @@
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module DBConfig where
 
-import qualified Data.Text   as T
+import qualified Data.Text    as T
+import           GHC.Generics
 import           Interactive
+import qualified System.Envy  as SE
 import           Text.Regex
 import           Turtle
 
@@ -47,3 +50,20 @@ textForDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) backendD
     dbDatabaseLn dbName   = "POSTGRES_DB=" <> dbName
     dbUserLn dbUser = "POSTGRES_USER=" <> dbUser
     dbPortLn dbPort = T.pack $ "POSTGRES_PORT=" <> show port
+
+
+data PGConfig =
+  PGConfig
+    {postgresDB       :: Text
+    ,postgresUser     :: Text
+    ,postgresPassword :: Text
+    ,postgresPort     :: Integer
+    } deriving (Generic, Show)
+
+instance SE.FromEnv PGConfig where
+  fromEnv =
+    PGConfig
+    <$> SE.env "POSTGRES_DB"
+    <*> SE.env "POSTGRES_USER"
+    <*> SE.env "POSTGRES_PASSWORD"
+    <*> SE.env "POSTGRES_PORT"

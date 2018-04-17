@@ -24,8 +24,8 @@ buildFrontEnd = do
   _ <- shell "elm-package install --yes" empty
   return ()
 
-buildBackEnd :: DBConfig -> ScriptRunContext ()
-buildBackEnd dbConfig = do
+buildBackEnd :: ScriptRunContext ()
+buildBackEnd = do
   liftIO $ subCommentBlock "Building back-end"
   fromAppRootDir
   topDir <- getAppRootDir
@@ -34,7 +34,7 @@ buildBackEnd dbConfig = do
   _ <- shell "stack build" empty
   return ()
 
-buildFrontAndBackend :: DBConfig -> ScriptRunContext ()
-buildFrontAndBackend dbConfig = do
+buildFrontAndBackEnd :: ScriptRunContext ()
+buildFrontAndBackEnd = do
   buildFrontEnd
-  buildBackEnd dbConfig
+  buildBackEnd

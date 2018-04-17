@@ -43,6 +43,8 @@ library
     , system-filepath
     , regex-compat
     , text
+    , envy
+    , dotenv
     , turtle
   exposed-modules:
       Context
@@ -68,6 +70,8 @@ executable hasm
     , system-filepath
     , text
     , turtle
+    , dotenv
+    , envy
   default-language: Haskell2010
 
 test-suite build-test

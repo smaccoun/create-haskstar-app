@@ -4,12 +4,16 @@
 
 module Run where
 
+import qualified Configuration.Dotenv       as Dotenv
+import qualified Configuration.Dotenv.Types as DET
 import           Context
-import           Data.Text                 (pack)
-import           DBConfig                  (DBConfig, port)
+import qualified Control.Foldl              as Fold
+import           Data.Text                  (pack)
+import           DBConfig                   (DBConfig, PGConfig (..), port)
 import           Distribution.System
-import           Filesystem.Path.CurrentOS (encodeString)
+import           Filesystem.Path.CurrentOS  (encodeString)
 import           Interactive
+import           System.Envy
 import           Turtle
 
 runFrontEnd :: ScriptRunContext ()
@@ -45,23 +49,41 @@ runBackEnd = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
 
-dockerRunDBCmd :: Text
-dockerRunDBCmd =
+dockerRunDBCmd :: PGConfig -> Text
+dockerRunDBCmd pgConfig =
   pack $ "docker run --name my-app-db  -p " <> portBind <> " -h 127.0.0.1 --env-file .env -d postgres"
   where
-    portBind =  (show $ "6543") <> ":5432"
+    portText = (show $ postgresPort pgConfig)
+    portBind = portText <> ":5432"
 
+getPGConfig :: ScriptRunContext PGConfig
+getPGConfig = do
+  fromAppRootDir
+  cd "db"
+  pgConfigRead <- liftIO decodeEnv
+  liftIO $ putStrLn (show pgConfigRead)
+  case pgConfigRead of
+    Left e    -> liftIO $ failCase e
+    Right pgc -> return pgc
+  where
+    failCase e = die $ "Couldn't read .env for PG Config " <> pack e
+
+dbLoginCmd :: PGConfig -> Text
+dbLoginCmd (PGConfig pgDB pgUser pgPassword pgPort) =
+   "psql -d " <> pgDB <> " -U " <> pgUser <> " --password -h localhost  -p " <> (show pgPort & pack)
 
 runDB :: ScriptRunContext ()
 runDB = do
-  liftIO $ majorCommentBlock "STARTING DB"
   fromAppRootDir
-  cd "db"
-  let dockerRunCmd = dockerRunDBCmd
+  cd "./db"
+  Dotenv.loadFile DET.defaultConfig
+  pgConfig <- getPGConfig
+  liftIO $ majorCommentBlock $ "STARTING DB " <> postgresDB pgConfig
+  let dockerRunCmd = dockerRunDBCmd pgConfig
   dockerRunResult <- shell dockerRunCmd empty
   case dockerRunResult of
     ExitSuccess   -> do
-        liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dockerRunCmd
+        liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dbLoginCmd pgConfig
         _ <- shell "stack build" empty
         _ <- shell "./run.sh" empty
         fromAppRootDir

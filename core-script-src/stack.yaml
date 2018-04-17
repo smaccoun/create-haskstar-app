@@ -42,6 +42,9 @@ extra-deps:
 - jose-0.6.0.3
 - servant-auth-0.3.1.0
 - servant-auth-server-0.3.2.0
+- dotenv-0.5.2.4
+- megaparsec-6.5.0
+- parser-combinators-0.4.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

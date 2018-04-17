@@ -24,14 +24,20 @@ import           Lib
 import           Run
 import           StackBuild
 
-data ExecutionContext = New Text | Run RunCmd
+data ExecutionContext = New Text | PostSetupMode PostSetupOption
 
+data PostSetupOption = Build BuildCmd | Run RunCmd
+
+data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
 data RunCmd = RunAPI | RunWeb | RunDB | RunMigrations
 
 parseCmd :: Parser ExecutionContext
 parseCmd =
       fmap New (subcommand "new" "Setup new App" $ argText "appName" "Choose a name for your app")
-  <|> fmap Run (subcommand "start" "Run services" parseRunCmd)
+  <|> fmap (\a -> PostSetupMode (Run a))
+        (subcommand "start" "Run services" parseRunCmd)
+  <|> fmap (\a -> PostSetupMode (Build a))
+        (subcommand "build" "Build services" parseBuildCmd)
 
 parseRunCmd :: Parser RunCmd
 parseRunCmd =
@@ -44,6 +50,17 @@ parseRunCmd =
         "db"         -> Just RunDB
         "migrations" -> Just RunMigrations
         _            -> Nothing
+
+parseBuildCmd :: Parser BuildCmd
+parseBuildCmd =
+  arg parseRunText "buildCmd" "Choose either 'front-end', 'back-end', or 'migrations'"
+  where
+    parseRunText rt =
+      case rt of
+        "back-end"  -> Just BuildFrontEnd
+        "front-end" -> Just BuildBackEnd
+        "all"       -> Just BuildAll
+        _           -> Nothing
 
 
 parser :: Parser (ExecutionContext, Maybe Text, Maybe Text)
@@ -59,18 +76,29 @@ main = do
   (executionArg, mbfrontEndOption, mbTemplate) <- options "Options" parser
   case executionArg of
     New appName   -> setupNew appName mbfrontEndOption mbTemplate
-    Run runOption -> runCmd runOption
+    PostSetupMode postSetupOption -> do
+      context <- getPostSetupContext
+      case postSetupOption of
+        Run runOption     -> runCmd context runOption
+        Build buildOption -> buildCmd context buildOption
 
-runCmd :: RunCmd -> IO ()
-runCmd runOption = do
-  isValidHASMDir <- checkValidHASMDir
-  if isValidHASMDir then do
-    appRootDir <- pwd
-    executablePath <- getExecutablePath'
-    let context = Context appRootDir executablePath buildOS Nothing
-    io runCmdInContext context
-  else
-    ioError $ userError "You are not in a valid HASM directory"
+
+buildCmd :: Context -> BuildCmd -> IO ()
+buildCmd context buildOption = do
+  validateAndRunPostSetupCmd context buildCmdInContext
+  return ()
+  where
+    buildCmdInContext =
+      case buildOption of
+        BuildFrontEnd -> buildFrontEnd
+        BuildBackEnd  -> buildBackEnd
+        BuildAll      -> buildFrontAndBackEnd
+
+
+
+runCmd :: Context -> RunCmd -> IO ()
+runCmd context runOption = do
+  validateAndRunPostSetupCmd context runCmdInContext
   return ()
   where
     runCmdInContext =
@@ -92,6 +120,7 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
   showDBInfo dbConfig
 
   mkdir appDir
+
   let context = Context appDir executablePath curOS mbTemplate
 
   -- | Setup Ops, DB, Front-End, Back-End directories
@@ -99,14 +128,14 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
 
   shouldBuild <- askToBuild
   if shouldBuild then do
-    io (buildFrontAndBackend dbConfig) context
+    io buildFrontAndBackEnd context
   else
     return ()
 
   showRunInstructions
 
   cd appDir
-  return ()
+  exit ExitSuccess
 
 preValidate :: IO ()
 preValidate = do

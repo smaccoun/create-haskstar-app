@@ -10,6 +10,7 @@ import           Data.List                 (isInfixOf, sort)
 import           Data.Maybe                (fromMaybe)
 import qualified Data.Text                 as T
 import qualified Data.Text.IO              as TIO
+import           Distribution.System
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
 import           System.Environment        (getExecutablePath)
@@ -47,3 +48,18 @@ checkValidHASMDir = do
 getExecutablePath' :: IO ExecutablePath
 getExecutablePath' =
     fmap (ExecutablePath . decodeString) getExecutablePath
+
+
+getPostSetupContext :: IO Context
+getPostSetupContext = do
+    appRootDir <- pwd
+    executablePath <- getExecutablePath'
+    return $ Context appRootDir executablePath buildOS Nothing
+
+validateAndRunPostSetupCmd :: Context -> ScriptRunContext () -> IO ()
+validateAndRunPostSetupCmd context cmd = do
+    isValidHASMDir <- checkValidHASMDir
+    if isValidHASMDir then do
+        io cmd context
+    else
+        ioError $ userError "You are not in a valid HASM directory"

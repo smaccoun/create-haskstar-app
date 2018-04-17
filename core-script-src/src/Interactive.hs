@@ -81,11 +81,12 @@ showWelcomeMessage =
 showRunInstructions :: MonadIO m => m ()
 showRunInstructions = do
   majorCommentBlock "LOCAL RUN INSTRUCTIONS"
+  printfln "DB: "
+  lineBlockSeperator
+  printfln "hasm start db"
   printfln "Back-End: "
   lineBlockSeperator
-  printfln "1. cd back-end"
-  printfln "2. ./run.sh"
+  printfln "hasm start back-end"
   printfln "Front-End: \n"
   lineBlockSeperator
-  printfln "1. cd front-end"
-  printfln "2. yarn start"
+  printfln "hasm start front-end"

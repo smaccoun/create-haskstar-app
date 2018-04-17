@@ -1,11 +1,11 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE NamedFieldPuns             #-}
+{-# LANGUAGE RecordWildCards            #-}
 
 module Context where
 
-import           Control.Monad.Reader      (ReaderT, ask, MonadReader)
+import           Control.Monad.Reader      (MonadReader, ReaderT, ask)
 import           Distribution.System
 import           Filesystem.Path.CurrentOS
 import           GHC.Generics
@@ -61,3 +61,5 @@ getMbTemplate :: ScriptRunContext (Maybe Text)
 getMbTemplate = do
   Context{mbTemplate} <- ask
   return mbTemplate
+
+
