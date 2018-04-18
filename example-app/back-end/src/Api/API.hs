@@ -35,7 +35,7 @@ protected (Authenticated user) =
 protected _ = throwAll err401
 
 type Unprotected =
-       Get '[JSON] Text
+       "health" :> Get '[JSON] Text
   :<|> LoginAPI
 
 unprotectedProxy :: Proxy Unprotected
@@ -43,7 +43,7 @@ unprotectedProxy = Proxy
 
 unprotected :: JWTSettings -> ServerT Unprotected AppM
 unprotected jwts =
-       return "hello world"
+       return "Okay"
   :<|> loginServer jwts
 
 type API auths =

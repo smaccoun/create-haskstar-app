@@ -19,7 +19,7 @@ hasm start db
 hasm start front-end
 hasm start back-end
 
-hasm start migrations
+hasm run migrations
 ```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
@@ -101,8 +101,8 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 |   Feature | Status   |
 |----------|:---------|
-| Login/Register view |          |
-| password hasing (scrypt) |      |
+| Login/Register view |     ✅      |
+| password hasing (scrypt) |   ✅    |
 | OAuth     |      |
 | Cookie    |      |
 
@@ -110,7 +110,7 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 |   Feature | Status   |
 |----------|:---------|
-| Bulma |          |
+| Bulma |     ✅      |
 | Font Awesome |      |
 | Ionic |      |
 
@@ -139,7 +139,8 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 |   lib    | Status   |
 |----------|:---------|
-| Rails migration |      |
+| Postgres simple migration |  ✅ |
+| Rails migration |          |
 | Persistent? |          |
 
 

@@ -19,7 +19,7 @@ init : SC.Context -> ( Model, Cmd Msg )
 init context =
     ( NotAsked
     , Cmd.map ReceiveResponse
-        (getRequestString context ""
+        (getRequestString context "health"
             |> RemoteData.sendRequest
         )
     )

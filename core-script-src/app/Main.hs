@@ -26,36 +26,47 @@ import           StackBuild
 
 data ExecutionContext = New Text | PostSetupMode PostSetupOption
 
-data PostSetupOption = Build BuildCmd | Run RunCmd
+data PostSetupOption = Build BuildCmd | Start StartCmd | Run RunCmd
 
 data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
-data RunCmd = RunAPI | RunWeb | RunDB | RunMigrations
+data StartCmd = StartAPI | StartWeb | StartDB
+data RunCmd = RunMigrations
 
 parseCmd :: Parser ExecutionContext
 parseCmd =
       fmap New (subcommand "new" "Setup new App" $ argText "appName" "Choose a name for your app")
+  <|> fmap (\a -> PostSetupMode (Start a))
+        (subcommand "start" "Start services" parseStartCmd)
   <|> fmap (\a -> PostSetupMode (Run a))
-        (subcommand "start" "Run services" parseRunCmd)
+        (subcommand "run" "Run services" parseRunCmd)
   <|> fmap (\a -> PostSetupMode (Build a))
         (subcommand "build" "Build services" parseBuildCmd)
 
+parseStartCmd :: Parser StartCmd
+parseStartCmd =
+  arg parseStartText "startCmd" "Choose either 'front-end', 'back-end', or 'db'"
+  where
+    parseStartText rt =
+      case rt of
+        "back-end"  -> Just StartAPI
+        "front-end" -> Just StartWeb
+        "db"        -> Just StartDB
+        _           -> Nothing
+
 parseRunCmd :: Parser RunCmd
 parseRunCmd =
-  arg parseRunText "runCmd" "Choose either 'front-end', 'back-end', or 'migrations'"
+  arg parseStartText "runCmd" "Choose 'migrations'"
   where
-    parseRunText rt =
+    parseStartText rt =
       case rt of
-        "back-end"   -> Just RunAPI
-        "front-end"  -> Just RunWeb
-        "db"         -> Just RunDB
         "migrations" -> Just RunMigrations
         _            -> Nothing
 
 parseBuildCmd :: Parser BuildCmd
 parseBuildCmd =
-  arg parseRunText "buildCmd" "Choose either 'front-end', 'back-end', or 'migrations'"
+  arg parseStartText "buildCmd" "Choose either 'front-end', 'back-end', or 'migrations'"
   where
-    parseRunText rt =
+    parseStartText rt =
       case rt of
         "back-end"  -> Just BuildFrontEnd
         "front-end" -> Just BuildBackEnd
@@ -79,6 +90,7 @@ main = do
     PostSetupMode postSetupOption -> do
       context <- getPostSetupContext
       case postSetupOption of
+        Start runOption   -> startCmd context runOption
         Run runOption     -> runCmd context runOption
         Build buildOption -> buildCmd context buildOption
 
@@ -95,18 +107,20 @@ buildCmd context buildOption = do
         BuildAll      -> buildFrontAndBackEnd
 
 
-
 runCmd :: Context -> RunCmd -> IO ()
-runCmd context runOption = do
+runCmd context RunMigrations =
+  io runMigrations context
+
+startCmd :: Context -> StartCmd -> IO ()
+startCmd context runOption = do
   validateAndRunPostSetupCmd context runCmdInContext
   return ()
   where
     runCmdInContext =
       case runOption of
-        RunAPI        -> runBackEnd
-        RunWeb        -> runFrontEnd
-        RunDB         -> runDB
-        RunMigrations -> runMigrations
+        StartAPI -> runBackEnd
+        StartWeb -> runFrontEnd
+        StartDB  -> runDB
 
 
 setupNew :: Text -> Maybe Text -> Maybe Text -> IO ()
