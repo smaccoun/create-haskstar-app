@@ -18,6 +18,7 @@ import           Turtle
 
 import           Context
 import           DBConfig
+import           Deploy
 import           DirSetup
 import           Interactive
 import           Lib
@@ -26,11 +27,16 @@ import           StackBuild
 
 data ExecutionContext = New Text | PostSetupMode PostSetupOption
 
-data PostSetupOption = Build BuildCmd | Start StartCmd | Run RunCmd
+data PostSetupOption =
+    Build BuildCmd
+  | Start StartCmd
+  | Run RunCmd
+  | Deploy DeployConfig DeployEnv
 
 data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
 data StartCmd = StartAPI | StartWeb | StartDB
 data RunCmd = RunMigrations
+data DeployEnv = Staging | Production
 
 parseCmd :: Parser ExecutionContext
 parseCmd =
@@ -41,6 +47,18 @@ parseCmd =
         (subcommand "run" "Run services" parseRunCmd)
   <|> fmap (\a -> PostSetupMode (Build a))
         (subcommand "build" "Build services" parseBuildCmd)
+  <|> fmap mapDeployParse
+        (subcommand "deploy" "Deploy services" parseDeployCmd)
+  where
+    mapDeployParse :: (DeployEnv, Text, Text) -> ExecutionContext
+    mapDeployParse (depEnv, sha1, remoteDockerDir) =
+      PostSetupMode $ Deploy (mkDeployConfig sha1 remoteDockerDir) depEnv
+    mkDeployConfig :: Text -> Text -> DeployConfig
+    mkDeployConfig sha1 remoteDockerDir =
+      DeployConfig
+        {remoteDockerBaseDir = RemoteDockerBaseDir remoteDockerDir
+        ,sha1                = SHA1 sha1
+        }
 
 parseStartCmd :: Parser StartCmd
 parseStartCmd =
@@ -61,6 +79,20 @@ parseRunCmd =
       case rt of
         "migrations" -> Just RunMigrations
         _            -> Nothing
+
+
+parseDeployCmd :: Parser (DeployEnv, Text, Text)
+parseDeployCmd =
+  (,,)
+  <$> arg parseDeployEnvText "deployCmd" "Choose either 'staging' or 'production'"
+  <*> (optText "SHA1"  'a' "SHA1 Commit Number")
+  <*> (optText "remoteDockerDir"  'a' "Remote Docker Dir")
+  where
+    parseDeployEnvText rt =
+      case rt of
+        "deploy"  -> Just Staging
+        "staging" -> Just Production
+        _         -> Nothing
 
 parseBuildCmd :: Parser BuildCmd
 parseBuildCmd =
@@ -90,9 +122,10 @@ main = do
     PostSetupMode postSetupOption -> do
       context <- getPostSetupContext
       case postSetupOption of
-        Start runOption   -> startCmd context runOption
-        Run runOption     -> runCmd context runOption
-        Build buildOption -> buildCmd context buildOption
+        Start runOption               -> startCmd context runOption
+        Run runOption                 -> runCmd context runOption
+        Build buildOption             -> buildCmd context buildOption
+        Deploy deployConfig deployEnv ->  deployCmd context deployConfig deployEnv
 
 
 buildCmd :: Context -> BuildCmd -> IO ()
@@ -121,6 +154,16 @@ startCmd context runOption = do
         StartAPI -> runBackEnd
         StartWeb -> runFrontEnd
         StartDB  -> runDB
+
+deployCmd :: Context -> DeployConfig -> DeployEnv -> IO ()
+deployCmd context deployConfig deployEnv = do
+  validateAndRunPostSetupCmd context deployInContext
+  return ()
+  where
+    deployInContext =
+      case deployEnv of
+        Staging    -> deploy deployConfig
+        Production -> deploy deployConfig
 
 
 setupNew :: Text -> Maybe Text -> Maybe Text -> IO ()

@@ -51,6 +51,7 @@ library
       Interactive
       Lib
       Run
+      Deploy
       DBConfig
       DirSetup
       StackBuild

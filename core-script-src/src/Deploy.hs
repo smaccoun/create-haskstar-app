@@ -14,12 +14,19 @@ import           Turtle
 newtype SHA1 = SHA1 Text
 newtype RemoteDockerBaseDir = RemoteDockerBaseDir Text
 
-deploy :: SHA1 -> RemoteDockerBaseDir -> ScriptRunContext ()
-deploy (SHA1 sha1) (RemoteDockerBaseDir remoteDockerBaseDir) =
+data DeployConfig =
+  DeployConfig
+    {remoteDockerBaseDir :: RemoteDockerBaseDir
+    ,sha1                :: SHA1
+    }
+
+deploy :: DeployConfig -> ScriptRunContext ()
+deploy (DeployConfig (RemoteDockerBaseDir remoteDockerBaseDir) (SHA1 sha1)) = do
   fromAppRootDir
   cd "back-end"
   _ <- shell dockerBuildRelative empty
   _ <- shell dockerPushRelative empty
+  return ()
   where
     dockerBuildRelative = dockerBuildStrCmd remoteDockerDir "Dockerfile ."
     dockerPushRelative = dockerPushCmd remoteDockerDir
@@ -28,7 +35,7 @@ deploy (SHA1 sha1) (RemoteDockerBaseDir remoteDockerBaseDir) =
 
 dockerBuildStrCmd :: Text -> Turtle.FilePath -> Text
 dockerBuildStrCmd remoteDockerDir localDockerFile =
-  format ("docker build --rm=false -t "%s%" -f "%s%"") remoteDockerDir localDockerFile
+  format ("docker build --rm=false -t "%s%" -f "%s%"") remoteDockerDir (pack $ encodeString localDockerFile)
 
 dockerPushCmd :: Text -> Text
 dockerPushCmd remoteDockerDir =
