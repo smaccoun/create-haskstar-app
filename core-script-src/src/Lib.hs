@@ -5,6 +5,7 @@
 module Lib where
 
 import qualified Control.Foldl             as Fold
+import qualified Data.Set as Set
 import           Control.Monad.Reader      (runReaderT)
 import           Data.List                 (isInfixOf, sort)
 import           Data.Maybe                (fromMaybe)
@@ -37,12 +38,12 @@ gitCloneShallow gitRepo mbTemplate = do
 checkValidHASMDir :: IO Bool
 checkValidHASMDir = do
     directChildren <- fold (ls ".") Fold.list
-    let directChildrenNames = fmap (encodeString . filename) directChildren
+    let directChildrenNames = Set.fromList $ fmap (encodeString . filename) directChildren
     return $ hasAllDirs directChildrenNames
     where
-        requiredDirs = sort ["back-end", "front-end", "db"]
+        requiredDirs = Set.fromList ["back-end", "front-end", "db"]
         hasAllDirs allChildrenNames =
-            sort requiredDirs `isInfixOf` sort allChildrenNames
+            Set.isSubsetOf requiredDirs allChildrenNames
 
 
 getExecutablePath' :: IO ExecutablePath

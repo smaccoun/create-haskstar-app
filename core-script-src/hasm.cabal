@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0b34f96fc281da4ab80f6a71991b705e29b2f270c81867222aac4cc4bc6ec307
+-- hash: 45915d3833a6bb9f27b88a2dcade8e4212544b2b20b607307c56c6ed7f92d247
 
 name:           hasm
 version:        0.1.0.0
@@ -33,6 +33,7 @@ library
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , dotenv
     , envy
     , foldl
@@ -65,6 +66,7 @@ executable hasm
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , dotenv
     , envy
     , foldl
@@ -90,6 +92,7 @@ test-suite build-test
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , dotenv
     , envy
     , foldl
