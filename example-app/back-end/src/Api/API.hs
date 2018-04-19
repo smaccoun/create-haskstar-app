@@ -67,4 +67,5 @@ swaggerUnprotected = toSwagger unprotectedProxy
 
 instance ToSchema Login
 instance ToSchema Email
+instance ToSchema LoginResponse
 instance ToSchema Password
