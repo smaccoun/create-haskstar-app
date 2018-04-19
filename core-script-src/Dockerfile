@@ -1,4 +1,4 @@
-FROM  fpco/stack-build:lts-9.4
+FROM  haskell:8.0.2
 
 # Copy everything to docker ecosystem
 WORKDIR /app/
@@ -8,4 +8,5 @@ COPY ./app  ./app
 COPY ./src/ ./src
 
 RUN stack setup
+RUN stack build
 RUN stack install

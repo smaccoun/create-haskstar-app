@@ -8,6 +8,14 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: install hasm
+          command: |
+            git clone git@github.com:smaccoun/create-haskstar-app.git
+            cd create-haskstar-app
+            ./install.sh
+
+
       - setup_remote_docker:
           docker_layer_caching: true
 
@@ -20,19 +28,12 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
 
+
       - run:
-          name: push docker image
+          name: deploy
           no_output_timeout: 120m
           command: |
-            cd core-script-src
-            echo "---- building docker ----"
-            docker build --rm=false -t smaccoun/hasm-cli:latest -f Dockerfile .
-            echo "---- logging into docker ----"
-            docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-            echo "---- pushing to docker ----"
-            docker push smaccoun/hasm-cli:latest
-            cd ..
-
+            hasm deploy staging --SHA1 $CIRCLE_SHA1 --remoteDockerDir smaccoun/hasm-haskell
 
 
 

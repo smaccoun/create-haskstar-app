@@ -2,24 +2,20 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d6e813adeb0a31c4b99870bbdc40424e48830890e29ee6aed0f12db830637644
+-- hash: 0b34f96fc281da4ab80f6a71991b705e29b2f270c81867222aac4cc4bc6ec307
 
-name:           create-hs-app
+name:           hasm
 version:        0.1.0.0
-description:    Please see the README on Github at <https://github.com/smaccoun/build#readme>
-homepage:       https://github.com/smaccoun/build#readme
-bug-reports:    https://github.com/smaccoun/build/issues
+description:    Please see the README on Github at <https://github.com/smaccoun/create-haskstar-app#readme>
+homepage:       https://github.com/smaccoun/create-haskstar-app#readme
+bug-reports:    https://github.com/smaccoun/create-haskstar-app/issues
 author:         Steven MacCoun
 maintainer:     theraccoun@gmail.com
 copyright:      2018 Steven MacCoun
 license:        BSD3
-license-file:   ../LICENSE
+license-file:   LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
-
-tested-with:        GHC == 8.4.1
-                    GHC == 8.2.2
-                    GHC == 8.0.2
 
 extra-source-files:
     ChangeLog.md
@@ -27,34 +23,36 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/smaccoun/build
+  location: https://github.com/smaccoun/create-haskstar-app
 
 library
   hs-source-dirs:
       src
   build-depends:
       Cabal
+    , aeson
     , base >=4.7 && <5
     , bytestring
-    , mtl
-    , servant-auth-server
-    , aeson
-    , foldl
-    , system-filepath
-    , regex-compat
-    , text
-    , envy
     , dotenv
+    , envy
+    , foldl
+    , mtl
+    , regex-compat
+    , servant-auth-server
+    , system-filepath
+    , text
     , turtle
   exposed-modules:
       Context
+      DBConfig
+      Deploy
+      DirSetup
       Interactive
       Lib
       Run
-      Deploy
-      DBConfig
-      DirSetup
       StackBuild
+  other-modules:
+      Paths_hasm
   default-language: Haskell2010
 
 executable hasm
@@ -64,15 +62,21 @@ executable hasm
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Cabal
+    , aeson
     , base >=4.7 && <5
-    , create-hs-app
-    , mtl
+    , bytestring
+    , dotenv
+    , envy
     , foldl
+    , hasm
+    , mtl
+    , regex-compat
+    , servant-auth-server
     , system-filepath
     , text
     , turtle
-    , dotenv
-    , envy
+  other-modules:
+      Paths_hasm
   default-language: Haskell2010
 
 test-suite build-test
@@ -83,12 +87,19 @@ test-suite build-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Cabal
+    , aeson
     , base >=4.7 && <5
-    , create-hs-app
+    , bytestring
+    , dotenv
+    , envy
+    , foldl
+    , hasm
     , mtl
+    , regex-compat
+    , servant-auth-server
     , system-filepath
     , text
     , turtle
   other-modules:
-      Paths_create_app
+      Paths_hasm
   default-language: Haskell2010
