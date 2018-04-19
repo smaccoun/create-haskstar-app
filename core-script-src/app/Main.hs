@@ -179,6 +179,8 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
   mkdir appDir
 
   let context = Context appDir executablePath curOS mbTemplate
+  let hasmFile = (HASMFile (Just appNameOption) Nothing)
+  io (writeHASMFile hasmFile) context
 
   -- | Setup Ops, DB, Front-End, Back-End directories
   io (setupAllSubDirectories dbConfig) context

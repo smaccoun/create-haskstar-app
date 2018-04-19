@@ -38,6 +38,7 @@ dependencies:
 - dotenv
 - turtle
 - containers
+- yaml
 
 library:
   source-dirs: src

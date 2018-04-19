@@ -1,21 +1,26 @@
 #!/usr/bin/env runhaskell
 
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Lib where
 
 import qualified Control.Foldl             as Fold
-import qualified Data.Set as Set
 import           Control.Monad.Reader      (runReaderT)
+import           Data.Aeson
 import           Data.List                 (isInfixOf, sort)
 import           Data.Maybe                (fromMaybe)
+import qualified Data.Set                  as Set
 import qualified Data.Text                 as T
 import qualified Data.Text.IO              as TIO
+import qualified Data.Yaml                 as YAML
 import           Distribution.System
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
+import           GHC.Generics              hiding (empty)
 import           System.Environment        (getExecutablePath)
-import           Turtle
+import           Turtle                    hiding (Generic)
 
 import           Context
 import           Interactive
@@ -44,6 +49,20 @@ checkValidHASMDir = do
         requiredDirs = Set.fromList ["back-end", "front-end", "db"]
         hasAllDirs allChildrenNames =
             Set.isSubsetOf requiredDirs allChildrenNames
+
+
+data HASMFile =
+    HASMFile
+      {appName               :: Maybe Text
+      ,remoteDockerContainer :: Maybe Text
+      } deriving (Generic, ToJSON, FromJSON)
+
+writeHASMFile :: HASMFile -> ScriptRunContext ()
+writeHASMFile hasmFile = do
+    appRoot <- getAppRootDir
+    let yamlFilePath = appRoot </> "HASMFile"
+    liftIO $ YAML.encodeFile (encodeString yamlFilePath) hasmFile
+    return ()
 
 
 getExecutablePath' :: IO ExecutablePath

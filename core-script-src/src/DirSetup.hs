@@ -21,70 +21,6 @@ import           Servant.Auth.Server       (generateKey)
 import           Turtle
 
 
-setupOpsDir :: ScriptRunContext ()
-setupOpsDir = do
-  fromAppRootDir
-  topDir <- getAppRootDir
-  mbTemplate <- getMbTemplate
-  liftIO $ do
-    majorCommentBlock "Grabbing required templates"
-    mktree "./ops/db"
-    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" mbTemplate
-    cptree "./create-haskstar-app/templates/ops" "./ops"
-    cptree "./create-haskstar-app/templates/db" "./ops/db"
-    let circleDir = topDir </> ".circleci"
-    mkdir circleDir
-    cptree "./ops/ci/.circleci/" circleDir
-    rmtree "create-haskstar-app"
-
-data DirSetup =
-  DirSetup
-    {dirStackType :: DirStackType
-    ,dirName      :: Text
-    ,gitDir       :: Text
-    }
-
-data DirStackType = FRONT_END | BACK_END
-
-elmConfig :: DirSetup
-elmConfig =
-  DirSetup
-      {dirStackType = FRONT_END
-      ,dirName = "front-end"
-      ,gitDir = "git@github.com:smaccoun/haskstar-elm.git"
-      }
-
-backendDirConfig :: DirSetup
-backendDirConfig =
-  DirSetup
-      {dirStackType = BACK_END
-      ,dirName = "back-end"
-      ,gitDir = "git@github.com:smaccoun/haskstar-haskell.git"
-      }
-
-asLocal :: Text -> Text
-asLocal dirName = "./" <> dirName
-
-getTemplate :: Turtle.FilePath -> DirSetup -> ScriptRunContext ()
-getTemplate dPath dirSetup = do
-  let dname = pack $ encodeString $ filename dPath
-  liftIO $ subCommentBlock $ "Setting up " <> dname
-  fromAppRootDir
-  mbTemplate <- getMbTemplate
-  setupResult <- liftIO $ gitCloneShallow (gitDir dirSetup <> " " <> dname) mbTemplate
-  liftIO $ rmtree (dPath </> fromText ".git")
-  case setupResult of
-    ExitSuccess   -> return ()
-    ExitFailure n -> die (" failed with exit code: " <> repr n)
-
-
-getDir :: Turtle.FilePath -> DirSetup -> (Text, Turtle.FilePath)
-getDir rootDir dirSetup =
-  (dname, dPath)
-  where
-    dname = dirName dirSetup
-    dPath = rootDir </> (fromText dname)
-
 -- | Setup DB, Front-End, Back-End directories without building them
 setupCoreDirectories :: DBConfig -> ScriptRunContext ()
 setupCoreDirectories dbConfig = do
@@ -150,4 +86,68 @@ setupDBDir dbConfig = do
   liftIO $ writeTextFile ".env" dbEnvFile
   runDB
 
+
+
+setupOpsDir :: ScriptRunContext ()
+setupOpsDir = do
+  fromAppRootDir
+  topDir <- getAppRootDir
+  mbTemplate <- getMbTemplate
+  liftIO $ do
+    majorCommentBlock "Grabbing required templates"
+    mktree "./ops/db"
+    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" mbTemplate
+    cptree "./create-haskstar-app/templates/ops" "./ops"
+    cptree "./create-haskstar-app/templates/db" "./ops/db"
+    let circleDir = topDir </> ".circleci"
+    mkdir circleDir
+    cptree "./ops/ci/.circleci/" circleDir
+    rmtree "create-haskstar-app"
+
+data DirSetup =
+  DirSetup
+    {dirStackType :: DirStackType
+    ,dirName      :: Text
+    ,gitDir       :: Text
+    }
+
+data DirStackType = FRONT_END | BACK_END
+
+elmConfig :: DirSetup
+elmConfig =
+  DirSetup
+      {dirStackType = FRONT_END
+      ,dirName = "front-end"
+      ,gitDir = "git@github.com:smaccoun/haskstar-elm.git"
+      }
+
+backendDirConfig :: DirSetup
+backendDirConfig =
+  DirSetup
+      {dirStackType = BACK_END
+      ,dirName = "back-end"
+      ,gitDir = "git@github.com:smaccoun/haskstar-haskell.git"
+      }
+
+asLocal :: Text -> Text
+asLocal dirName = "./" <> dirName
+
+getTemplate :: Turtle.FilePath -> DirSetup -> ScriptRunContext ()
+getTemplate dPath dirSetup = do
+  let dname = pack $ encodeString $ filename dPath
+  liftIO $ subCommentBlock $ "Setting up " <> dname
+  fromAppRootDir
+  mbTemplate <- getMbTemplate
+  setupResult <- liftIO $ gitCloneShallow (gitDir dirSetup <> " " <> dname) mbTemplate
+  liftIO $ rmtree (dPath </> fromText ".git")
+  case setupResult of
+    ExitSuccess   -> return ()
+    ExitFailure n -> die (" failed with exit code: " <> repr n)
+
+getDir :: Turtle.FilePath -> DirSetup -> (Text, Turtle.FilePath)
+getDir rootDir dirSetup =
+  (dname, dPath)
+  where
+    dname = dirName dirSetup
+    dPath = rootDir </> (fromText dname)
 
