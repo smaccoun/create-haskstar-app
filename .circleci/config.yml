@@ -26,7 +26,7 @@ jobs:
           command: |
             cd core-script-src
             echo "---- building docker ----"
-            docker build --rm=false -t smaccoun/hasm-cli:latest SHA1 -f Dockerfile .
+            docker build --rm=false -t smaccoun/hasm-cli:latest -f Dockerfile .
             echo "---- logging into docker ----"
             docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
             echo "---- pushing to docker ----"
