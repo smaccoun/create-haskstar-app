@@ -31,6 +31,7 @@ setupOpsDir = do
     _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" mbTemplate
     cptree "./create-haskstar-app/templates/ops" "./ops"
     cptree "./create-haskstar-app/templates/db" "./ops/db"
+    mv "./create-haskstar-app/templates/ci/.circleci" "./"
     rmtree "create-haskstar-app"
 
 data DirSetup =
