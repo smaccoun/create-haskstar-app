@@ -100,8 +100,8 @@ parseBuildCmd =
   where
     parseStartText rt =
       case rt of
-        "back-end"  -> Just BuildFrontEnd
-        "front-end" -> Just BuildBackEnd
+        "back-end"  -> Just BuildBackEnd
+        "front-end" -> Just BuildFrontEnd
         "all"       -> Just BuildAll
         _           -> Nothing
 
