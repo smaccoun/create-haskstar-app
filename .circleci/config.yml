@@ -1,0 +1,46 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build:lts-9.4
+
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: install docker
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+
+      - run:
+          name: push docker image
+          no_output_timeout: 120m
+          command: |
+            cd core-script-src
+            echo "---- building docker ----"
+            docker build --rm=false -t smaccoun/hasm-cli:$SHA1 -f Dockerfile .
+            echo "---- logging into ecr ----"
+            docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+            echo "---- pushing to ecr ----"
+            docker push smaccoun/hasm-cli:$SHA1
+            cd ..
+
+
+
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
