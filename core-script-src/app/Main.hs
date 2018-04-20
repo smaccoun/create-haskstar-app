@@ -32,11 +32,13 @@ data PostSetupOption =
   | Start StartCmd
   | Run RunCmd
   | Deploy DeployConfig DeployEnv
+  | Login LoginCmd
 
 data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
 data StartCmd = StartAPI | StartWeb | StartDB
 data RunCmd = RunMigrations
 data DeployEnv = Staging | Production
+data LoginCmd = LoginDB
 
 parseCmd :: Parser ExecutionContext
 parseCmd =
@@ -49,6 +51,8 @@ parseCmd =
         (subcommand "build" "Build services" parseBuildCmd)
   <|> fmap mapDeployParse
         (subcommand "deploy" "Deploy services" parseDeployCmd)
+  <|> fmap (\a -> PostSetupMode (Login a))
+        (subcommand "login" "Login services" parseLoginCmd)
   where
     mapDeployParse :: (DeployEnv, Maybe Text, Maybe Text) -> ExecutionContext
     mapDeployParse (depEnv, sha1, remoteDockerDir) =
@@ -79,6 +83,15 @@ parseRunCmd =
       case rt of
         "migrations" -> Just RunMigrations
         _            -> Nothing
+
+parseLoginCmd :: Parser LoginCmd
+parseLoginCmd =
+  arg parseLoginText "loginCmd" "Choose 'db'"
+  where
+    parseLoginText rt =
+      case rt of
+        "db" -> Just LoginDB
+        _    -> Nothing
 
 
 parseDeployCmd :: Parser (DeployEnv, Maybe Text, Maybe Text)
@@ -126,6 +139,8 @@ main = do
         Run runOption                 -> runCmd context runOption
         Build buildOption             -> buildCmd context buildOption
         Deploy deployConfig deployEnv ->  deployCmd context deployConfig deployEnv
+        Login loginCmd -> io loginDB context
+
 
 
 buildCmd :: Context -> BuildCmd -> IO ()

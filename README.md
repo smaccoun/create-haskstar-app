@@ -20,6 +20,8 @@ hasm start front-end
 hasm start back-end
 
 hasm run migrations
+
+hasm login db   ## Login to local docker db for debugging purposes
 ```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.

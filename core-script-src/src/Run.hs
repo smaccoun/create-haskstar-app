@@ -60,6 +60,7 @@ getPGConfig :: ScriptRunContext PGConfig
 getPGConfig = do
   fromAppRootDir
   cd "db"
+  Dotenv.loadFile DET.defaultConfig
   pgConfigRead <- liftIO decodeEnv
   liftIO $ putStrLn (show pgConfigRead)
   case pgConfigRead of
@@ -72,14 +73,20 @@ dbLoginCmd :: PGConfig -> Text
 dbLoginCmd (PGConfig pgDB pgUser pgPassword pgPort) =
    "psql -d " <> pgDB <> " -U " <> pgUser <> " --password -h localhost  -p " <> (show pgPort & pack)
 
+loginDB :: ScriptRunContext ()
+loginDB = do
+  pgConfig <- getPGConfig
+  _ <- shell (dbLoginCmd pgConfig) empty
+  return ()
+
+
 runDB :: ScriptRunContext ()
 runDB = do
   fromAppRootDir
   cd "./db"
-  Dotenv.loadFile DET.defaultConfig
   pgConfig <- getPGConfig
-  liftIO $ majorCommentBlock $ "STARTING DB " <> postgresDB pgConfig
   let dockerRunCmd = dockerRunDBCmd pgConfig
+  liftIO $ majorCommentBlock $ "STARTING DB " <> dockerRunCmd
   dockerRunResult <- shell dockerRunCmd empty
   case dockerRunResult of
     ExitSuccess   -> do
