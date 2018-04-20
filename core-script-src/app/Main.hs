@@ -50,14 +50,14 @@ parseCmd =
   <|> fmap mapDeployParse
         (subcommand "deploy" "Deploy services" parseDeployCmd)
   where
-    mapDeployParse :: (DeployEnv, Text, Text) -> ExecutionContext
+    mapDeployParse :: (DeployEnv, Maybe Text, Maybe Text) -> ExecutionContext
     mapDeployParse (depEnv, sha1, remoteDockerDir) =
       PostSetupMode $ Deploy (mkDeployConfig sha1 remoteDockerDir) depEnv
-    mkDeployConfig :: Text -> Text -> DeployConfig
+    mkDeployConfig :: Maybe Text -> Maybe Text -> DeployConfig
     mkDeployConfig sha1 remoteDockerDir =
       DeployConfig
-        {remoteDockerBaseDir = RemoteDockerBaseDir remoteDockerDir
-        ,sha1                = SHA1 sha1
+        {remoteDockerBaseDir = fmap RemoteDockerBaseDir remoteDockerDir
+        ,sha1                = fmap SHA1 sha1
         }
 
 parseStartCmd :: Parser StartCmd
@@ -81,12 +81,12 @@ parseRunCmd =
         _            -> Nothing
 
 
-parseDeployCmd :: Parser (DeployEnv, Text, Text)
+parseDeployCmd :: Parser (DeployEnv, Maybe Text, Maybe Text)
 parseDeployCmd =
   (,,)
   <$> arg parseDeployEnvText "deployCmd" "Choose either 'staging' or 'production'"
-  <*> (optText "SHA1"  'a' "SHA1 Commit Number")
-  <*> (optText "remoteDockerDir"  'a' "Remote Docker Dir")
+  <*> optional (optText "SHA1"  'a' "SHA1 Commit Number")
+  <*> optional (optText "remoteDockerDir"  'a' "Remote Docker Dir")
   where
     parseDeployEnvText rt =
       case rt of

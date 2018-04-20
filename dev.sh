@@ -27,4 +27,17 @@ cd ./dist
 echo "FINISHED RUNNING"
 rm -rf ../example-app
 cp -r example-app ../
+
+
+mkdir /tmp/temp-hasm-elm
+mv /tmp/hasm-elm-example/.git /tmp/temp-hasm-elm
+rm -rf /tmp/hasml-elm-example
+cp -r example-app /tmp/hasm-elm-example
+cd /tmp/hasm-elm-example
+mv /tmp/temp-hasm-elm/.git .
+rm -rf /tmp/temp-hasm-elm
+git aa
+git cm "Check commit"
+git po master
+cd ~/projects/haskstar/create-haskstar-app
 cd ..

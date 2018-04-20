@@ -59,11 +59,23 @@ data HASMFile =
 
 writeHASMFile :: HASMFile -> ScriptRunContext ()
 writeHASMFile hasmFile = do
-    appRoot <- getAppRootDir
-    let yamlFilePath = appRoot </> "HASMFile"
-    liftIO $ YAML.encodeFile (encodeString yamlFilePath) hasmFile
+    hasmFilePath <- getHASMFilePathStr
+    liftIO $ YAML.encodeFile hasmFilePath hasmFile
     return ()
 
+getHASMFilePathStr :: ScriptRunContext String
+getHASMFilePathStr = do
+    appRoot <- getAppRootDir
+    let hasmFile = appRoot </> "HASMFile"
+    return $ encodeString hasmFile
+
+readHASMFile :: ScriptRunContext HASMFile
+readHASMFile = do
+    hasmFile <- getHASMFilePathStr
+    hasmFileResult <- liftIO $ YAML.decodeFileEither hasmFile
+    case hasmFileResult of
+        Right f -> return f
+        Left e  -> die $ "Something went wrong with hasm file: " <> T.pack (show e)
 
 getExecutablePath' :: IO ExecutablePath
 getExecutablePath' =
