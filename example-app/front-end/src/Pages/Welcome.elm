@@ -12,12 +12,14 @@ import Server.RequestUtils exposing (getRequestString)
 
 
 type alias Model =
-    WebData String
+    { context : SC.Context
+    , response : WebData String
+    }
 
 
 init : SC.Context -> ( Model, Cmd Msg )
 init context =
-    ( NotAsked
+    ( { context = context, response = NotAsked }
     , Cmd.map ReceiveResponse
         (getRequestString context "health"
             |> RemoteData.sendRequest
@@ -30,14 +32,18 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg response =
+update msg model =
     case msg of
         ReceiveResponse response ->
-            response ! []
+            { model | response = response } ! []
 
 
 viewWelcomeScreen : Model -> Html msg
-viewWelcomeScreen response =
+viewWelcomeScreen { context, response } =
+    let
+        swaggerEndpoint =
+            context.apiBaseUrl ++ "/swagger-ui"
+    in
     div []
         [ hero { heroModifiers | size = Small, color = Bulma.Modifiers.Light }
             []
@@ -53,7 +59,7 @@ viewWelcomeScreen response =
             , div []
                 [ case response of
                     Success r ->
-                        text <| "Server Response (localhost:8080/) " ++ r
+                        text <| "Server Response " ++ context.apiBaseUrl ++ "  " ++ r
 
                     NotAsked ->
                         div [] [ text "Have not yet contacted server" ]
@@ -64,6 +70,6 @@ viewWelcomeScreen response =
                     Failure e ->
                         div [] [ text <| "Error loading from server" ++ toString e ]
                 ]
-            , a [ href "http://localhost:8080/swagger-ui", target "_blank" ] [ text "Click here to see all API endpoints (localhost:8080/swagger-ui)" ]
+            , a [ href swaggerEndpoint, target "_blank" ] [ text <| "Click here to see all API endpoints " ++ swaggerEndpoint ]
             ]
         ]

@@ -2,6 +2,7 @@
     "version": "1.0.0",
     "summary": "helpful summary of your project, less than 80 characters",
     "repository": "https://github.com/user/project.git",
+    "homepage": "https://myusername.github.io/my-app",
     "license": "BSD3",
     "source-directories": [
         "src"

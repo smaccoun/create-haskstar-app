@@ -2,6 +2,7 @@
 .stack-work
 .build
 dist
+.dep-sample.sh
 
 create-app.hi
 create-app.o

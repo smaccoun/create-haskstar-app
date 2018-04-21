@@ -27,11 +27,14 @@ deploy deployConfig = do
   cd "back-end"
   remoteDockerDir <- getRemoteDockerBaseDir deployConfig
   _ <- shell (dockerBuildRelative remoteDockerDir) empty
-  _ <- shell (dockerPushRelative remoteDockerDir) empty
+  dockerPushRelative remoteDockerDir
   return ()
   where
     dockerBuildRelative dr = dockerBuildStrCmd dr "Dockerfile ."
-    dockerPushRelative dr = dockerPushCmd dr
+    dockerPushRelative dr = do
+      _ <- shell (dockerPushCmd dr) empty
+      return ()
+
 
 getRemoteDockerBaseDir :: DeployConfig -> ScriptRunContext Text
 getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) = do
