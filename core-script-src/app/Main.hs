@@ -24,6 +24,7 @@ import           DirSetup
 import           Interactive
 import           Lib
 import           Options
+import           PostSetup.Config
 import           Run
 
 

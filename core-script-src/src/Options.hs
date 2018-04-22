@@ -5,6 +5,7 @@
 module Options where
 
 import           Deploy
+import           PostSetup.Config
 import           Turtle
 
 data ExecutionContext =

@@ -6,6 +6,7 @@
 
 module Lib where
 
+import           Context
 import qualified Control.Foldl             as Fold
 import           Control.Monad.Reader      (runReaderT)
 import           Data.Aeson
@@ -18,12 +19,10 @@ import qualified Data.Yaml                 as YAML
 import           Distribution.System
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
-import           GHC.Generics              hiding (empty)
+import           Interactive
+import           PostSetup.Config          (HASMFile (..))
 import           System.Environment        (getExecutablePath)
 import           Turtle                    hiding (Generic)
-
-import           Context
-import           Interactive
 ---------------------------------------------------------------
 
 io :: ScriptRunContext () -> Context -> IO ()
@@ -51,11 +50,7 @@ checkValidHASMDir = do
             Set.isSubsetOf requiredDirs allChildrenNames
 
 
-data HASMFile =
-    HASMFile
-      {appName               :: Maybe Text
-      ,remoteDockerContainer :: Maybe Text
-      } deriving (Generic, ToJSON, FromJSON)
+
 
 writeHASMFile :: HASMFile -> ScriptRunContext ()
 writeHASMFile hasmFile = do

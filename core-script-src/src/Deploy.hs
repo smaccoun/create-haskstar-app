@@ -10,16 +10,9 @@ import           Distribution.System
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
+import           PostSetup.Config
 import           Turtle
 
-newtype SHA1 = SHA1 Text
-newtype RemoteDockerBaseDir = RemoteDockerBaseDir Text
-
-data DeployConfig =
-  DeployConfig
-    {remoteDockerBaseDir :: Maybe RemoteDockerBaseDir
-    ,sha1                :: Maybe SHA1
-    }
 
 deploy :: DeployConfig -> ScriptRunContext ()
 deploy deployConfig = do
