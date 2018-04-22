@@ -16,6 +16,7 @@ import           Filesystem.Path.CurrentOS (decodeString, encodeString,
 
 import           Turtle
 
+import           Build
 import           Context
 import           DBConfig
 import           Deploy
@@ -24,7 +25,6 @@ import           Interactive
 import           Lib
 import           Options
 import           Run
-import           StackBuild
 
 
 main :: IO ()

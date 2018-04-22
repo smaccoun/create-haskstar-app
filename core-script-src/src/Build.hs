@@ -3,7 +3,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module StackBuild where
+module Build where
 
 import           Context
 import           Data.Text                 (Text)

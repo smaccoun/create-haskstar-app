@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d986f14e7e5a9c3dc3cc3dc207d76b5265100dc189b0c8e74c8319864e935dfa
+-- hash: 980ba25a4caf21ac4fcb92889b996ddea3c08f3ff9efb98f9772d20ed600907f
 
 name:           hasm
 version:        0.1.0.0
@@ -45,6 +45,7 @@ library
     , turtle
     , yaml
   exposed-modules:
+      Build
       Context
       DBConfig
       Deploy
@@ -53,7 +54,6 @@ library
       Lib
       Options
       Run
-      StackBuild
   other-modules:
       Paths_hasm
   default-language: Haskell2010
