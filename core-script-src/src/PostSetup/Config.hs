@@ -1,10 +1,12 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric  #-}
+{-# LANGUAGE DeriveAnyClass  #-}
+{-# LANGUAGE DeriveGeneric   #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module PostSetup.Config where
 
+import           Control.Lens.TH
 import           Data.Aeson
-import           Data.Text    (Text)
+import           Data.Text       (Text)
 import           GHC.Generics
 
 data HASMFile =
@@ -21,3 +23,5 @@ data DeployConfig =
     {remoteDockerBaseDir :: Maybe RemoteDockerBaseDir
     ,sha1                :: Maybe SHA1
     }
+
+makeClassy ''DeployConfig

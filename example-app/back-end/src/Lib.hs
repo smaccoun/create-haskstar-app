@@ -38,11 +38,23 @@ startApp charArgs = do
     let logger = getLogger config
 
     midware <- makeMiddleware logger env
-    let initialLogMsg = intercalate " " $ ["Listening on port", show port, "at level", show env, "and logging to", (show logTo), "with args", T.unpack (T.unwords args), "\n"]
-    FL.pushLogStr logger $ FL.toLogStr initialLogMsg
+    FL.pushLogStr logger $ FL.toLogStr $ logInitialMetaInfo port env logTo args
     Warp.run port
       $ midware
       $ app config
+
+
+logInitialMetaInfo :: (Show a, Show a1, Show a2) =>
+                      a2 -> a1 -> a -> [Text] -> [Char]
+logInitialMetaInfo port env logTo args =
+  intercalate " " $
+      ["Listening on port", show port
+      , "at level", show env
+      , "and logging to", (show logTo)
+      , "with args", T.unpack (T.unwords args)
+      , "\n"
+      ]
+
 
 setAppConfig :: Environment -> [Text] -> IO (App.Config, LogTo)
 setAppConfig env args = do

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 118efb193887a4bdd5aea0c9227391744536814a46278fa8c4a265be3ed16031
+-- hash: ac567a696264189282a78796f2ab2684e8dd14f870e842968dd1ccb888e35ab4
 
 name:           hasm
 version:        0.1.0.0
@@ -37,6 +37,7 @@ library
     , dotenv
     , envy
     , foldl
+    , lens
     , mtl
     , regex-compat
     , servant-auth-server
@@ -74,6 +75,7 @@ executable hasm
     , envy
     , foldl
     , hasm
+    , lens
     , mtl
     , regex-compat
     , servant-auth-server
@@ -101,6 +103,7 @@ test-suite build-test
     , envy
     , foldl
     , hasm
+    , lens
     , mtl
     , regex-compat
     , servant-auth-server

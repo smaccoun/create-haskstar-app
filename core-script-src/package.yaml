@@ -39,6 +39,7 @@ dependencies:
 - turtle
 - containers
 - yaml
+- lens
 
 library:
   source-dirs: src

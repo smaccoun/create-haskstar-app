@@ -1,11 +1,9 @@
 FROM  fpco/stack-build:lts-9.4
 
 # Copy everything to docker ecosystem
-WORKDIR /app/
+WORKDIR /opt/
 RUN cabal update
-COPY ["./*.cabal","./stack.yaml", "./"]
-COPY ./app  ./app
-COPY ./src/ ./src
+COPY ./ ./
 
 RUN stack setup
 RUN stack build -j1

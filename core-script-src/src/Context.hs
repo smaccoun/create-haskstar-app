@@ -2,10 +2,13 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE NamedFieldPuns             #-}
 {-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE TemplateHaskell            #-}
 
 module Context where
 
-import           Control.Monad.Reader      (MonadReader, ReaderT, ask)
+import           Control.Lens              (view, (^.))
+import           Control.Lens.TH
+import           Control.Monad.Reader      (MonadReader, ReaderT, ask, asks)
 import           Distribution.System
 import           Filesystem.Path.CurrentOS
 import           GHC.Generics
@@ -26,16 +29,19 @@ newtype ExecutablePath = ExecutablePath { unExecutablePath :: Turtle.FilePath }
 
 data Context =
   Context
-    {appRootDir :: Turtle.FilePath
-    ,exeRootDir :: ExecutablePath
-    ,curOS      :: OS
-    ,mbTemplate :: Maybe Text
+    {_appRootDir :: Turtle.FilePath
+    ,_exeRootDir :: ExecutablePath
+    ,_curOS      :: OS
+    ,_mbTemplate :: Maybe Text
     }
 
-getAppRootDir :: ScriptRunContext Turtle.FilePath
-getAppRootDir = do
-  Context{appRootDir} <- ask
-  return appRootDir
+makeClassy ''Context
+
+
+getAppRootDir :: (MonadReader r m, HasContext r)
+              => m Turtle.FilePath
+getAppRootDir =
+  Control.Lens.view (context . appRootDir)
 
 fromAppRootDir :: ScriptRunContext ()
 fromAppRootDir = do
@@ -44,22 +50,29 @@ fromAppRootDir = do
 
 getCurOS :: ScriptRunContext OS
 getCurOS = do
-  context <- ask
-  return (curOS context)
+  Control.Lens.view (context . curOS)
 
 getOpsDir :: ScriptRunContext Turtle.FilePath
 getOpsDir = do
-  Context{appRootDir} <- ask
-  return $ appRootDir </> decodeString "ops"
+  rdir <- getAppRootDir
+  return $ rdir </> decodeString "ops"
 
 getTTab :: ScriptRunContext Turtle.FilePath
 getTTab = do
   opsDir' <- getOpsDir
   return $ opsDir' </> decodeString "ttab"
 
-getMbTemplate :: ScriptRunContext (Maybe Text)
+getMbTemplate :: (MonadReader r m, HasContext r)
+              => m (Maybe Text)
 getMbTemplate = do
-  Context{mbTemplate} <- ask
-  return mbTemplate
+  Control.Lens.view (context . mbTemplate)
+
+backendDir :: (MonadReader r m, HasContext r)
+              => m Turtle.FilePath
+backendDir = do
+  rdir <- getAppRootDir
+  return $ rdir </> decodeString "back-end"
+
+
 
 
