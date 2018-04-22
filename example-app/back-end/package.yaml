@@ -1,0 +1,96 @@
+name:                api
+version:             0.1.0.0
+github:              "smaccoun/api"
+license:             BSD3
+author:              "Steven MacCoun"
+maintainer:          "theraccoun@gmail.com"
+copyright:           "2018 Steven MacCoun"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on Github at <https://github.com/smaccoun/api#readme>
+
+default-extensions:
+- OverloadedStrings
+- NoImplicitPrelude
+- ScopedTypeVariables
+- FlexibleContexts
+- FlexibleInstances
+- MultiParamTypeClasses
+- RecordWildCards
+- NamedFieldPuns
+- DeriveGeneric
+- DuplicateRecordFields
+- TypeOperators
+- DataKinds
+
+dependencies:
+- aeson
+- attoparsec
+- base >=4.7 && <5
+- bytestring
+- beam-core
+- beam-migrate
+- beam-postgres
+- data-default
+- fast-logger
+- jose
+- lens
+- mtl
+- natural-transformation
+- postgresql-simple
+- protolude
+- resource-pool
+- servant
+- servant-server
+- servant-auth
+- servant-auth-server
+- servant-swagger
+- servant-swagger-ui
+- servant-auth-swagger
+- scrypt
+- swagger2
+- text
+- transformers
+- uuid
+- wai
+- wai-cors
+- wai-extra
+- warp
+- word8
+
+
+library:
+  source-dirs: src
+
+executables:
+  api-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - api
+
+
+tests:
+  api-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - api

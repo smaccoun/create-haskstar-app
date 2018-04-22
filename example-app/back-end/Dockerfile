@@ -8,7 +8,7 @@ COPY ./app  ./app
 COPY ./src/ ./src
 
 RUN stack setup
-RUN stack build -j1 --dependencies-only
+RUN stack build -j1
 
 CMD stack exec api-exe
 

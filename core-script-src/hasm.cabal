@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 22a86a193b9502173cb70ac09d856fd4c03ccbe26fef946eca80c086769edc3e
+-- hash: d986f14e7e5a9c3dc3cc3dc207d76b5265100dc189b0c8e74c8319864e935dfa
 
 name:           hasm
 version:        0.1.0.0
@@ -51,6 +51,7 @@ library
       DirSetup
       Interactive
       Lib
+      Options
       Run
       StackBuild
   other-modules:

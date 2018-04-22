@@ -50,8 +50,7 @@ jobs:
           name: deploy
           no_output_timeout: 120m
           command: |
-            $(aws ecr get-login --region us-west-2)
-            hasm deploy staging --SHA1 $CIRCLE_SHA1 --remoteDockerDir 160859074713.dkr.ecr.us-west-1.amazonaws.com/hasm-elm-example
+            ($(aws ecr get-login --region us-west-1) && hasm deploy staging --SHA1 $CIRCLE_SHA1)
 
 
 

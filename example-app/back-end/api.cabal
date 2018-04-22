@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b9ab146151c4bdb84e210ee2499bc66285abe2613a903d71496f15ebc389085a
+-- hash: 0d3cad66ecc18da6a33caa3382e19ff6e939d5a95e47431dbb697a2aa4b3da08
 
 name:           api
 version:        0.1.0.0
@@ -33,10 +33,10 @@ library
       aeson
     , attoparsec
     , base >=4.7 && <5
-    , bytestring
     , beam-core
     , beam-migrate
     , beam-postgres
+    , bytestring
     , data-default
     , fast-logger
     , jose
@@ -46,14 +46,14 @@ library
     , postgresql-simple
     , protolude
     , resource-pool
+    , scrypt
     , servant
-    , servant-server
     , servant-auth
     , servant-auth-server
+    , servant-auth-swagger
+    , servant-server
     , servant-swagger
     , servant-swagger-ui
-    , servant-auth-swagger
-    , scrypt
     , swagger2
     , text
     , transformers
@@ -64,22 +64,22 @@ library
     , warp
     , word8
   exposed-modules:
-      Api.Endpoints.User
-      Api.Endpoints.Login
       Api.API
+      Api.Endpoints.Login
+      Api.Endpoints.User
       Api.Resource
       App
       AppPrelude
       Config.AppConfig
-      Config.ServerConfig
       Config.DBConfig
+      Config.ServerConfig
+      Database.Schema
+      Database.Tables.User
+      Database.Transaction
       Lib
+      Models.Credentials
       Models.Login
       Models.User
-      Models.Credentials
-      Database.Transaction
-      Database.Tables.User
-      Database.Schema
   other-modules:
       Paths_api
   default-language: Haskell2010
@@ -98,18 +98,28 @@ executable api-exe
     , beam-core
     , beam-migrate
     , beam-postgres
+    , bytestring
     , data-default
     , fast-logger
     , jose
+    , lens
     , mtl
     , natural-transformation
     , postgresql-simple
     , protolude
     , resource-pool
+    , scrypt
     , servant
+    , servant-auth
+    , servant-auth-server
+    , servant-auth-swagger
     , servant-server
+    , servant-swagger
+    , servant-swagger-ui
+    , swagger2
     , text
     , transformers
+    , uuid
     , wai
     , wai-cors
     , wai-extra
@@ -134,17 +144,28 @@ test-suite api-test
     , beam-core
     , beam-migrate
     , beam-postgres
+    , bytestring
     , data-default
     , fast-logger
+    , jose
+    , lens
     , mtl
     , natural-transformation
     , postgresql-simple
     , protolude
     , resource-pool
+    , scrypt
     , servant
+    , servant-auth
+    , servant-auth-server
+    , servant-auth-swagger
     , servant-server
+    , servant-swagger
+    , servant-swagger-ui
+    , swagger2
     , text
     , transformers
+    , uuid
     , wai
     , wai-cors
     , wai-extra
