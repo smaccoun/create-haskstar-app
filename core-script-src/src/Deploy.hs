@@ -16,8 +16,8 @@ import           Turtle
 
 deploy :: DeployConfig -> ScriptRunContext ()
 deploy deployConfig = do
-  fromAppRootDir
-  cd "back-end"
+  backendDirRoot <- getBackendDir
+  cd backendDirRoot
   remoteDockerDir <- getRemoteDockerBaseDir deployConfig
   _ <- shell (dockerBuildRelative remoteDockerDir) empty
   dockerPushRelative remoteDockerDir

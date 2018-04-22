@@ -19,9 +19,9 @@ import           Turtle
 runFrontEnd :: ScriptRunContext ()
 runFrontEnd = do
   liftIO $ majorCommentBlock "STARTING WEB SERVER"
-  fromAppRootDir
   curOS' <- getCurOS
-  cd "front-end"
+  frontendDir <- getFrontendDir
+  cd frontendDir
   let runCmd = "yarn start"
   s <-
     case curOS' of
@@ -38,8 +38,8 @@ runFrontEnd = do
 runBackEnd :: ScriptRunContext ()
 runBackEnd = do
   liftIO $ majorCommentBlock "STARTING LOCAL BACK-END"
-  fromAppRootDir
-  cd "back-end"
+  backendDir <- getBackendDir
+  cd backendDir
   s <- runWithTTab "./run.sh"
   case s of
     ExitSuccess   -> do
@@ -76,14 +76,14 @@ dbLoginCmd (PGConfig pgDB pgUser pgPassword pgPort) =
 loginDB :: ScriptRunContext ()
 loginDB = do
   pgConfig <- getPGConfig
+  liftIO $ print $ dbLoginCmd pgConfig
   _ <- shell (dbLoginCmd pgConfig) empty
   return ()
 
 
 runDB :: ScriptRunContext ()
 runDB = do
-  fromAppRootDir
-  cd "./db"
+  backendDir <- getBackendDir
   pgConfig <- getPGConfig
   let dockerRunCmd = dockerRunDBCmd pgConfig
   liftIO $ majorCommentBlock $ "STARTING DB " <> dockerRunCmd
@@ -91,8 +91,6 @@ runDB = do
   case dockerRunResult of
     ExitSuccess   -> do
         liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dbLoginCmd pgConfig
-        _ <- shell "stack build" empty
-        _ <- shell "./run.sh" empty
         fromAppRootDir
         return ()
     ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)

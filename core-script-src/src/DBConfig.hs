@@ -37,8 +37,8 @@ showDBInfo (DBConfig host port dbName dbUser dbPassword dbSchema) =
   subCommentBlock $ "Spinning up a local db instance in Docker with DB name " <> dbName <> " on port " <> (T.pack $ show port) <> " with username " <> dbUser <> " and password " <> dbPassword
 
 
-textForDBEnvFile :: DBConfig -> Turtle.FilePath -> T.Text
-textForDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
+textForDBEnvFile :: DBConfig -> T.Text
+textForDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) =
   T.intercalate "\n" $
          [ dbDatabaseLn dbName
          , dbUserLn dbUser

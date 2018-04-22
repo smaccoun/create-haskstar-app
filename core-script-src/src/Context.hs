@@ -67,11 +67,29 @@ getMbTemplate :: (MonadReader r m, HasContext r)
 getMbTemplate = do
   Control.Lens.view (context . mbTemplate)
 
-backendDir :: (MonadReader r m, HasContext r)
-              => m Turtle.FilePath
-backendDir = do
+getWebStackDir :: (MonadReader r m, HasContext r)
+              => String
+              -> m Turtle.FilePath
+getWebStackDir webStackDir = do
   rdir <- getAppRootDir
-  return $ rdir </> decodeString "back-end"
+  return $ rdir </> decodeString webStackDir
+
+
+getBackendDir :: (MonadReader r m, HasContext r)
+              => m Turtle.FilePath
+getBackendDir =
+  getWebStackDir "back-end"
+
+
+getFrontendDir :: (MonadReader r m, HasContext r)
+              => m Turtle.FilePath
+getFrontendDir =
+  getWebStackDir "front-end"
+
+getDBDir :: (MonadReader r m, HasContext r)
+              => m Turtle.FilePath
+getDBDir =
+  getWebStackDir "db"
 
 
 

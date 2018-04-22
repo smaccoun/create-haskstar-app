@@ -13,7 +13,8 @@ import qualified Data.Text                 as T
 import           Data.Text.Encoding        (decodeUtf8)
 import           Data.Text.Lazy.Builder    (toLazyText)
 import           DBConfig
-import           Filesystem.Path.CurrentOS (encodeString)
+import qualified Filesystem.Path           as FP
+import           Filesystem.Path.CurrentOS (decodeString, encodeString)
 import           Interactive
 import           Lib
 import           Run                       (runDB)
@@ -75,15 +76,16 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
 setupDBDir :: DBConfig -> ScriptRunContext ()
 setupDBDir dbConfig = do
   liftIO $ majorCommentBlock "SETTING UP DB"
-  rootDir <- getAppRootDir
-  fromAppRootDir
-  mkdir "db"
+  dbDir <- getDBDir
   opsDir' <- getOpsDir
-  let simpleMigrationDir = opsDir' </> fromText "db" </> fromText "migrations" </> fromText "haskell" </> fromText "pg-simple"
-  cptree simpleMigrationDir "./db"
-  cd "./db"
-  let dbEnvFile = textForDBEnvFile dbConfig rootDir
+  let templateMigrationPackage = (fmap decodeString) ["db", "migrations", "haskell",  "pg-simple"] & FP.concat
+      simpleMigrationDir = opsDir' </> templateMigrationPackage
+  cptree simpleMigrationDir dbDir
+  cd dbDir
+  let dbEnvFile = textForDBEnvFile dbConfig
   liftIO $ writeTextFile ".env" dbEnvFile
+
+  _ <- shell "stack build" empty
   runDB
 
 
