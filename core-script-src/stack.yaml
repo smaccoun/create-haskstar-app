@@ -1,4 +1,4 @@
-resolver: lts-9.4
+resolver: lts-11.2
 
 packages:
 - .
@@ -10,3 +10,4 @@ extra-deps:
 - dotenv-0.5.2.4
 - megaparsec-6.5.0
 - parser-combinators-0.4.0
+- cookie-0.4.3

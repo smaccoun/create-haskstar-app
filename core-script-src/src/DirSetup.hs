@@ -1,5 +1,7 @@
 #!/usr/bin/env runhaskell
 
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NamedFieldPuns    #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -15,11 +17,24 @@ import           Data.Text.Lazy.Builder    (toLazyText)
 import           DBConfig
 import qualified Filesystem.Path           as FP
 import           Filesystem.Path.CurrentOS (decodeString, encodeString)
+import           GHC.Generics
 import           Interactive
 import           Lib
 import           Run                       (runDB)
 import           Servant.Auth.Server       (generateKey)
 import           Turtle
+
+
+data FrontEndSetupConfig =
+  FrontEndSetupConfig
+    {frontEndLang         :: FrontEndLang
+    ,frontEndBaseTemplate :: GitBaseTemplateUrl
+    }
+
+data FrontEndLang =
+    Elm
+  | GHCJS
+    deriving (Generic, Show, A.FromJSON)
 
 
 -- | Setup DB, Front-End, Back-End directories without building them
@@ -29,29 +44,41 @@ setupCoreDirectories dbConfig = do
   majorCommentBlock "DB"
   setupDBDir dbConfig
   majorCommentBlock "BACK-END"
-  setupDir dbConfig backendDirConfig
+  setupBackendDir dbConfig
   majorCommentBlock "FRONT-END"
-  setupDir dbConfig elmConfig
+  setupFrontendDir elmFrontEndSetupConfig
 
 setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
 setupAllSubDirectories dbConfig = do
   setupOpsDir
   setupCoreDirectories dbConfig
 
+setupBackendDir :: DBConfig -> ScriptRunContext ()
+setupBackendDir dbConfig = do
+  cloneTemplateAsDir backendBaseGitUrl (CoreStackDirName "back-end")
+  mkBackendEnv dbConfig
+  return ()
+  where
+    backendBaseGitUrl = GitBaseTemplateUrl "https://github.com/smaccoun/haskstar-haskell"
 
-setupDir :: DBConfig -> DirSetup -> ScriptRunContext ()
-setupDir dbConfig dirSetup = do
-  appRootDir' <- getAppRootDir
-  let (dname, dPath) = getDir appRootDir' dirSetup
-  getTemplate dPath dirSetup
-  case dirStackType dirSetup of
-    BACK_END  -> liftIO $ mkBackendEnv dbConfig dPath
-    FRONT_END -> return ()
+setupFrontendDir :: FrontEndSetupConfig -> ScriptRunContext ()
+setupFrontendDir frc@(FrontEndSetupConfig _ gitBaseUrl ) = do
+  cloneTemplateAsDir gitBaseUrl (CoreStackDirName "front-end")
+  buildFrontendBaseLibraries frc
+  return ()
 
+buildFrontendBaseLibraries :: FrontEndSetupConfig -> ScriptRunContext ()
+buildFrontendBaseLibraries _ = do
+  --TODO: Handle GHCJS initial compile case
+  frontendDir <- getFrontendDir
+  cd frontendDir
+  _ <- shell "yarn install" empty
+  _ <- shell "elm-package install --yes" empty
+  return ()
 
-mkBackendEnv :: DBConfig -> Turtle.FilePath -> IO ()
-mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir = do
-  jwkKey <- generateKey
+mkBackendEnv :: DBConfig -> ScriptRunContext ()
+mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) = do
+  jwkKey <- liftIO generateKey
   let textFile = T.intercalate "\n" $
          [ dbHostLn
          , T.pack $ dbPortLn port
@@ -61,7 +88,9 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) backendDir =
          , dbPasswordLn dbPassword
          , jwkLine jwkKey
          ]
-  writeTextFile (backendDir </> ".env") textFile
+  backendDir <- getBackendDir
+  liftIO $ writeTextFile (backendDir </> ".env") textFile
+  return ()
 
   where
     dbHostLn    = "DB_HOST=localhost"
@@ -106,50 +135,27 @@ setupOpsDir = do
     cptree "./ops/ci/.circleci/" circleDir
     rmtree "create-haskstar-app"
 
-data DirSetup =
-  DirSetup
-    {dirStackType :: DirStackType
-    ,dirName      :: Text
-    ,gitDir       :: Text
-    }
+newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
+newtype CoreStackDirName =  CoreStackDirName Text
 
-data DirStackType = FRONT_END | BACK_END
-
-elmConfig :: DirSetup
-elmConfig =
-  DirSetup
-      {dirStackType = FRONT_END
-      ,dirName = "front-end"
-      ,gitDir = "git@github.com:smaccoun/haskstar-elm.git"
-      }
-
-backendDirConfig :: DirSetup
-backendDirConfig =
-  DirSetup
-      {dirStackType = BACK_END
-      ,dirName = "back-end"
-      ,gitDir = "git@github.com:smaccoun/haskstar-haskell.git"
-      }
-
-asLocal :: Text -> Text
-asLocal dirName = "./" <> dirName
-
-getTemplate :: Turtle.FilePath -> DirSetup -> ScriptRunContext ()
-getTemplate dPath dirSetup = do
-  let dname = pack $ encodeString $ filename dPath
-  liftIO $ subCommentBlock $ "Setting up " <> dname
-  fromAppRootDir
+cloneTemplateAsDir :: GitBaseTemplateUrl -> CoreStackDirName -> ScriptRunContext ()
+cloneTemplateAsDir (GitBaseTemplateUrl gitUrl) (CoreStackDirName dirName) = do
+  liftIO $ subCommentBlock $ "Setting up " <> dirName
+  appRootDir <- fromAppRootDir
   mbTemplate <- getMbTemplate
-  setupResult <- liftIO $ gitCloneShallow (gitDir dirSetup <> " " <> dname) mbTemplate
-  liftIO $ rmtree (dPath </> fromText ".git")
+  setupResult <- liftIO $ gitCloneShallow (gitUrl <> " " <> dirName) mbTemplate
   case setupResult of
-    ExitSuccess   -> return ()
+    ExitSuccess   -> do
+      liftIO $ rmtree (fromText dirName </> fromText ".git")
+      return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
-getDir :: Turtle.FilePath -> DirSetup -> (Text, Turtle.FilePath)
-getDir rootDir dirSetup =
-  (dname, dPath)
-  where
-    dname = dirName dirSetup
-    dPath = rootDir </> (fromText dname)
 
+
+--TODO: Read this in from config file
+elmFrontEndSetupConfig :: FrontEndSetupConfig
+elmFrontEndSetupConfig =
+  FrontEndSetupConfig
+    {frontEndLang = Elm
+    ,frontEndBaseTemplate = GitBaseTemplateUrl "git@github.com:smaccoun/haskstar-elm.git"
+    }

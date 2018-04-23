@@ -17,11 +17,10 @@ buildFrontEnd :: ScriptRunContext ()
 buildFrontEnd = do
   topDir <- getAppRootDir
   liftIO $ subCommentBlock "Building front-end"
-  let frontEndPath = getDir topDir elmConfig & snd
+  frontEndPath <- getFrontendDir
   liftIO $ putStrLn $ encodeString frontEndPath
   cd frontEndPath
-  _ <- shell "yarn install" empty
-  _ <- shell "elm-package install --yes" empty
+  _ <- shell "yarn build" empty
   return ()
 
 buildBackEnd :: ScriptRunContext ()
@@ -29,7 +28,7 @@ buildBackEnd = do
   liftIO $ subCommentBlock "Building back-end"
   fromAppRootDir
   topDir <- getAppRootDir
-  let backendDir = getDir topDir backendDirConfig & snd
+  backendDir <- getBackendDir
   cd backendDir
   _ <- shell "stack build" empty
   return ()

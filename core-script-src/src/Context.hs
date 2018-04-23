@@ -43,10 +43,11 @@ getAppRootDir :: (MonadReader r m, HasContext r)
 getAppRootDir =
   Control.Lens.view (context . appRootDir)
 
-fromAppRootDir :: ScriptRunContext ()
+fromAppRootDir :: ScriptRunContext Turtle.FilePath
 fromAppRootDir = do
   appRootDir <- getAppRootDir
   cd appRootDir
+  return appRootDir
 
 getCurOS :: ScriptRunContext OS
 getCurOS = do
