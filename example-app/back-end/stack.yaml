@@ -1,4 +1,4 @@
-resolver: lts-9.4
+resolver: lts-11.2
 
 ghc-options:
   api: -Wall -Werror -O0 -fwarn-tabs -fno-warn-orphans
@@ -18,12 +18,19 @@ packages:
     - beam-postgres
 
 extra-deps:
-- servant-0.11
-- servant-server-0.11
+- http-types-0.12.1
+- servant-0.13
+- servant-server-0.13
 - foundation-edge-0.0.3
 - servant-auth-0.3.1.0
 - servant-auth-server-0.3.2.0
 - servant-auth-swagger-0.2.9.0
+- conduit-1.2.13.1
+- cookie-0.4.3
+- free-4.12.4
+- haskell-src-exts-1.19.1
+- pqueue-1.3.2.3
+- resourcet-1.1.11
 
 flags: {}
 

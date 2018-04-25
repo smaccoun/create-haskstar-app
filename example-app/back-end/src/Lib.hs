@@ -9,7 +9,6 @@ import           App
 import           AppPrelude
 import           Control.Monad.Except       (catchError)
 import           Control.Monad.Trans.Reader (runReaderT)
-import           Control.Natural            ((:~>) (NT))
 import qualified Crypto.JOSE                as Jose
 import qualified Data.Aeson                 as A
 import qualified Data.ByteString.Lazy       as LBS
@@ -20,13 +19,13 @@ import           Servant                    as S
 import           Servant                    ((:<|>))
 import           Servant.Auth.Server        (JWT, JWTSettings,
                                              defaultCookieSettings,
+                                             CookieSettings(..),
                                              defaultJWTSettings)
 import qualified Servant.Swagger.UI         as SUI
 import qualified System.Log.FastLogger      as FL
 
 import           Api.API
 import           Config.AppConfig
-
 
 startApp :: [[Char]] -> IO ()
 startApp charArgs = do
@@ -86,7 +85,9 @@ app config@(Config _ _ authKey) = do
 
 appServer :: App.Config -> JWTSettings ->  S.Server (API auths)
 appServer config jwtConfig =
-  S.enter (NT $ runCustomHandler config) (serverAPI jwtConfig)
+  let c = Proxy :: Proxy '[CookieSettings, JWTSettings]
+  in
+  hoistServerWithContext api c (runCustomHandler config) (serverAPI jwtConfig)
 
 type ApiWithDocs =
        API '[JWT]
