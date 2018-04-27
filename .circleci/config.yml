@@ -8,13 +8,21 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: install hasm
-          command: |
-            git clone git@github.com:smaccoun/create-haskstar-app.git
-            cd create-haskstar-app
-            ./install.sh
+      - restore_cache:
+          keys:
+            - stack-{{ .Branch }}-{{ checksum "./back-end/stack.yaml" }}
 
+      - run:
+          name: build_api
+          command: |
+            ls -la
+            ls -la ~/.stack
+            mkdir -p /opt/build
+            cp -r ./back-end/* /opt/build
+            cd /opt/build
+            ls
+            stack setup
+            stack build
 
       - setup_remote_docker:
           docker_layer_caching: true
@@ -28,13 +36,41 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
 
+      - run:
+          name: containerize_build
+          command: |
+            cd /opt/build
+            ls -la
+            docker build --rm=false -t smaccoun/hasm-elm-example:latest -f DockerfileExe .
+
+      - save_cache:
+          key: stack-{{ .Branch }}-{{ checksum "./back-end/stack.yaml" }}
+          paths:
+            - ~/.stack
+            - ./back-end/.stack-work
+
+      - run:
+          name: install_pip
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install python-pip
+            sudo apt-get install python-dev
+            pip install --upgrade botocore
+
+      - run:
+          name: install_awscli
+          command: sudo apt-get -y install awscli
+
+      - run:
+          name: install_awsebcli
+          command: pip install --upgrade --user awsebcli
 
       - run:
           name: deploy
-          no_output_timeout: 120m
           command: |
-            hasm deploy staging --SHA1 $CIRCLE_SHA1 --remoteDockerDir smaccoun/hasm-haskell
-
+            docker image ls
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push smaccoun/hasm-elm-example:latest
 
 
 workflows:
