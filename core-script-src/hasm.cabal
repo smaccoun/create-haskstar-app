@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ac567a696264189282a78796f2ab2684e8dd14f870e842968dd1ccb888e35ab4
+-- hash: d2358ff29747da3228c6540f29132003b6f488e7833eac911ef604af834d9203
 
 name:           hasm
 version:        0.1.0.0
@@ -29,8 +29,7 @@ library
   hs-source-dirs:
       src
   build-depends:
-      Cabal
-    , aeson
+      aeson
     , base >=4.7 && <5
     , bytestring
     , containers
@@ -66,8 +65,7 @@ executable hasm
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      Cabal
-    , aeson
+      aeson
     , base >=4.7 && <5
     , bytestring
     , containers
@@ -94,8 +92,7 @@ test-suite build-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      Cabal
-    , aeson
+      aeson
     , base >=4.7 && <5
     , bytestring
     , containers

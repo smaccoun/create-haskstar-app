@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hasm-elm-example
+  labels:
+    name: hasm-elm-example
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  strategy:
+    type: "RollingUpdate"  
+  selector:
+    matchLabels:
+      name: "hasm-elm-example"
+  template:
+    metadata:
+      labels:
+        name: "hasm-elm-example"
+        version: "1.0.0"
+    spec:
+      containers:
+        - name: "hasm-elm-example"
+          image: "gcr.io/hasm-elm-example/hasm-elm-example:v1"
+          envFrom:
+            - configMapRef:
+                name: hasm-elm-envvars
+          terminationMessagePath: "/tmp/my-log"   
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 50m
+            limits:
+              memory: 100Mi
+              cpu: 200m
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: external
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: external
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+              name: "external"
+              protocol: "TCP"

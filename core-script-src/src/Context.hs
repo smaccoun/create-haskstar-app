@@ -9,7 +9,6 @@ module Context where
 import           Control.Lens              (view, (^.))
 import           Control.Lens.TH
 import           Control.Monad.Reader      (MonadReader, ReaderT, ask, asks)
-import           Distribution.System
 import           Filesystem.Path.CurrentOS
 import           GHC.Generics
 import           Turtle
@@ -31,7 +30,6 @@ data Context =
   Context
     {_appRootDir :: Turtle.FilePath
     ,_exeRootDir :: ExecutablePath
-    ,_curOS      :: OS
     ,_mbTemplate :: Maybe Text
     }
 
@@ -48,10 +46,6 @@ fromAppRootDir = do
   appRootDir <- getAppRootDir
   cd appRootDir
   return appRootDir
-
-getCurOS :: ScriptRunContext OS
-getCurOS = do
-  Control.Lens.view (context . curOS)
 
 getOpsDir :: ScriptRunContext Turtle.FilePath
 getOpsDir = do

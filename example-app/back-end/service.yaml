@@ -1,0 +1,14 @@
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: hasm-elm-example
+  labels:
+    name: hasm-elm-example
+    version: 1.0.0
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: external
+  selector:
+    name: hasm-elm-example

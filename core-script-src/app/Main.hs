@@ -9,7 +9,6 @@ import           Control.Exception
 import           Control.Monad.Reader      (runReaderT)
 import           Data.List                 (isInfixOf, sort)
 import qualified Data.Text                 as T
-import           Distribution.System
 import           Filesystem.Path
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
@@ -87,8 +86,7 @@ deployCmd context deployConfig deployEnv = do
 setupNew :: Text -> Maybe Text -> Maybe Text -> IO ()
 setupNew appNameOption mbFrontEndOption mbTemplate = do
   curDir <- pwd
-  let curOS = buildOS
-      appDir = curDir </> fromText appNameOption
+  let appDir = curDir </> fromText appNameOption
   executablePath <- getExecutablePath'
   majorCommentBlock "INITIAL SETUP"
   let dbConfig = mkDBConfig appNameOption
@@ -96,7 +94,7 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
 
   mkdir appDir
 
-  let context = Context appDir executablePath curOS mbTemplate
+  let context = Context appDir executablePath mbTemplate
   let hasmFile = (HASMFile (Just appNameOption) Nothing)
   io (writeHASMFile hasmFile) context
 

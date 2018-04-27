@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hasm-elm-envvars
+data:
+  DB_HOST: localhost
+  DB_PORT: "5432"
+  DB_DATABASE: example_app
+  DB_SCHEMA: public
+  DB_USERNAME: postgres
+  DB_PASSWORD: postgres
+  AUTH_JWK: "{\"k\":\"ZYumAg5RUYIyS5c1IBT1qVN3nQAyFfeiEx0Kn4gUWEd52lMlbSiLedKAkruU7AiEa-7HTuGZVjik-cZjIBsc34G4tDOX97O-_m_VS1uNfeyCoHAwZGeUkJUMfQtd4uJlYsoqf_ZcbxV0TAEH2qwvp-jsN8PNilAK0HG9KrgDumzMrljfSJQ1B-Chs5MZQUB61eXshG0TdI4qdXjziIgkkJG9LlmQS_-5oGhX7PeBUOErgH7b-4UXHqcc3kU8CJbNfnZ97LsMT5ESIPkaTEQNE1JEreNGmvFIaou6tPz9p-3FDEmUofhocRRm3MuJkbno-RrYJgRZ6XYKLbmI_5sZVg\",\"kty\":\"oct\"}"

@@ -1,0 +1,7 @@
+# List first the packages that you edit locally and want compiled "all the time", by cabal:
+local-packages:
+  hasm: # package name
+    location: .    # location on your disk
+
+
+

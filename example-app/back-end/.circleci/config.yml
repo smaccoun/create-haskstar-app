@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: fpco/stack-build:lts-9.4
+      - image: fpco/stack-build:lts-11.2
 
     steps:
       - checkout

@@ -16,7 +16,6 @@ import qualified Data.Set                  as Set
 import qualified Data.Text                 as T
 import qualified Data.Text.IO              as TIO
 import qualified Data.Yaml                 as YAML
-import           Distribution.System
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
 import           Interactive
@@ -81,7 +80,7 @@ getPostSetupContext :: IO Context
 getPostSetupContext = do
     appRootDir <- pwd
     executablePath <- getExecutablePath'
-    return $ Context appRootDir executablePath buildOS Nothing
+    return $ Context appRootDir executablePath Nothing
 
 validateAndRunPostSetupCmd :: Context -> ScriptRunContext () -> IO ()
 validateAndRunPostSetupCmd context cmd = do

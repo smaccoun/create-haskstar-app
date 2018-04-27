@@ -10,7 +10,6 @@ import           Context
 import qualified Control.Foldl              as Fold
 import           Data.Text                  (pack)
 import           DBConfig                   (DBConfig, PGConfig (..), port)
-import           Distribution.System
 import           Filesystem.Path.CurrentOS  (encodeString)
 import           Interactive
 import           System.Envy
@@ -19,14 +18,10 @@ import           Turtle
 runFrontEnd :: ScriptRunContext ()
 runFrontEnd = do
   liftIO $ majorCommentBlock "STARTING WEB SERVER"
-  curOS' <- getCurOS
   frontendDir <- getFrontendDir
   cd frontendDir
   let runCmd = "yarn start"
-  s <-
-    case curOS' of
-      OSX -> runWithTTab runCmd
-      _   -> runAsBackground runCmd
+  s <- shell runCmd empty
   case s of
     ExitSuccess -> do
         liftIO $ printf ("\nSuccessfully started server. Go to localhost:3000\n")
@@ -40,7 +35,7 @@ runBackEnd = do
   liftIO $ majorCommentBlock "STARTING LOCAL BACK-END"
   backendDir <- getBackendDir
   cd backendDir
-  s <- runWithTTab "./run.sh"
+  s <- shell "./run.sh" empty
   case s of
     ExitSuccess   -> do
         printf "\nSuccessfully started api. Logs will be output to console\n"

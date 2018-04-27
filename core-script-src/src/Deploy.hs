@@ -6,7 +6,6 @@ module Deploy where
 
 import           Context
 import           Data.Text                 (pack)
-import           Distribution.System
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
