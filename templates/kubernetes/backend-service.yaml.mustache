@@ -1,0 +1,12 @@
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: {{appName}}
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: external
+  selector:
+    app: {{appName}}
+    tier: backend
