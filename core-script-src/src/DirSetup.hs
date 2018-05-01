@@ -151,6 +151,7 @@ setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
   setupOpsTree
   configureDeploymentScripts
+  configureCircle
 
 setupOpsTree :: ScriptRunContext ()
 setupOpsTree = do
@@ -180,6 +181,28 @@ configureDeploymentScripts = do
   configureBackendServiceFile
   configureBackendDeploymentFile
   configureFrontendDeploymentFile
+  configureCircle
+  return ()
+
+configureCircle :: ScriptRunContext ()
+configureCircle = do
+  topRootDir <- fromAppRootDir
+  opsDir' <- getOpsDir
+  let configStache = "config.yml.mustache"
+      ciPath = opsDir' </> "ci"
+      circleTemplatePath = ciPath </> ".circleci" </> fromText configStache
+  hasmFile <- readHASMFile
+  circleTemplate <- compileMustacheFile $ encodeString circleTemplatePath
+  let writeToFilename = T.replace ".mustache" "" configStache
+      circleConfigYamlPath = topRootDir </> "/.circleci" </> fromText writeToFilename
+  _ <- liftIO $ writeTextFile circleConfigYamlPath
+              $ TL.toStrict
+              $ renderMustache circleTemplate $
+                A.object
+                  ["appName" A..= (hasmFile ^. appName)
+                  ,"remoteDockerHub" A..= ("meow" :: Text)
+                  ]
+  rmtree ciPath
   return ()
 
 
