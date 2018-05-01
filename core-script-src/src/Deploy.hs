@@ -34,7 +34,7 @@ getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) = do
     Just rd -> return $ tagRemoteDir rd mbSHA1
     Nothing -> do
       hasmFile <- readHASMFile
-      case remoteDockerContainer hasmFile of
+      case remoteDockerImage hasmFile of
         Just f -> return $ tagRemoteDir (RemoteDockerBaseDir f) mbSHA1
         Nothing ->
           die $ "You must supply a remote docker container in your HASM file or using --remoteDockerDir"

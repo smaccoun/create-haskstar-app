@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{appName}}
+  name: example-app
 spec:
   replicas: 1
   revisionHistoryLimit: 5
@@ -9,22 +9,22 @@ spec:
     type: "RollingUpdate"  
   selector:
     matchLabels:
-      app: "{{appName}}"
+      app: "example-app"
       tier: backend
       track: stable
   template:
     metadata:
       labels:
-        app: "{{appName}}"
+        app: "example-app"
         tier: backend
         track: stable
     spec:
       containers:
-        - name: "{{appName}}"
-          image: "gcr.io/{{gcloudProjectID}}/{{appName}}:v1"
+        - name: "example-app"
+          image: ""
           envFrom:
             - configMapRef:
-                name: hasm-elm-envvars
+                name: "example-app-envvars" 
           terminationMessagePath: "/tmp/my-log"   
           resources:
             requests:

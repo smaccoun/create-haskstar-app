@@ -11,8 +11,8 @@ import           GHC.Generics
 
 data HASMFile =
     HASMFile
-      {appName               :: Maybe Text
-      ,remoteDockerContainer :: Maybe Text
+      {appName           :: Maybe Text
+      ,remoteDockerImage :: Maybe Text
       } deriving (Generic, ToJSON, FromJSON)
 
 newtype SHA1 = SHA1 Text

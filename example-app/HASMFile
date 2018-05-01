@@ -1,2 +1,2 @@
-remoteDockerContainer: null
 appName: example-app
+remoteDockerImage: null

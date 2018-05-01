@@ -4,7 +4,7 @@ metadata:
   name: frontend
 spec:
   selector:
-    app: {{appName}}
+    app: example-app-web
     tier: frontend
   ports:
   - protocol: "TCP"
@@ -19,20 +19,20 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{appName}}
+      app: example-app
       tier: frontend
       track: stable
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{appName}}
+        app: example-app
         tier: frontend
         track: stable
     spec:
       containers:
-      - name: hasm-elm-web
-        image: "gcr.io/{{gcloudProjectID}}/hasm-elm-web:latest"
+      - name: example-app-web
+        image: ""
         ports:
             - containerPort: 3000
               name: "external"

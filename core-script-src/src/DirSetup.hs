@@ -153,22 +153,62 @@ getKubernetesDir = do
 configureDeploymentScripts :: ScriptRunContext ()
 configureDeploymentScripts = do
   configureBackendServiceFile
+  configureBackendDeploymentFile
+  configureFrontendDeploymentFile
   return ()
+
+
+configureDeploymentFile :: Text -> A.Value -> ScriptRunContext ()
+configureDeploymentFile mustacheFileName jsonValue = do
+  kubernetesDir <- getKubernetesDir
+  let backendStacheFile = kubernetesDir </> fromText mustacheFileName
+  hasmFile <- readHASMFile
+  let appName' = appName hasmFile
+  backendStacheTemplate <- compileMustacheFile $ encodeString backendStacheFile
+  let writeToFilename = T.replace ".mustache" "" mustacheFileName
+      backendServiceYamlPath = kubernetesDir </> fromText writeToFilename
+  _ <- liftIO $ writeTextFile backendServiceYamlPath
+              $ TL.toStrict
+              $ renderMustache backendStacheTemplate jsonValue
+  rm backendStacheFile
+  return ()
+
+configureBackendDeploymentFile :: ScriptRunContext ()
+configureBackendDeploymentFile = do
+  hasmFile <- readHASMFile
+  let appName' = appName hasmFile
+      remoteDockerImage' = remoteDockerImage hasmFile
+      decoder =
+          A.object
+            [ "appName" A..= appName'
+            , "remoteDockerImage" A..= remoteDockerImage'
+          ]
+  configureDeploymentFile "backend-deployment.yaml.mustache" decoder
+
+configureFrontendDeploymentFile :: ScriptRunContext ()
+configureFrontendDeploymentFile = do
+  hasmFile <- readHASMFile
+  let appName' = appName hasmFile
+      remoteDockerImage' = remoteDockerImage hasmFile
+      decoder =
+          A.object
+            [ "appName" A..= appName'
+            , "remoteDockerImage" A..= remoteDockerImage'
+          ]
+  configureDeploymentFile "frontend.yaml.mustache" decoder
 
 
 configureBackendServiceFile :: ScriptRunContext ()
 configureBackendServiceFile = do
-  kubernetesDir <- getKubernetesDir
-  let backendStacheFile = kubernetesDir </> "backend-service.yaml.mustache"
   hasmFile <- readHASMFile
   let appName' = appName hasmFile
-  backendStacheTemplate <- compileMustacheFile $ encodeString backendStacheFile
-  let backendServiceYamlPath = kubernetesDir </> "backend-service.yaml"
-  _ <- liftIO $ writeTextFile backendServiceYamlPath
-              $ TL.toStrict
-              $ renderMustache backendStacheTemplate $
-                A.object [ "appName" A..= appName']
-  return ()
+      remoteDockerImage' = remoteDockerImage hasmFile
+      decoder =
+          A.object
+            [ "appName" A..= appName'
+          ]
+  configureDeploymentFile "backend-service.yaml.mustache" decoder
+
 
 
 newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
