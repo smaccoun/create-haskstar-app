@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d2358ff29747da3228c6540f29132003b6f488e7833eac911ef604af834d9203
+-- hash: e992ea9e57a06138bd8b8b18bf67ed55810c3ad10e99ba7ceb1679e40066376a
 
 name:           hasm
 version:        0.1.0.0
@@ -40,6 +40,7 @@ library
     , mtl
     , regex-compat
     , servant-auth-server
+    , stache
     , system-filepath
     , text
     , turtle
@@ -77,6 +78,7 @@ executable hasm
     , mtl
     , regex-compat
     , servant-auth-server
+    , stache
     , system-filepath
     , text
     , turtle
@@ -104,6 +106,7 @@ test-suite build-test
     , mtl
     , regex-compat
     , servant-auth-server
+    , stache
     , system-filepath
     , text
     , turtle

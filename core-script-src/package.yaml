@@ -39,6 +39,7 @@ dependencies:
 - containers
 - yaml
 - lens
+- stache
 
 library:
   source-dirs: src

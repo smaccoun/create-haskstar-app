@@ -13,6 +13,7 @@ import qualified Data.ByteString.Lazy      as LBS
 import           Data.Text                 (Text, intercalate, pack)
 import qualified Data.Text                 as T
 import           Data.Text.Encoding        (decodeUtf8)
+import qualified Data.Text.Lazy            as TL
 import           Data.Text.Lazy.Builder    (toLazyText)
 import           DBConfig
 import qualified Filesystem.Path           as FP
@@ -20,8 +21,10 @@ import           Filesystem.Path.CurrentOS (decodeString, encodeString)
 import           GHC.Generics
 import           Interactive
 import           Lib
+import           PostSetup.Config
 import           Run                       (runDB)
 import           Servant.Auth.Server       (generateKey)
+import           Text.Mustache
 import           Turtle
 
 
@@ -121,19 +124,52 @@ setupDBDir dbConfig = do
 
 setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
-  fromAppRootDir
-  topDir <- getAppRootDir
-  mbTemplate <- getMbTemplate
-  liftIO $ do
-    majorCommentBlock "Grabbing required templates"
-    mktree "./ops/db"
-    _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" mbTemplate
-    cptree "./create-haskstar-app/templates/ops" "./ops"
-    cptree "./create-haskstar-app/templates/db" "./ops/db"
-    let circleDir = topDir </> ".circleci"
-    mkdir circleDir
-    cptree "./ops/ci/.circleci/" circleDir
-    rmtree "create-haskstar-app"
+  setupOpsTree
+  configureDeploymentScripts
+
+setupOpsTree :: ScriptRunContext ()
+setupOpsTree = do
+    fromAppRootDir
+    topDir <- getAppRootDir
+    mbTemplate <- getMbTemplate
+    kubernetesDir <- getKubernetesDir
+    liftIO $ do
+      majorCommentBlock "Grabbing required templates"
+      mktree "./ops/db"
+      _ <- gitCloneShallow "git@github.com:smaccoun/create-haskstar-app.git" mbTemplate
+      cptree "./create-haskstar-app/templates/ops" "./ops"
+      cptree "./create-haskstar-app/templates/db" "./ops/db"
+      cptree "./create-haskstar-app/templates/kubernetes" kubernetesDir
+      let circleDir = topDir </> ".circleci"
+      mkdir circleDir
+      cptree "./ops/ci/.circleci/" circleDir
+      rmtree "create-haskstar-app"
+
+getKubernetesDir :: ScriptRunContext Turtle.FilePath
+getKubernetesDir = do
+  opsDir' <- getOpsDir
+  return $ opsDir' </> "kubernetes"
+
+configureDeploymentScripts :: ScriptRunContext ()
+configureDeploymentScripts = do
+  configureBackendServiceFile
+  return ()
+
+
+configureBackendServiceFile :: ScriptRunContext ()
+configureBackendServiceFile = do
+  kubernetesDir <- getKubernetesDir
+  let backendStacheFile = kubernetesDir </> "backend-service.yaml.mustache"
+  hasmFile <- readHASMFile
+  let appName' = appName hasmFile
+  backendStacheTemplate <- compileMustacheFile $ encodeString backendStacheFile
+  let backendServiceYamlPath = kubernetesDir </> "backend-service.yaml"
+  _ <- liftIO $ writeTextFile backendServiceYamlPath
+              $ TL.toStrict
+              $ renderMustache backendStacheTemplate $
+                A.object [ "appName" A..= appName']
+  return ()
+
 
 newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
 newtype CoreStackDirName =  CoreStackDirName Text

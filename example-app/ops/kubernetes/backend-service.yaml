@@ -1,0 +1,12 @@
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: example-app
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: external
+  selector:
+    app: example-app
+    tier: backend

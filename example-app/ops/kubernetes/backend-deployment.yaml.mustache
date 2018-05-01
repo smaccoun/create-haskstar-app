@@ -21,10 +21,10 @@ spec:
     spec:
       containers:
         - name: "{{appName}}"
-          image: "{{remoteDockerImage}}"
+          image: "gcr.io/{{gcloudProjectID}}/{{appName}}:v1"
           envFrom:
             - configMapRef:
-                name: "{{appName}}-envvars" 
+                name: hasm-elm-envvars
           terminationMessagePath: "/tmp/my-log"   
           resources:
             requests:

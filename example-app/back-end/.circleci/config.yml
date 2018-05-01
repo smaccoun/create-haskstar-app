@@ -8,6 +8,22 @@ jobs:
     steps:
       - checkout
 
+      - restore_cache:
+          keys:
+            - stack-{{ .Branch }}-{{ checksum "./back-end/stack.yaml" }}
+
+      - run:
+          name: build_api
+          command: |
+            ls -la
+            ls -la ~/.stack
+            mkdir -p /opt/build
+            cp -r ./back-end/* /opt/build
+            cd /opt/build
+            ls
+            stack setup
+            stack build
+
       - setup_remote_docker:
           docker_layer_caching: true
 
@@ -19,6 +35,19 @@ jobs:
             curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
+
+      - run:
+          name: containerize_build
+          command: |
+            cd /opt/build
+            ls -la
+            docker build --rm=false -t smaccoun/hasm-elm-example:latest -f DockerfileExe .
+
+      - save_cache:
+          key: stack-{{ .Branch }}-{{ checksum "./back-end/stack.yaml" }}
+          paths:
+            - ~/.stack
+            - ./back-end/.stack-work
 
       - run:
           name: install_pip
@@ -37,21 +66,11 @@ jobs:
           command: pip install --upgrade --user awsebcli
 
       - run:
-          name: install hasm
-          command: |
-            git clone git@github.com:smaccoun/create-haskstar-app.git
-            cd create-haskstar-app
-            ./install.sh
-            rm -rf create-haskstar-app
-            cd ../
-
-
-      - run:
           name: deploy
-          no_output_timeout: 120m
           command: |
-            ($(aws ecr get-login --region us-west-1) && hasm deploy staging --SHA1 smaccoun/hasm-haskell)
-
+            docker image ls
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push smaccoun/hasm-elm-example:latest
 
 
 workflows:

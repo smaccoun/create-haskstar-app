@@ -4,7 +4,7 @@ metadata:
   name: frontend
 spec:
   selector:
-    app: {{appName}}-web
+    app: {{appName}}
     tier: frontend
   ports:
   - protocol: "TCP"
@@ -31,8 +31,8 @@ spec:
         track: stable
     spec:
       containers:
-      - name: {{appName}}-web
-        image: "{{remoteDockerImage}}"
+      - name: hasm-elm-web
+        image: "gcr.io/{{gcloudProjectID}}/hasm-elm-web:latest"
         ports:
             - containerPort: 3000
               name: "external"
