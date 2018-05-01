@@ -1,3 +1,3 @@
 remote:
-  dockerImage: null
+  dockerBaseImage: smaccoun/example-app
 appName: example-app

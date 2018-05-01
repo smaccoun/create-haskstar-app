@@ -25,7 +25,7 @@ instance FromJSON HASMFile where
 
 data RemoteConfig =
     RemoteConfig
-      {_dockerImage   :: Maybe Text
+      {_dockerBaseImage   :: Maybe Text
       } deriving (Generic)
 
 instance ToJSON RemoteConfig where

@@ -35,7 +35,7 @@ getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) = do
     Just rd -> return $ tagRemoteDir rd mbSHA1
     Nothing -> do
       hasmFile <- readHASMFile
-      let remoteDockerImage = hasmFile ^. remote ^. dockerImage
+      let remoteDockerImage = hasmFile ^. remote ^. dockerBaseImage
       case remoteDockerImage of
         Just f -> return $ tagRemoteDir (RemoteDockerBaseDir f) mbSHA1
         Nothing ->

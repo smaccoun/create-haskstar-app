@@ -42,13 +42,25 @@ data FrontEndLang =
 
 runSetup :: Text -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
-  writeHASMFile hasmFile
+  writeHASMFile $ mkHasmFile Nothing
   setupAllSubDirectories dbConfig
+  shouldSetup <- liftIO $ prompt "Setup remote deployment now (y/n) ? " (Just " do nothing now. You can configure later")
+  case shouldSetup of
+    "y" -> do
+      dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
+      let hasmFile = mkHasmFile $ Just dockerHubRepo
+      writeHASMFile hasmFile
+      return ()
+    _ -> return ()
   where
-    hasmFile =
+    mkHasmFile mbDockerHubRepo =
       HASMFile
         {_appName = Just appName'
-        ,_remote = RemoteConfig Nothing
+        ,_remote =
+            RemoteConfig
+              {_dockerBaseImage =
+                  fmap (\dhr -> dhr <> "/" <> appName') mbDockerHubRepo
+              }
         }
 
 
@@ -191,7 +203,7 @@ configureBackendDeploymentFile = do
   let decoder =
           A.object
             [ "appName" A..= (hasmFile ^. appName)
-            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerImage)
+            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerBaseImage)
           ]
   configureDeploymentFile "backend-deployment.yaml.mustache" decoder
 
@@ -201,7 +213,7 @@ configureFrontendDeploymentFile = do
   let decoder =
           A.object
             [ "appName" A..= (hasmFile ^. appName)
-            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerImage)
+            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerBaseImage)
           ]
   configureDeploymentFile "frontend.yaml.mustache" decoder
 
