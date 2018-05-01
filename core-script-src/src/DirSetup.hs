@@ -43,16 +43,17 @@ data FrontEndLang =
 runSetup :: Text -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
   writeHASMFile $ mkHasmFile Nothing
+  shouldSetupResult <- liftIO $ prompt "Setup remote deployment as part of initial setup (y/n) ? " (Just " do nothing now. You can configure later")
+  onShouldSetup shouldSetupResult
   setupAllSubDirectories dbConfig
-  shouldSetup <- liftIO $ prompt "Setup remote deployment now (y/n) ? " (Just " do nothing now. You can configure later")
-  case shouldSetup of
-    "y" -> do
-      dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
-      let hasmFile = mkHasmFile $ Just dockerHubRepo
-      writeHASMFile hasmFile
-      return ()
-    _ -> return ()
   where
+    onShouldSetup shouldSetup =
+      case shouldSetup of
+        "y" -> do
+          dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
+          let hasmFile = mkHasmFile $ Just dockerHubRepo
+          writeHASMFile hasmFile
+        _ -> writeHASMFile $ mkHasmFile Nothing
     mkHasmFile mbDockerHubRepo =
       HASMFile
         {_appName = Just appName'
@@ -196,7 +197,7 @@ configureCircle = do
       mbDockerRepo = hasmFile ^. remote ^. dockerBaseImage
       circleConfigPath = (topRootDir </> ".circleci" </> "config.yml")
   writeCircleFile circleConfigPath mbDockerRepo circleTemplate
-  rm circleTemplatePath
+
   return ()
   where
     writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()

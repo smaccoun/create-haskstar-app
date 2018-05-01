@@ -70,7 +70,7 @@ jobs:
           command: |
             docker image ls
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push smaccoun/example-app:$SHA1
+            docker push <<dockerRepoImage>>:$SHA1
 
 
 workflows:

@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: "example-app"
-          image: ""
+          image: "smaccoun/example-app"
           envFrom:
             - configMapRef:
                 name: "example-app-envvars" 
