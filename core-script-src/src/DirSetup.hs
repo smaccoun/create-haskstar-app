@@ -188,7 +188,7 @@ configureCircle :: ScriptRunContext ()
 configureCircle = do
   topRootDir <- fromAppRootDir
   opsDir' <- getOpsDir
-  let configStache = "config.yml.mustache"
+  let configStache = "config.yml.template"
       ciPath = opsDir' </> "ci"
       circleTemplatePath = ciPath </> ".circleci" </> fromText configStache
   hasmFile <- readHASMFile
@@ -196,7 +196,7 @@ configureCircle = do
       mbDockerRepo = hasmFile ^. remote ^. dockerBaseImage
       circleConfigPath = (topRootDir </> ".circleci" </> "config.yml")
   writeCircleFile circleConfigPath mbDockerRepo circleTemplate
-  rmtree ciPath
+  rm circleTemplatePath
   return ()
   where
     writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()
