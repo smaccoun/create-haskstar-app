@@ -5,6 +5,7 @@
 module Deploy where
 
 import           Context
+import           Control.Lens
 import           Data.Text                 (pack)
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
@@ -34,7 +35,8 @@ getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) = do
     Just rd -> return $ tagRemoteDir rd mbSHA1
     Nothing -> do
       hasmFile <- readHASMFile
-      case remoteDockerImage hasmFile of
+      let remoteDockerImage = hasmFile ^. remote ^. dockerImage
+      case remoteDockerImage of
         Just f -> return $ tagRemoteDir (RemoteDockerBaseDir f) mbSHA1
         Nothing ->
           die $ "You must supply a remote docker container in your HASM file or using --remoteDockerDir"

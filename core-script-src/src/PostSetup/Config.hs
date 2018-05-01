@@ -11,9 +11,33 @@ import           GHC.Generics
 
 data HASMFile =
     HASMFile
-      {appName           :: Maybe Text
-      ,remoteDockerImage :: Maybe Text
-      } deriving (Generic, ToJSON, FromJSON)
+      {_appName :: Maybe Text
+      ,_remote  :: RemoteConfig
+      } deriving (Generic)
+
+instance ToJSON HASMFile where
+  toJSON = genericToJSON defaultOptions {
+              fieldLabelModifier = drop 1 }
+
+instance FromJSON HASMFile where
+  parseJSON = genericParseJSON defaultOptions {
+                fieldLabelModifier = drop 1 }
+
+data RemoteConfig =
+    RemoteConfig
+      {_dockerImage   :: Maybe Text
+      } deriving (Generic)
+
+instance ToJSON RemoteConfig where
+  toJSON = genericToJSON defaultOptions {
+              fieldLabelModifier = drop 1 }
+
+instance FromJSON RemoteConfig where
+  parseJSON = genericParseJSON defaultOptions {
+                fieldLabelModifier = drop 1 }
+
+makeLenses ''HASMFile
+makeLenses ''RemoteConfig
 
 newtype SHA1 = SHA1 Text
 newtype RemoteDockerBaseDir = RemoteDockerBaseDir Text

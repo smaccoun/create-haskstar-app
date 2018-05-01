@@ -8,6 +8,7 @@
 module DirSetup where
 
 import           Context
+import           Control.Lens              ((^.))
 import qualified Data.Aeson                as A
 import qualified Data.ByteString.Lazy      as LBS
 import           Data.Text                 (Text, intercalate, pack)
@@ -38,6 +39,18 @@ data FrontEndLang =
     Elm
   | GHCJS
     deriving (Generic, Show, A.FromJSON)
+
+runSetup :: Text -> DBConfig -> ScriptRunContext ()
+runSetup appName' dbConfig = do
+  writeHASMFile hasmFile
+  setupAllSubDirectories dbConfig
+  where
+    hasmFile =
+      HASMFile
+        {_appName = Just appName'
+        ,_remote = RemoteConfig Nothing
+        }
+
 
 
 -- | Setup DB, Front-End, Back-End directories without building them
@@ -163,7 +176,6 @@ configureDeploymentFile mustacheFileName jsonValue = do
   kubernetesDir <- getKubernetesDir
   let backendStacheFile = kubernetesDir </> fromText mustacheFileName
   hasmFile <- readHASMFile
-  let appName' = appName hasmFile
   backendStacheTemplate <- compileMustacheFile $ encodeString backendStacheFile
   let writeToFilename = T.replace ".mustache" "" mustacheFileName
       backendServiceYamlPath = kubernetesDir </> fromText writeToFilename
@@ -176,24 +188,20 @@ configureDeploymentFile mustacheFileName jsonValue = do
 configureBackendDeploymentFile :: ScriptRunContext ()
 configureBackendDeploymentFile = do
   hasmFile <- readHASMFile
-  let appName' = appName hasmFile
-      remoteDockerImage' = remoteDockerImage hasmFile
-      decoder =
+  let decoder =
           A.object
-            [ "appName" A..= appName'
-            , "remoteDockerImage" A..= remoteDockerImage'
+            [ "appName" A..= (hasmFile ^. appName)
+            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerImage)
           ]
   configureDeploymentFile "backend-deployment.yaml.mustache" decoder
 
 configureFrontendDeploymentFile :: ScriptRunContext ()
 configureFrontendDeploymentFile = do
   hasmFile <- readHASMFile
-  let appName' = appName hasmFile
-      remoteDockerImage' = remoteDockerImage hasmFile
-      decoder =
+  let decoder =
           A.object
-            [ "appName" A..= appName'
-            , "remoteDockerImage" A..= remoteDockerImage'
+            [ "appName" A..= (hasmFile ^. appName)
+            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerImage)
           ]
   configureDeploymentFile "frontend.yaml.mustache" decoder
 
@@ -201,11 +209,9 @@ configureFrontendDeploymentFile = do
 configureBackendServiceFile :: ScriptRunContext ()
 configureBackendServiceFile = do
   hasmFile <- readHASMFile
-  let appName' = appName hasmFile
-      remoteDockerImage' = remoteDockerImage hasmFile
-      decoder =
+  let decoder =
           A.object
-            [ "appName" A..= appName'
+            [ "appName" A..= (hasmFile ^. appName)
           ]
   configureDeploymentFile "backend-service.yaml.mustache" decoder
 

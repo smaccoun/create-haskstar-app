@@ -35,7 +35,7 @@ runBackEnd = do
   liftIO $ majorCommentBlock "STARTING LOCAL BACK-END"
   backendDir <- getBackendDir
   cd backendDir
-  s <- shell "./run.sh" empty
+  s <- shell "stack build && ./run.sh" empty
   case s of
     ExitSuccess   -> do
         printf "\nSuccessfully started api. Logs will be output to console\n"
