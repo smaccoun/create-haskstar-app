@@ -192,18 +192,21 @@ configureCircle = do
       ciPath = opsDir' </> "ci"
       circleTemplatePath = ciPath </> ".circleci" </> fromText configStache
   hasmFile <- readHASMFile
-  circleTemplate <- compileMustacheFile $ encodeString circleTemplatePath
-  let writeToFilename = T.replace ".mustache" "" configStache
-      circleConfigYamlPath = topRootDir </> "/.circleci" </> fromText writeToFilename
-  _ <- liftIO $ writeTextFile circleConfigYamlPath
-              $ TL.toStrict
-              $ renderMustache circleTemplate $
-                A.object
-                  ["appName" A..= (hasmFile ^. appName)
-                  ,"remoteDockerHub" A..= ("meow" :: Text)
-                  ]
+  let circleTemplate = input circleTemplatePath
+      mbDockerRepo = hasmFile ^. remote ^. dockerBaseImage
+      circleConfigPath = (topRootDir </> ".circleci" </> "config.yml")
+  writeCircleFile circleConfigPath mbDockerRepo circleTemplate
   rmtree ciPath
   return ()
+  where
+    writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()
+    writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
+      case mbDockerRepo of
+        Just dockerRepo -> do
+          output circleConfigPath $ sed (fmap (\_ -> dockerRepo) $ text "<<dockerRepoImage>>") circleTemplate
+          return ()
+        Nothing ->
+          return ()
 
 
 configureDeploymentFile :: Text -> A.Value -> ScriptRunContext ()
