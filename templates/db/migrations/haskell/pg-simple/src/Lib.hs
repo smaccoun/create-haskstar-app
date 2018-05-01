@@ -36,7 +36,7 @@ mapConInfo (PGConnect pgUser pgPass pgDB pgPort pgHost) =
     , connectPassword = pgPass
     , connectDatabase=pgDB
     , connectPort = fromInteger pgPort
-    , connectHost = pgUser
+    , connectHost = pgHost
     }
 
 getConnInfo :: IO (ConnectInfo)

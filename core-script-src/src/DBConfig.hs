@@ -44,12 +44,14 @@ textForDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) =
          , dbUserLn dbUser
          , dbPasswordLn dbPassword
          , dbPortLn port
+         , dbHostLn
          ]
   where
     dbPasswordLn password = "POSTGRES_PASSWORD=" <> dbPassword
     dbDatabaseLn dbName   = "POSTGRES_DB=" <> dbName
     dbUserLn dbUser = "POSTGRES_USER=" <> dbUser
     dbPortLn dbPort = T.pack $ "POSTGRES_PORT=" <> show port
+    dbHostLn = T.pack $ "POSTGRES_HOST=localhost"
 
 
 data PGConfig =

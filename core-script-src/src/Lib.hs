@@ -19,7 +19,7 @@ import qualified Data.Yaml                 as YAML
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
 import           Interactive
-import           PostSetup.Config          (HASMFile (..))
+import           PostSetup.Config          (HASMFile (..), getHASMFilePathStr)
 import           System.Environment        (getExecutablePath)
 import           Turtle                    hiding (Generic)
 ---------------------------------------------------------------
@@ -50,26 +50,11 @@ checkValidHASMDir = do
 
 
 
-
 writeHASMFile :: HASMFile -> ScriptRunContext ()
 writeHASMFile hasmFile = do
     hasmFilePath <- getHASMFilePathStr
     liftIO $ YAML.encodeFile hasmFilePath hasmFile
     return ()
-
-getHASMFilePathStr :: ScriptRunContext String
-getHASMFilePathStr = do
-    appRoot <- getAppRootDir
-    let hasmFile = appRoot </> "HASMFile"
-    return $ encodeString hasmFile
-
-readHASMFile :: ScriptRunContext HASMFile
-readHASMFile = do
-    hasmFile <- getHASMFilePathStr
-    hasmFileResult <- liftIO $ YAML.decodeFileEither hasmFile
-    case hasmFileResult of
-        Right f -> return f
-        Left e  -> die $ "Something went wrong with hasm file: " <> T.pack (show e)
 
 getExecutablePath' :: IO ExecutablePath
 getExecutablePath' =
@@ -89,3 +74,8 @@ validateAndRunPostSetupCmd context cmd = do
         io cmd context
     else
         ioError $ userError "You are not in a valid HASM directory"
+
+
+
+
+

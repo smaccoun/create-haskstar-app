@@ -56,7 +56,7 @@ runSetup appName' dbConfig = do
         _ -> writeHASMFile $ mkHasmFile Nothing
     mkHasmFile mbDockerHubRepo =
       HASMFile
-        {_appName = Just appName'
+        {_appName = appName'
         ,_remote =
             RemoteConfig
               {_dockerBaseImage =
