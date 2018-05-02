@@ -60,12 +60,14 @@ the eventual goal of this is to make the full setup process highly customizable.
 **After the first time builds should be quite fast! Grab a coffee during the initial setup! **
 
 **Prerequisites**
-You must have the following installed
+You must have the following installed for basic local development and setup
 
+- stack
 - Docker
 - npm
 - yarn
-- stack
+
+Additionally, if you want to setup remote deployments, you will need [gcloud](https://cloud.google.com/sdk/downloads) and [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed
 
 # Setup
 

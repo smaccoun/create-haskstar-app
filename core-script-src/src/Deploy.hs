@@ -5,14 +5,15 @@
 module Deploy where
 
 import           Context
+import           Context                   (Environment (..))
 import           Control.Lens
 import           Data.Text                 (pack)
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
 import           PostSetup.Config
+import           Run                       (runMigrations)
 import           Turtle
-
 
 deploy :: DeployConfig -> ScriptRunContext ()
 deploy deployConfig = do
@@ -21,6 +22,7 @@ deploy deployConfig = do
   remoteDockerDir <- getRemoteDockerBaseDir deployConfig
   _ <- shell (dockerBuildRelative remoteDockerDir) empty
   dockerPushRelative remoteDockerDir
+  runMigrations $ RemoteEnv Production
   return ()
   where
     dockerBuildRelative dr = dockerBuildStrCmd dr "Dockerfile ."

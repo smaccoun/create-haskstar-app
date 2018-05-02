@@ -4,6 +4,7 @@
 
 module Options where
 
+import           Context          (RemoteStage (..))
 import           Deploy
 import           PostSetup.Config
 import           Turtle
@@ -16,13 +17,13 @@ data PostSetupOption =
     Build BuildCmd
   | Start StartCmd
   | Run RunCmd
-  | Deploy DeployConfig DeployEnv
+  | Deploy DeployConfig RemoteStage
   | Login LoginCmd
 
 data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
 data StartCmd = StartAPI | StartWeb | StartDB
 data RunCmd = RunMigrations
-data DeployEnv = Staging | Production
+
 data LoginCmd = LoginDB
 
 parseCmd :: Parser ExecutionContext
@@ -39,7 +40,7 @@ parseCmd =
   <|> fmap (\a -> PostSetupMode (Login a))
         (subcommand "login" "Login services" parseLoginCmd)
   where
-    mapDeployParse :: (DeployEnv, Maybe Text, Maybe Text) -> ExecutionContext
+    mapDeployParse :: (RemoteStage, Maybe Text, Maybe Text) -> ExecutionContext
     mapDeployParse (depEnv, sha1, remoteDockerDir) =
       PostSetupMode $ Deploy (mkDeployConfig sha1 remoteDockerDir) depEnv
     mkDeployConfig :: Maybe Text -> Maybe Text -> DeployConfig
@@ -79,7 +80,7 @@ parseLoginCmd =
         _    -> Nothing
 
 
-parseDeployCmd :: Parser (DeployEnv, Maybe Text, Maybe Text)
+parseDeployCmd :: Parser (RemoteStage, Maybe Text, Maybe Text)
 parseDeployCmd =
   (,,)
   <$> arg parseDeployEnvText "deployCmd" "Choose either 'staging' or 'production'"

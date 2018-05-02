@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module DBConfig where
 
@@ -21,8 +22,8 @@ data DBConfig =
     }
 
 
-mkDBConfig :: Text -> DBConfig
-mkDBConfig appName =
+mkDefaultLocalDBConfig :: Text -> DBConfig
+mkDefaultLocalDBConfig appName =
     DBConfig
       {host = "localhost"
       ,port = 6543
@@ -56,7 +57,8 @@ textForDBEnvFile (DBConfig host port dbName dbUser dbPassword dbSchema) =
 
 data PGConfig =
   PGConfig
-    {postgresDB       :: Text
+    {postgresHost     :: Text
+    ,postgresDB       :: Text
     ,postgresUser     :: Text
     ,postgresPassword :: Text
     ,postgresPort     :: Integer
@@ -65,7 +67,28 @@ data PGConfig =
 instance SE.FromEnv PGConfig where
   fromEnv =
     PGConfig
-    <$> SE.env "POSTGRES_DB"
+    <$> SE.env "POSTGRES_HOST"
+    <*> SE.env "POSTGRES_DB"
     <*> SE.env "POSTGRES_USER"
     <*> SE.env "POSTGRES_PASSWORD"
     <*> SE.env "POSTGRES_PORT"
+
+instance SE.ToEnv PGConfig where
+  toEnv PGConfig{..} = SE.makeEnv
+       [ "POSTGRES_HOST" SE..= postgresHost
+       , "POSTGRES_PORT" SE..= postgresPort
+       , "POSTGRES_USER" SE..= postgresUser
+       , "POSTGRES_PASSWORD" SE..= postgresPassword
+       , "POSTGRES_DB"   SE..= postgresDB
+       ]
+
+
+dbConfigToPGConfig :: DBConfig -> PGConfig
+dbConfigToPGConfig DBConfig{..} =
+  PGConfig
+    {postgresHost = host
+    ,postgresDB = dbName
+    ,postgresUser = dbUser
+    ,postgresPassword = dbPassword
+    ,postgresPort = port
+    }

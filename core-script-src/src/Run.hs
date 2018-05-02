@@ -9,9 +9,11 @@ import qualified Configuration.Dotenv.Types as DET
 import           Context
 import qualified Control.Foldl              as Fold
 import           Data.Text                  (pack)
-import           DBConfig                   (DBConfig, PGConfig (..), port)
+import           DBConfig                   (DBConfig, PGConfig (..),
+                                             dbConfigToPGConfig, port)
 import           Filesystem.Path.CurrentOS  (encodeString)
 import           Interactive
+import           PostSetup.Config           (getDBConfig)
 import           System.Envy
 import           Turtle
 
@@ -65,8 +67,8 @@ getPGConfig = do
     failCase e = die $ "Couldn't read .env for PG Config " <> pack e
 
 dbLoginCmd :: PGConfig -> Text
-dbLoginCmd (PGConfig pgDB pgUser pgPassword pgPort) =
-   "psql -d " <> pgDB <> " -U " <> pgUser <> " --password -h localhost  -p " <> (show pgPort & pack)
+dbLoginCmd (PGConfig pgHost pgDB pgUser pgPassword pgPort) =
+   "psql -d " <> pgDB <> " -U " <> pgUser <> " --password -h " <> pgHost <> "  -p " <> (show pgPort & pack)
 
 loginDB :: ScriptRunContext ()
 loginDB = do
@@ -90,25 +92,27 @@ runDB = do
         return ()
     ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)
 
-runMigrations :: ScriptRunContext ()
-runMigrations = do
+runMigrations :: Environment -> ScriptRunContext ()
+runMigrations curEnv = do
   liftIO $ majorCommentBlock "RUNNING INITIAL MIGRATIONS"
   fromAppRootDir
   cd "db"
-  s <- shell "./run.sh" empty
+  dbConfig <- getDBConfig curEnv
+  s <- liftIO $ runMigrationWithConfig $ dbConfigToPGConfig dbConfig
   case s of
-    ExitSuccess   -> liftIO $ do
+    ExitSuccess -> liftIO $ do
         printf "\nSuccessfully ran initial migration. \n"
         return ()
     ExitFailure n -> die (" failed with exit code: " <> repr n)
   return ()
 
+runMigrationWithConfig :: PGConfig -> IO ExitCode
+runMigrationWithConfig pgConfig = do
+    _ <- setEnvironment' pgConfig
+    execResult <- shell "stack exec pg-simple-exe" empty
+    _ <- unsetEnvironment' pgConfig
+    return execResult
 
-runServers :: ScriptRunContext ()
-runServers = do
-    runMigrations
-    runBackEnd
-    runFrontEnd
 
 askToRun :: ScriptRunContext () -> ScriptRunContext ()
 askToRun onYes = do

@@ -35,6 +35,9 @@ data Context =
 
 makeClassy ''Context
 
+data Environment = Local | RemoteEnv RemoteStage
+data RemoteStage = Staging | Production
+
 
 getAppRootDir :: (MonadReader r m, HasContext r)
               => m Turtle.FilePath

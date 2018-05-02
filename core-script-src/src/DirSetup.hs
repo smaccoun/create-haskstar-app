@@ -61,6 +61,7 @@ runSetup appName' dbConfig = do
             RemoteConfig
               {_dockerBaseImage =
                   fmap (\dhr -> dhr <> "/" <> appName') mbDockerHubRepo
+              ,_dbRemoteConfig = Nothing
               }
         }
 

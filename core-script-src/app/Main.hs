@@ -59,7 +59,7 @@ buildCmd context buildOption = do
 
 runCmd :: Context -> RunCmd -> IO ()
 runCmd context RunMigrations =
-  io runMigrations context
+  io (runMigrations Local) context
 
 startCmd :: Context -> StartCmd -> IO ()
 startCmd context runOption = do
@@ -72,7 +72,7 @@ startCmd context runOption = do
         StartWeb -> runFrontEnd
         StartDB  -> runDB
 
-deployCmd :: Context -> DeployConfig -> DeployEnv -> IO ()
+deployCmd :: Context -> DeployConfig -> RemoteStage -> IO ()
 deployCmd context deployConfig deployEnv = do
   validateAndRunPostSetupCmd context deployInContext
   return ()
@@ -89,7 +89,7 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
   let appDir = curDir </> fromText appNameOption
   executablePath <- getExecutablePath'
   majorCommentBlock "INITIAL SETUP"
-  let dbConfig = mkDBConfig appNameOption
+  let dbConfig = mkDefaultLocalDBConfig appNameOption
   showDBInfo dbConfig
 
   mkdir appDir
@@ -101,7 +101,7 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
 
   shouldBuild <- askToBuild
   if shouldBuild then do
-    io buildFrontAndBackEnd context
+    io buildBackEnd context
   else
     return ()
 
