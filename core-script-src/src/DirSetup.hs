@@ -43,17 +43,17 @@ data FrontEndLang =
 runSetup :: Text -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
   writeHASMFile $ mkHasmFile Nothing
-  shouldSetupResult <- liftIO $ prompt "Setup remote deployment as part of initial setup (y/n) ? " (Just " do nothing now. You can configure later")
+  shouldSetupResult <- liftIO $ promptYesNo "Setup remote deployment as part of initial setup (note: you can also complete this step after setup) ? "
   onShouldSetup shouldSetupResult
   setupAllSubDirectories dbConfig
   where
     onShouldSetup shouldSetup =
       case shouldSetup of
-        "y" -> do
+        Yes -> do
           dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
           let hasmFile = mkHasmFile $ Just dockerHubRepo
           writeHASMFile hasmFile
-        _ -> writeHASMFile $ mkHasmFile Nothing
+        No -> writeHASMFile $ mkHasmFile Nothing
     mkHasmFile mbDockerHubRepo =
       HASMFile
         {_appName = appName'

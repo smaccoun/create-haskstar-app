@@ -28,6 +28,19 @@ prompt promptQuestion mbDefault = do
       else
         return $ T.pack answer
 
+data YesNo = Yes | No
+
+promptYesNo :: T.Text -> IO YesNo
+promptYesNo promptQuestion = do
+  let fullPrompt = promptQuestion <> " (Hit [y] or [n])"
+  response <- prompt fullPrompt Nothing
+  case T.toLower response of
+    "y" -> return Yes
+    "n" -> return No
+    _   -> do
+      echo "Invliad response. Please hit (y) or (n)"
+      promptYesNo promptQuestion
+
 
 didHitEnter :: String -> Bool
 didHitEnter line =
@@ -36,14 +49,11 @@ didHitEnter line =
 askToBuild :: IO Bool
 askToBuild = do
   majorCommentBlock "Setup complete! You now have a fullstack Haskell setup!"
-  answer <- prompt "Would you like to now build the project? (y) yes, (n) no" Nothing
+  answer <- promptYesNo "Would you like to now build the project?"
   case answer of
-     "y" -> return True
-     "n" -> do
+     Yes -> return True
+     No -> do
         echo "To build the back-end, cd into back-end and run `./run.sh`. For the front-end, cd into front-end and run `yarn start`"
-        return False
-     _   -> do
-        echo "Please entery (y) or (n)"
         return False
 
 printfln :: MonadIO m => Text -> m ()
