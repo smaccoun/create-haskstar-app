@@ -23,20 +23,7 @@ deploy deployConfig = do
 
 deployBackend :: DeployConfig -> ScriptRunContext ExitCode
 deployBackend deployConfig = do
-  remoteDockerImage <- getRemoteDockerImage deployConfig
-  k8 $ SetImage remoteDockerImage
-
-getRemoteDockerImage :: DeployConfig -> ScriptRunContext Text
-getRemoteDockerImage deployConfig = do
-  shaToDeploy <- getShaToDeploy $ sha1 deployConfig
-  case remoteDockerBaseDir deployConfig of
-    Nothing -> do
-      hasmFile' <- readHASMFile
-      case hasmFile' ^. (remote . dockerBaseImage) of
-        Just baseImage -> return $ baseImage <> shaToDeploy
-        Nothing        -> die "You must supply a remote docker base image"
-    Just (RemoteDockerBaseDir dockBaseImage) ->
-      return $ dockBaseImage <> ":" <> shaToDeploy
+  k8 $ SetImage Backend
 
 getShaToDeploy :: Maybe SHA1 -> ScriptRunContext Text
 getShaToDeploy mbSha1 =
@@ -46,19 +33,32 @@ getShaToDeploy mbSha1 =
     Just (SHA1 s) ->
       return s
 
-data K8Commands = SetImage Text
+data K8Commands = SetImage StackLayer
 
 k8 :: K8Commands -> ScriptRunContext ExitCode
 k8 kubeAction = do
   fromAppRootDir
   kubeStrCmd <- getKubeAction
+  let command = "kubectl " <> kubeStrCmd
+  printfln $ "Running \"" <> command <> "\""
   liftIO $ shell ("kubectl " <> kubeStrCmd) empty
   where
     getKubeAction =
       case kubeAction of
-        SetImage image -> do
+        SetImage stackLayer -> do
+          let deployment = k8DeploymentName stackLayer
           appName' <- getAppName
-          return $ " set image deployment/" <> appName' <> "   " <> image
+          remoteImage <- deriveRemoteImageName stackLayer
+          return $ " set image " <> deployment <> "   " <> remoteImage
+
+k8DeploymentName :: StackLayer -> Text
+k8DeploymentName stackLayer =
+  "deployment/" <> dep
+  where
+    dep =
+      case stackLayer of
+        Backend  -> "backend"
+        Frontend -> "frontend"
 
 
 

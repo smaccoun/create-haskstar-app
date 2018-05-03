@@ -92,6 +92,11 @@ readHASMFile = do
         Right f -> return f
         Left e  -> die $ "Something went wrong with hasm file: " <> pack (show e)
 
+getRemoteConfig :: ScriptRunContext RemoteConfig
+getRemoteConfig = do
+  hasmFile' <- readHASMFile
+  return $ hasmFile' ^. remote
+
 
 getDBConfig :: Environment -> ScriptRunContext DBConfig
 getDBConfig curEnv =
@@ -102,15 +107,33 @@ getDBConfig curEnv =
       hasmFile' <- readHASMFile
       let remoteDBConfig' = hasmFile' ^. remote ^. dbRemoteConfig
       case remoteDBConfig' of
-        Just remoteConfig ->
+        Just dbConfig ->
           return
             DBConfig
-              {host = remoteConfig ^. dbRemoteHost
+              {host = dbConfig ^. dbRemoteHost
               ,port = 5432
               ,dbUser = "postgres"
-              ,dbPassword = remoteConfig ^. dbRemotePassword
+              ,dbPassword = dbConfig ^. dbRemotePassword
               ,dbName = hasmFile' ^. appName
               ,dbSchema = "public"
               }
         Nothing ->
           die "You do not have config setup for a remote db. Please edit your HASMFIle to include remote DB Config"
+
+data StackLayer = Frontend | Backend
+
+deriveRemoteImageName :: StackLayer -> ScriptRunContext Text
+deriveRemoteImageName stackLayer = do
+  remoteConfig' <- getRemoteConfig
+  let mbBaseImage = remoteConfig' ^. dockerBaseImage
+  case mbBaseImage of
+    Just baseImage ->
+      return $ baseImage <> "-" <> (getSuffix stackLayer)
+    Nothing ->
+      die "Must have a base remote docker image configured"
+  where
+    getSuffix stackLayer =
+      case stackLayer of
+        Backend  -> "backend"
+        Frontend -> "frontend"
+
