@@ -205,8 +205,9 @@ writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunConte
 writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
   case mbDockerRepo of
     Just dockerRepo -> do
-      output circleConfigPath $ sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate
-      output circleConfigPath $ sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>") circleTemplate
+      output circleConfigPath $
+       sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate &
+       sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>")
       return ()
     Nothing ->
       return ()

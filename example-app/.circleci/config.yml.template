@@ -41,7 +41,7 @@ jobs:
           command: |
             cd /opt/build
             ls -la
-            docker build --rm=false -t smaccoun/hasm-elm-example:latest -f DockerfileExe .
+            docker build --rm=false -t <<dockerRepoBackendImage>>:$CIRCLE_SHA1 -f DockerfileExe .
 
       - save_cache:
           key: stack-{{ .Branch }}-{{ checksum "./back-end/stack.yaml" }}
@@ -58,19 +58,18 @@ jobs:
             pip install --upgrade botocore
 
       - run:
-          name: install_awscli
-          command: sudo apt-get -y install awscli
-
-      - run:
-          name: install_awsebcli
-          command: pip install --upgrade --user awsebcli
+        name: build_frontend
+        command: |
+          cd front-end
+          docker build . -t <<dockerRepoFrontendImage>>:$CIRCLE_SHA1
 
       - run:
           name: deploy
           command: |
             docker image ls
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push <<dockerRepoImage>>:$SHA1
+            docker push <<dockerRepoBackendImage>>:$CIRCLE_SHA1
+            docker push <<dockerRepoFrontendImage>>:$CIRCLE_SHA1
 
 
 workflows:
