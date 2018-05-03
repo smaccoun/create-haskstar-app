@@ -5,7 +5,6 @@
 module Deploy where
 
 import           Context
-import           Context                   (Environment (..))
 import           Control.Lens
 import           Data.Text                 (pack)
 import           Filesystem.Path.CurrentOS (encodeString)
@@ -33,10 +32,10 @@ getRemoteDockerImage deployConfig = do
   case remoteDockerBaseDir deployConfig of
     Nothing -> do
       hasmFile' <- readHASMFile
-      case hasmFile' ^. remote ^. dockerBaseImage of
+      case hasmFile' ^. (remote . dockerBaseImage) of
         Just baseImage -> return $ baseImage <> shaToDeploy
         Nothing        -> die "You must supply a remote docker base image"
-    Just (RemoteDockerBaseDir dockBaseImage) -> do
+    Just (RemoteDockerBaseDir dockBaseImage) ->
       return $ dockBaseImage <> ":" <> shaToDeploy
 
 getShaToDeploy :: Maybe SHA1 -> ScriptRunContext Text
@@ -64,12 +63,12 @@ k8 kubeAction = do
 
 
 getRemoteDockerBaseDir :: DeployConfig -> ScriptRunContext Text
-getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) = do
+getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) =
   case mbRemoteDockerBaseDir of
     Just rd -> return $ tagRemoteDir rd mbSHA1
     Nothing -> do
       hasmFile <- readHASMFile
-      let remoteDockerImage = hasmFile ^. remote ^. dockerBaseImage
+      let remoteDockerImage = hasmFile ^. (remote . dockerBaseImage)
       case remoteDockerImage of
         Just f -> return $ tagRemoteDir (RemoteDockerBaseDir f) mbSHA1
         Nothing ->
@@ -86,6 +85,6 @@ dockerBuildStrCmd remoteDockerDir localDockerFile =
   format ("docker build --rm=false -t "%s%" -f "%s%"") remoteDockerDir (pack $ encodeString localDockerFile)
 
 dockerPushCmd :: Text -> Text
-dockerPushCmd remoteDockerDir =
-  format ("docker push "%s%"") remoteDockerDir
+dockerPushCmd =
+  format ("docker push "%s%"")
 
