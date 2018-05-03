@@ -17,18 +17,50 @@ import           Turtle
 
 deploy :: DeployConfig -> ScriptRunContext ()
 deploy deployConfig = do
-  backendDirRoot <- getBackendDir
-  cd backendDirRoot
-  remoteDockerDir <- getRemoteDockerBaseDir deployConfig
-  _ <- shell (dockerBuildRelative remoteDockerDir) empty
-  dockerPushRelative remoteDockerDir
+  deployBackend deployConfig
   runMigrations $ RemoteEnv Production
   return ()
+
+
+deployBackend :: DeployConfig -> ScriptRunContext ExitCode
+deployBackend deployConfig = do
+  remoteDockerImage <- getRemoteDockerImage deployConfig
+  k8 $ SetImage remoteDockerImage
+
+getRemoteDockerImage :: DeployConfig -> ScriptRunContext Text
+getRemoteDockerImage deployConfig = do
+  shaToDeploy <- getShaToDeploy $ sha1 deployConfig
+  case remoteDockerBaseDir deployConfig of
+    Nothing -> do
+      hasmFile' <- readHASMFile
+      case hasmFile' ^. remote ^. dockerBaseImage of
+        Just baseImage -> return $ baseImage <> shaToDeploy
+        Nothing        -> die "You must supply a remote docker base image"
+    Just (RemoteDockerBaseDir dockBaseImage) -> do
+      return $ dockBaseImage <> ":" <> shaToDeploy
+
+getShaToDeploy :: Maybe SHA1 -> ScriptRunContext Text
+getShaToDeploy mbSha1 =
+  case mbSha1 of
+    Nothing ->
+      pack . show <$> single (inshell "git rev-parse HEAD" empty)
+    Just (SHA1 s) ->
+      return s
+
+data K8Commands = SetImage Text
+
+k8 :: K8Commands -> ScriptRunContext ExitCode
+k8 kubeAction = do
+  fromAppRootDir
+  kubeStrCmd <- getKubeAction
+  liftIO $ shell ("kubectl " <> kubeStrCmd) empty
   where
-    dockerBuildRelative dr = dockerBuildStrCmd dr "Dockerfile ."
-    dockerPushRelative dr = do
-      _ <- shell (dockerPushCmd dr) empty
-      return ()
+    getKubeAction =
+      case kubeAction of
+        SetImage image -> do
+          appName' <- getAppName
+          return $ " set image deployment/" <> appName' <> "   " <> image
+
 
 
 getRemoteDockerBaseDir :: DeployConfig -> ScriptRunContext Text
@@ -41,7 +73,7 @@ getRemoteDockerBaseDir (DeployConfig mbRemoteDockerBaseDir mbSHA1 ) = do
       case remoteDockerImage of
         Just f -> return $ tagRemoteDir (RemoteDockerBaseDir f) mbSHA1
         Nothing ->
-          die $ "You must supply a remote docker container in your HASM file or using --remoteDockerDir"
+          die "You must supply a remote docker container in your HASM file or using --remoteDockerDir"
 
 tagRemoteDir :: RemoteDockerBaseDir -> Maybe SHA1 -> Text
 tagRemoteDir (RemoteDockerBaseDir d) maybeSha1 =
