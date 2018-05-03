@@ -50,18 +50,10 @@ jobs:
             - ./back-end/.stack-work
 
       - run:
-          name: install_pip
+          name: build_frontend
           command: |
-            sudo apt-get update
-            sudo apt-get -y install python-pip
-            sudo apt-get install python-dev
-            pip install --upgrade botocore
-
-      - run:
-        name: build_frontend
-        command: |
-          cd front-end
-          docker build . -t <<dockerRepoFrontendImage>>:$CIRCLE_SHA1
+            cd front-end
+            docker build . -t <<dockerRepoFrontendImage>>:$CIRCLE_SHA1
 
       - run:
           name: deploy
