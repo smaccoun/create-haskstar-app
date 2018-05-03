@@ -200,15 +200,16 @@ configureCircle = do
   writeCircleFile circleConfigPath mbDockerRepo circleTemplate
 
   return ()
-  where
-    writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()
-    writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
-      case mbDockerRepo of
-        Just dockerRepo -> do
-          output circleConfigPath $ sed (fmap (\_ -> dockerRepo) $ text "<<dockerRepoImage>>") circleTemplate
-          return ()
-        Nothing ->
-          return ()
+
+writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()
+writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
+  case mbDockerRepo of
+    Just dockerRepo -> do
+      output circleConfigPath $ sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate
+      output circleConfigPath $ sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>") circleTemplate
+      return ()
+    Nothing ->
+      return ()
 
 
 configureDeploymentFile :: Text -> A.Value -> ScriptRunContext ()
