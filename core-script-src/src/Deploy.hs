@@ -16,20 +16,25 @@ import           Turtle
 
 deploy :: DeployConfig -> ScriptRunContext ()
 deploy deployConfig = do
-  deployBackend deployConfig
+  deployBackend
+  deployFrontend
   runMigrations $ RemoteEnv Production
   return ()
 
 
-deployBackend :: DeployConfig -> ScriptRunContext ExitCode
-deployBackend deployConfig = do
+deployBackend :: ScriptRunContext ExitCode
+deployBackend = do
   k8 $ SetImage Backend
+
+deployFrontend :: ScriptRunContext ExitCode
+deployFrontend = do
+  k8 $ SetImage Frontend
 
 getShaToDeploy :: Maybe SHA1 -> ScriptRunContext Text
 getShaToDeploy mbSha1 =
   case mbSha1 of
     Nothing ->
-      pack . show <$> single (inshell "git rev-parse HEAD" empty)
+      Turtle.strict $ single (inshell "git rev-parse HEAD" empty)
     Just (SHA1 s) ->
       return s
 
@@ -48,8 +53,10 @@ k8 kubeAction = do
         SetImage stackLayer -> do
           let deployment = k8DeploymentName stackLayer
           appName' <- getAppName
-          remoteImage <- deriveRemoteImageName stackLayer
-          return $ " set image " <> deployment <> "   " <> remoteImage
+          remoteBaseImage <- deriveRemoteBaseImageName stackLayer
+          sha1 <- getShaToDeploy Nothing
+          let remoteImage = remoteBaseImage <> ":" <> sha1
+          return $ " set image " <> deployment <> " " <> remoteImage
 
 k8DeploymentName :: StackLayer -> Text
 k8DeploymentName stackLayer =

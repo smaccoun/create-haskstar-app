@@ -122,8 +122,8 @@ getDBConfig curEnv =
 
 data StackLayer = Frontend | Backend
 
-deriveRemoteImageName :: StackLayer -> ScriptRunContext Text
-deriveRemoteImageName stackLayer = do
+deriveRemoteBaseImageName :: StackLayer -> ScriptRunContext Text
+deriveRemoteBaseImageName stackLayer = do
   remoteConfig' <- getRemoteConfig
   let mbBaseImage = remoteConfig' ^. dockerBaseImage
   case mbBaseImage of
