@@ -2,7 +2,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Deploy where
+module PostSetup.Deploy where
 
 import           Context
 import           Control.Lens

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e992ea9e57a06138bd8b8b18bf67ed55810c3ad10e99ba7ceb1679e40066376a
+-- hash: 8eeadb74a2b15314f3998991cd853fe4b5357c3e91e58c2509b87f6462d02e13
 
 name:           hasm
 version:        0.1.0.0
@@ -49,12 +49,12 @@ library
       Build
       Context
       DBConfig
-      Deploy
       DirSetup
       Interactive
       Lib
       Options
       PostSetup.Config
+      PostSetup.Deploy
       Run
   other-modules:
       Paths_hasm

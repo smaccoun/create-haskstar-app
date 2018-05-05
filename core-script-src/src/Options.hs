@@ -5,8 +5,8 @@
 module Options where
 
 import           Context          (RemoteStage (..))
-import           Deploy
 import           PostSetup.Config
+import           PostSetup.Deploy
 import           Turtle
 
 data ExecutionContext =

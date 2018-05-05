@@ -18,12 +18,12 @@ import           Turtle
 import           Build
 import           Context
 import           DBConfig
-import           Deploy
 import           DirSetup
 import           Interactive
 import           Lib
 import           Options
 import           PostSetup.Config
+import           PostSetup.Deploy
 import           Run
 
 
