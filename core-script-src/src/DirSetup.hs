@@ -152,7 +152,6 @@ setupDBDir dbConfig = do
 setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
   setupOpsTree
-  configureDeploymentScripts
   configureCircle
 
 setupOpsTree :: ScriptRunContext ()
@@ -178,11 +177,9 @@ getKubernetesDir = do
   opsDir' <- getOpsDir
   return $ opsDir' </> "kubernetes"
 
-configureDeploymentScripts :: ScriptRunContext ()
-configureDeploymentScripts = do
+configureDeploymentScripts :: SHA1 -> ScriptRunContext ()
+configureDeploymentScripts (SHA1 sha1) = do
   configureBackendServiceFile
-  configureBackendDeploymentFile
-  configureFrontendDeploymentFile
   configureCircle
   return ()
 
@@ -213,49 +210,56 @@ writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
       return ()
 
 
-configureDeploymentFile :: Text -> A.Value -> ScriptRunContext ()
-configureDeploymentFile mustacheFileName jsonValue = do
+configureDeploymentFile :: StackLayer -> SHA1 -> ScriptRunContext Turtle.FilePath
+configureDeploymentFile stackLayer sha1 = do
+  (mustacheFilename, decoder) <- getDeploymentTemplateConfig stackLayer sha1
+  configureK8StacheFile mustacheFilename decoder
+
+
+configureK8StacheFile :: Text -> A.Value -> ScriptRunContext Turtle.FilePath
+configureK8StacheFile stacheFile decoder = do
   kubernetesDir <- getKubernetesDir
-  let backendStacheFile = kubernetesDir </> fromText mustacheFileName
-  hasmFile <- readHASMFile
-  backendStacheTemplate <- compileMustacheFile $ encodeString backendStacheFile
-  let writeToFilename = T.replace ".mustache" "" mustacheFileName
-      backendServiceYamlPath = kubernetesDir </> fromText writeToFilename
-  _ <- liftIO $ writeTextFile backendServiceYamlPath
+  let mustacheFile = kubernetesDir </> fromText stacheFile
+      mustacheFilename = filename mustacheFile & encodeString & pack
+  stacheTemplate <- compileMustacheFile $ encodeString mustacheFile
+  let writeToFilename = T.replace ".mustache" "" mustacheFilename
+      configuredDeploymentFilepath = kubernetesDir </> fromText writeToFilename
+  _ <- liftIO $ writeTextFile configuredDeploymentFilepath
               $ TL.toStrict
-              $ renderMustache backendStacheTemplate jsonValue
-  rm backendStacheFile
-  return ()
+              $ renderMustache stacheTemplate decoder
+  return configuredDeploymentFilepath
 
-configureBackendDeploymentFile :: ScriptRunContext ()
-configureBackendDeploymentFile = do
-  hasmFile <- readHASMFile
-  let decoder =
-          A.object
-            [ "appName" A..= (hasmFile ^. appName)
-            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerBaseImage)
+
+getDeploymentTemplateConfig :: StackLayer -> SHA1 -> ScriptRunContext (Text, A.Value)
+getDeploymentTemplateConfig stackLayer (SHA1 curSha) = do
+  hasmFile' <- readHASMFile
+  dockerBaseImage <- deriveRemoteBaseImageName stackLayer
+  case stackLayer of
+    Frontend ->
+      return $
+        ("frontend-deployment.yaml.mustache"
+        ,A.object
+          [ "appName" A..= (hasmFile' ^. appName)
+          , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
           ]
-  configureDeploymentFile "backend-deployment.yaml.mustache" decoder
-
-configureFrontendDeploymentFile :: ScriptRunContext ()
-configureFrontendDeploymentFile = do
-  hasmFile <- readHASMFile
-  let decoder =
-          A.object
-            [ "appName" A..= (hasmFile ^. appName)
-            , "remoteDockerImage" A..= (hasmFile ^. remote ^. dockerBaseImage)
+        )
+    Backend  ->
+      return $
+        ("backend-deployment.yaml.mustache"
+        ,A.object
+          [ "appName" A..= (hasmFile' ^. appName)
+          , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
           ]
-  configureDeploymentFile "frontend.yaml.mustache" decoder
+        )
 
-
-configureBackendServiceFile :: ScriptRunContext ()
+configureBackendServiceFile :: ScriptRunContext Turtle.FilePath
 configureBackendServiceFile = do
   hasmFile <- readHASMFile
   let decoder =
           A.object
             [ "appName" A..= (hasmFile ^. appName)
           ]
-  configureDeploymentFile "backend-service.yaml.mustache" decoder
+  configureK8StacheFile "backend-service.yaml.mustache" decoder
 
 
 

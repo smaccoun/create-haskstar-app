@@ -7,6 +7,7 @@ module Deploy where
 import           Context
 import           Control.Lens
 import           Data.Text                 (pack)
+import           DirSetup                  (configureDeploymentFile)
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
@@ -30,34 +31,34 @@ deployFrontend :: ScriptRunContext ExitCode
 deployFrontend = do
   k8 $ SetImage Frontend
 
-getShaToDeploy :: Maybe SHA1 -> ScriptRunContext Text
+getShaToDeploy :: Maybe SHA1 -> ScriptRunContext SHA1
 getShaToDeploy mbSha1 =
   case mbSha1 of
-    Nothing ->
-      Turtle.strict $ single (inshell "git rev-parse HEAD" empty)
-    Just (SHA1 s) ->
-      return s
+    Nothing -> do
+      sha1Text <- Turtle.strict $ single (inshell "git rev-parse HEAD" empty)
+      return $ SHA1 sha1Text
+    Just sha1 ->
+      return sha1
 
-data K8Commands = SetImage StackLayer
+data K8Commands =
+  SetImage StackLayer
 
 k8 :: K8Commands -> ScriptRunContext ExitCode
 k8 kubeAction = do
   fromAppRootDir
-  kubeStrCmd <- getKubeAction
+  kubeStrCmd <- getKubeAction kubeAction
   let command = "kubectl " <> kubeStrCmd
   printfln $ "Running \"" <> command <> "\""
-  liftIO $ shell ("kubectl " <> kubeStrCmd) empty
-  where
-    getKubeAction =
-      case kubeAction of
-        SetImage stackLayer -> do
-          deployment <- k8DeploymentName stackLayer
-          appName' <- getAppName
-          k8ContainerName <- getK8ContainerName stackLayer
-          remoteBaseImage <- deriveRemoteBaseImageName stackLayer
-          sha1 <- getShaToDeploy Nothing
-          let remoteImage = remoteBaseImage <> ":" <> sha1
-          return $ " set image " <> deployment <> " " <> k8ContainerName <> "=" <> remoteImage
+  liftIO $ shell command empty
+
+
+getKubeAction :: K8Commands -> ScriptRunContext Text
+getKubeAction kubeAction =
+  case kubeAction of
+    SetImage stackLayer -> do
+      sha1 <- getShaToDeploy Nothing
+      deploymentFile <- configureDeploymentFile stackLayer sha1
+      return $ " apply -f " <> (pack . encodeString $ deploymentFile)
 
 getK8ContainerName :: StackLayer -> ScriptRunContext Text
 getK8ContainerName stackLayer = do

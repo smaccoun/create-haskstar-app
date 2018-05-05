@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: example-app
+  name: {{appName}}
 spec:
   replicas: 1
   revisionHistoryLimit: 5
@@ -9,23 +9,22 @@ spec:
     type: "RollingUpdate"  
   selector:
     matchLabels:
-      app: "example-app"
+      app: "{{appName}}"
       tier: backend
       track: stable
   template:
     metadata:
       labels:
-        app: "example-app"
+        app: "{{appName}}"
         tier: backend
         track: stable
     spec:
       containers:
-        - name: "example-app"
-          image: "smaccoun/example-app-backend:52ef5158e05b0ca39f89062eeb24a09e4b130b7f
-"
+        - name: "{{appName}}"
+          image: "{{remoteDockerImage}}"
           envFrom:
             - configMapRef:
-                name: "example-app-envvars" 
+                name: "{{appName}}-envvars" 
           terminationMessagePath: "/tmp/my-log"   
           resources:
             requests:
