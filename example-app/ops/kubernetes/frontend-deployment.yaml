@@ -11,7 +11,7 @@ spec:
     port: 3000
     targetPort: 3000
   type: LoadBalancer
---------------------------------
+---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: example-app-frontend
-        image: "smaccoun/example-app-frontend:159e176b9152d0929ec1f6f77c0d848fcb0736b5
+        image: "smaccoun/example-app-frontend:5fd50fdd8abcce6370e6e6cf77b6e8fc8419fbad
 "
         ports:
             - containerPort: 3000

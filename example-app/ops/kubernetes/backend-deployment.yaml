@@ -10,7 +10,7 @@ spec:
   selector:
     app: example-app
     tier: backend
-----------------------------------
+---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: "example-app-backend"
-          image: "smaccoun/example-app-backend:159e176b9152d0929ec1f6f77c0d848fcb0736b5
+          image: "smaccoun/example-app-backend:5fd50fdd8abcce6370e6e6cf77b6e8fc8419fbad
 "
           envFrom:
             - configMapRef:
