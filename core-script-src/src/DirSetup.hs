@@ -7,6 +7,7 @@
 
 module DirSetup where
 
+import qualified Configuration.Dotenv      as Dotenv
 import           Context
 import           Control.Lens              ((^.))
 import qualified Data.Aeson                as A
@@ -171,6 +172,10 @@ setupOpsTree = do
       mkdir circleDir
       cptree "./ops/ci/.circleci/" circleDir
       rmtree "create-haskstar-app"
+
+
+
+
 
 getKubernetesDir :: ScriptRunContext Turtle.FilePath
 getKubernetesDir = do

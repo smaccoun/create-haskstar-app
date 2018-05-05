@@ -13,8 +13,8 @@ import           Turtle
 
 data DBConfig =
   DBConfig
-    {host       :: T.Text
-    ,port       :: Integer
+    {dbHost     :: T.Text
+    ,dbPort     :: Integer
     ,dbName     :: T.Text
     ,dbUser     :: T.Text
     ,dbPassword :: T.Text
@@ -25,8 +25,8 @@ data DBConfig =
 mkDefaultLocalDBConfig :: Text -> DBConfig
 mkDefaultLocalDBConfig appName =
     DBConfig
-      {host = "localhost"
-      ,port = 6543
+      {dbHost = "localhost"
+      ,dbPort = 6543
       ,dbName = T.replace "-" "_" appName
       ,dbUser = "postgres"
       ,dbPassword = "postgres"
@@ -86,9 +86,9 @@ instance SE.ToEnv PGConfig where
 dbConfigToPGConfig :: DBConfig -> PGConfig
 dbConfigToPGConfig DBConfig{..} =
   PGConfig
-    {postgresHost = host
+    {postgresHost = dbHost
     ,postgresDB = dbName
     ,postgresUser = dbUser
     ,postgresPassword = dbPassword
-    ,postgresPort = port
+    ,postgresPort = dbPort
     }

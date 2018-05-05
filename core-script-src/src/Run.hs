@@ -10,7 +10,7 @@ import           Context
 import qualified Control.Foldl              as Fold
 import           Data.Text                  (pack)
 import           DBConfig                   (DBConfig, PGConfig (..),
-                                             dbConfigToPGConfig, port)
+                                             dbConfigToPGConfig)
 import           Filesystem.Path.CurrentOS  (encodeString)
 import           Interactive
 import           PostSetup.Config           (getDBConfig)

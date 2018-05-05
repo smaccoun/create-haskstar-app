@@ -60,6 +60,12 @@ printfln :: MonadIO m => Text -> m ()
 printfln =
   printf (""%s%" \n")
 
+showCommand :: MonadIO m => Text -> m ()
+showCommand cmd = do
+  printf ("Running command: \n")
+  printfln cmd
+
+
 lineBlockSeperator :: MonadIO m => m ()
 lineBlockSeperator =
   printf "***********************************************\n\n"

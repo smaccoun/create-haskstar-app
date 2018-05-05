@@ -12,6 +12,7 @@ import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
 import           PostSetup.Config
+import           PostSetup.K8              (configureKubeSecrets)
 import           Run                       (runMigrations)
 import           Turtle
 
@@ -25,6 +26,7 @@ deploy deployConfig = do
 
 deployBackend :: ScriptRunContext ExitCode
 deployBackend = do
+  _ <- configureKubeSecrets
   k8 $ SetImage Backend
 
 deployFrontend :: ScriptRunContext ExitCode

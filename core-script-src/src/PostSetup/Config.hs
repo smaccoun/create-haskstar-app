@@ -110,8 +110,8 @@ getDBConfig curEnv =
         Just dbConfig ->
           return
             DBConfig
-              {host = dbConfig ^. dbRemoteHost
-              ,port = 5432
+              {dbHost = dbConfig ^. dbRemoteHost
+              ,dbPort = 5432
               ,dbUser = "postgres"
               ,dbPassword = dbConfig ^. dbRemotePassword
               ,dbName = hasmFile' ^. appName
