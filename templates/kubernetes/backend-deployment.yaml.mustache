@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{appName}}
+  name: {{appName}}-backend
 spec:
   replicas: 1
   revisionHistoryLimit: 5
@@ -20,7 +20,7 @@ spec:
         track: stable
     spec:
       containers:
-        - name: "{{appName}}"
+        - name: "{{appName}}-backend"
           image: "{{remoteDockerImage}}"
           envFrom:
             - configMapRef:

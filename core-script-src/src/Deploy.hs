@@ -51,22 +51,28 @@ k8 kubeAction = do
     getKubeAction =
       case kubeAction of
         SetImage stackLayer -> do
-          let deployment = k8DeploymentName stackLayer
+          deployment <- k8DeploymentName stackLayer
           appName' <- getAppName
+          k8ContainerName <- getK8ContainerName stackLayer
           remoteBaseImage <- deriveRemoteBaseImageName stackLayer
           sha1 <- getShaToDeploy Nothing
           let remoteImage = remoteBaseImage <> ":" <> sha1
-          return $ " set image " <> deployment <> " " <> remoteImage
+          return $ " set image " <> deployment <> " " <> k8ContainerName <> "=" <> remoteImage
 
-k8DeploymentName :: StackLayer -> Text
-k8DeploymentName stackLayer =
-  "deployment/" <> dep
+getK8ContainerName :: StackLayer -> ScriptRunContext Text
+getK8ContainerName stackLayer = do
+  appName <- getAppName
+  return $ appName <> "-" <> dep
   where
     dep =
       case stackLayer of
         Backend  -> "backend"
         Frontend -> "frontend"
 
+k8DeploymentName :: StackLayer -> ScriptRunContext Text
+k8DeploymentName stackLayer = do
+  k8Container <- getK8ContainerName stackLayer
+  return $ "deployment/" <> k8Container
 
 
 getRemoteDockerBaseDir :: DeployConfig -> ScriptRunContext Text
