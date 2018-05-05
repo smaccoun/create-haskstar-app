@@ -179,8 +179,6 @@ getKubernetesDir = do
 
 configureDeploymentScripts :: SHA1 -> ScriptRunContext ()
 configureDeploymentScripts (SHA1 sha1) = do
-  configureBackendServiceFile
-  configureFrontendServiceFile
   configureCircle
   return ()
 
@@ -252,26 +250,6 @@ getDeploymentTemplateConfig stackLayer (SHA1 curSha) = do
           , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
           ]
         )
-
-configureBackendServiceFile :: ScriptRunContext Turtle.FilePath
-configureBackendServiceFile = do
-  hasmFile <- readHASMFile
-  let decoder =
-          A.object
-            [ "appName" A..= (hasmFile ^. appName)
-          ]
-  configureK8StacheFile "backend-service.yaml.mustache" decoder
-
-configureFrontendServiceFile :: ScriptRunContext Turtle.FilePath
-configureFrontendServiceFile = do
-  hasmFile <- readHASMFile
-  let decoder =
-          A.object
-            [ "appName" A..= (hasmFile ^. appName)
-          ]
-  configureK8StacheFile "frontend-service.yaml.mustache" decoder
-
-
 
 newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
 newtype CoreStackDirName =  CoreStackDirName Text

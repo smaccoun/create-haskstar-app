@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: example-app
+  name: example-app-backend
 spec:
   replicas: 1
   revisionHistoryLimit: 5
@@ -20,8 +20,8 @@ spec:
         track: stable
     spec:
       containers:
-        - name: "example-app"
-          image: "smaccoun/example-app-backend:3008360b4d1498098f5c1880a84732f17746f813
+        - name: "example-app-backend"
+          image: "smaccoun/example-app-backend:7861b7c7a480758d70f85a6f2a374bfabce4249c
 "
           envFrom:
             - configMapRef:
