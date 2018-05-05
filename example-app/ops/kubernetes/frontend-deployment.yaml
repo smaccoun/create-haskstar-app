@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: example-app
+    tier: frontend
+  ports:
+  - protocol: "TCP"
+    port: 3000
+    targetPort: 3000
+  type: LoadBalancer
+--------------------------------
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -18,7 +32,7 @@ spec:
     spec:
       containers:
       - name: example-app-frontend
-        image: "smaccoun/example-app-frontend:7861b7c7a480758d70f85a6f2a374bfabce4249c
+        image: "smaccoun/example-app-frontend:159e176b9152d0929ec1f6f77c0d848fcb0736b5
 "
         ports:
             - containerPort: 3000

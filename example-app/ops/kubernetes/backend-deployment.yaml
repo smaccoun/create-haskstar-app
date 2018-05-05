@@ -1,3 +1,16 @@
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: example-app
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: external
+  selector:
+    app: example-app
+    tier: backend
+----------------------------------
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -21,7 +34,7 @@ spec:
     spec:
       containers:
         - name: "example-app-backend"
-          image: "smaccoun/example-app-backend:7861b7c7a480758d70f85a6f2a374bfabce4249c
+          image: "smaccoun/example-app-backend:159e176b9152d0929ec1f6f77c0d848fcb0736b5
 "
           envFrom:
             - configMapRef:
