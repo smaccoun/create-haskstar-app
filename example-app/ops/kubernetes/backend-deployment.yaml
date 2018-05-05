@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: "example-app"
-          image: "smaccoun/example-app-backend:52ef5158e05b0ca39f89062eeb24a09e4b130b7f
+          image: "smaccoun/example-app-backend:3008360b4d1498098f5c1880a84732f17746f813
 "
           envFrom:
             - configMapRef:

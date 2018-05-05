@@ -180,6 +180,7 @@ getKubernetesDir = do
 configureDeploymentScripts :: SHA1 -> ScriptRunContext ()
 configureDeploymentScripts (SHA1 sha1) = do
   configureBackendServiceFile
+  configureFrontendServiceFile
   configureCircle
   return ()
 
@@ -260,6 +261,15 @@ configureBackendServiceFile = do
             [ "appName" A..= (hasmFile ^. appName)
           ]
   configureK8StacheFile "backend-service.yaml.mustache" decoder
+
+configureFrontendServiceFile :: ScriptRunContext Turtle.FilePath
+configureFrontendServiceFile = do
+  hasmFile <- readHASMFile
+  let decoder =
+          A.object
+            [ "appName" A..= (hasmFile ^. appName)
+          ]
+  configureK8StacheFile "frontend-service.yaml.mustache" decoder
 
 
 
