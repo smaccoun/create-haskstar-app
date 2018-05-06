@@ -130,7 +130,10 @@ mkBackendEnv (DBConfig host port dbName dbUser dbPassword dbSchema) = do
     dbSchemaLn schema     = "DB_SCHEMA=" <> schema
     dbUserLn dbUser = "DB_USERNAME=" <> dbUser
     dbPasswordLn password = "DB_PASSWORD=" <> dbPassword
-    jwkLine jwkKey = "AUTH_JWK=" <> (T.replace "\"" "\\\"" . decodeUtf8 . LBS.toStrict . A.encode $ jwkKey)
+    jwkLine jwkKey = "AUTH_JWK=" <> writeJWKFromEnv jwkKey
+
+writeJWKFromEnv jwkKey =
+  (T.replace "\"" "\\\"" . decodeUtf8 . LBS.toStrict . A.encode $ jwkKey)
 
 
 setupDBDir :: DBConfig -> ScriptRunContext ()

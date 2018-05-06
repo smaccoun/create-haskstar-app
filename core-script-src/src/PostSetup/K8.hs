@@ -9,8 +9,9 @@ module PostSetup.K8 where
 import qualified Configuration.Dotenv as Dotenv
 import           Context
 import           Data.List            (find)
-import           Data.Text            (Text, intercalate, pack)
+import           Data.Text            (Text, intercalate, pack, replace)
 import           DBConfig             (DBConfig (..))
+import           DirSetup             (writeJWKFromEnv)
 import           Interactive          (showCommand)
 import           PostSetup.Config     (getAppName, getDBConfig)
 import           Turtle
@@ -44,7 +45,7 @@ getConfigmapVars jwk DBConfig{..} =
     ,("DB_PASSWORD", dbPassword)
     ,("DB_HOST", dbHost)
     ,("DB_DATABASE", dbName)
-    ,("AUTH_JWK", jwk)
+    ,("AUTH_JWK", Data.Text.replace "\"" "\\\"" jwk)
     ]
 
 kubeSecretsCmd :: Text -> [(Text, Text)] -> Text
