@@ -8,8 +8,8 @@ spec:
     tier: frontend
   ports:
   - protocol: "TCP"
-    port: 3000
-    targetPort: 3000
+    port: 5000
+    targetPort: 5000
   type: LoadBalancer
 ---
 apiVersion: apps/v1beta2
@@ -34,7 +34,7 @@ spec:
       - name: {{appName}}-frontend
         image: "{{remoteDockerImage}}"
         ports:
-            - containerPort: 3000
+            - containerPort: 5000
               name: "external"
               protocol: "TCP"
         
