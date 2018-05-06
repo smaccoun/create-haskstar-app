@@ -7,6 +7,7 @@ module PostSetup.Deploy where
 import           Context
 import           Control.Lens
 import           Data.Text                 (pack)
+import qualified Data.Text                 as T (lines)
 import           DirSetup                  (configureDeploymentFile)
 import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
@@ -37,7 +38,8 @@ getShaToDeploy :: Maybe SHA1 -> ScriptRunContext SHA1
 getShaToDeploy mbSha1 =
   case mbSha1 of
     Nothing -> do
-      sha1Text <- Turtle.strict $ single (inshell "git rev-parse HEAD" empty)
+      sha1Line <- Turtle.strict $ single (inshell "git rev-parse HEAD" empty)
+      let sha1Text = head $ T.lines sha1Line
       return $ SHA1 sha1Text
     Just sha1 ->
       return sha1

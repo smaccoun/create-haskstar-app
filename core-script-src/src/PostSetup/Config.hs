@@ -10,6 +10,7 @@ import           Control.Lens    ((^.))
 import           Control.Lens.TH
 import           Data.Aeson
 import           Data.Text       (Text, pack)
+import qualified Data.Text       as T (replace)
 import qualified Data.Yaml       as YAML
 import           DBConfig
 import           GHC.Generics
@@ -114,7 +115,7 @@ getDBConfig curEnv =
               ,dbPort = 5432
               ,dbUser = "postgres"
               ,dbPassword = dbConfig ^. dbRemotePassword
-              ,dbName = hasmFile' ^. appName
+              ,dbName = T.replace "-" "_" (hasmFile' ^. appName)
               ,dbSchema = "public"
               }
         Nothing ->
