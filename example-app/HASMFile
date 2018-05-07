@@ -1,4 +1,0 @@
-remote:
-  dbRemoteConfig: null
-  dockerBaseImage: smaccoun/example-app
-appName: example-app

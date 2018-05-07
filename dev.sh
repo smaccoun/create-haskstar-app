@@ -18,15 +18,10 @@ stack install
 
 cd ../
 
-echo "Cleaning out existing dist directory and loading bundles"
+cd /tmp
 rm -rf example-app
-rm -rf ./dist/*
-
-cd ./dist
 (env=DEVELOPMENT && hasm new example-app)
 echo "FINISHED RUNNING"
-rm -rf ../example-app
-cp -r example-app ../
 
 
 cd ~/projects/haskstar/create-haskstar-app
