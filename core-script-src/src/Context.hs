@@ -37,6 +37,7 @@ makeClassy ''Context
 
 data Environment = Local | RemoteEnv RemoteStage
 data RemoteStage = Staging | Production
+data StackLayer = Frontend | Backend
 
 
 getAppRootDir :: (MonadReader r m, HasContext r)

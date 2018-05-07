@@ -13,7 +13,9 @@ import           Filesystem.Path.CurrentOS (encodeString)
 import           Interactive
 import           Lib
 import           PostSetup.Config
-import           PostSetup.K8              (configureKubeSecrets)
+import           PostSetup.Context         (DeployConfig (..),
+                                            RemoteDockerBaseDir (..))
+import           PostSetup.K8
 import           Run                       (runMigrations)
 import           Turtle
 
@@ -28,11 +30,11 @@ deploy deployConfig = do
 deployBackend :: ScriptRunContext ExitCode
 deployBackend = do
   _ <- configureKubeSecrets
-  k8 $ SetImage Backend
+  runK8Cmd $ SetImage Backend
 
 deployFrontend :: ScriptRunContext ExitCode
 deployFrontend = do
-  k8 $ SetImage Frontend
+  runK8Cmd $ SetImage Frontend
 
 getShaToDeploy :: Maybe SHA1 -> ScriptRunContext SHA1
 getShaToDeploy mbSha1 =
@@ -44,16 +46,17 @@ getShaToDeploy mbSha1 =
     Just sha1 ->
       return sha1
 
-data K8Commands =
-  SetImage StackLayer
-
-k8 :: K8Commands -> ScriptRunContext ExitCode
-k8 kubeAction = do
+runK8Cmd :: K8Commands -> ScriptRunContext ExitCode
+runK8Cmd kubeAction = do
   fromAppRootDir
   kubeStrCmd <- getKubeAction kubeAction
-  let command = "kubectl " <> kubeStrCmd
+  let command =  baseKubeCmdStr kubeStrCmd
   printfln $ "Running \"" <> command <> "\""
   liftIO $ shell command empty
+
+baseKubeCmdStr :: Text -> Text
+baseKubeCmdStr cmdStr =
+  "kubectl " <> cmdStr
 
 
 getKubeAction :: K8Commands -> ScriptRunContext Text

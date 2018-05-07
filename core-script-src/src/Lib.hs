@@ -24,6 +24,8 @@ import           System.Environment        (getExecutablePath)
 import           Turtle                    hiding (Generic)
 ---------------------------------------------------------------
 
+newtype SHA1 = SHA1 Text
+
 io :: ScriptRunContext () -> Context -> IO ()
 io (ScriptRunContext action) context =
     runReaderT action context

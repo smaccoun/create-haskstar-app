@@ -4,8 +4,10 @@
 
 module Options where
 
-import           Context          (RemoteStage (..))
+import           Context           (RemoteStage (..))
+import           Lib               (SHA1 (..))
 import           PostSetup.Config
+import           PostSetup.Context
 import           PostSetup.Deploy
 import           Turtle
 

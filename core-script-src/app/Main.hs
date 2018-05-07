@@ -23,6 +23,7 @@ import           Interactive
 import           Lib
 import           Options
 import           PostSetup.Config
+import           PostSetup.Context
 import           PostSetup.Deploy
 import           Run
 

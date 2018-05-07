@@ -13,7 +13,7 @@ import           DBConfig                   (DBConfig, PGConfig (..),
                                              dbConfigToPGConfig)
 import           Filesystem.Path.CurrentOS  (encodeString)
 import           Interactive
-import           PostSetup.Config           (getDBConfig)
+import           PostSetup.Config           (readDBConfig)
 import           System.Envy
 import           Turtle
 
@@ -97,7 +97,7 @@ runMigrations curEnv = do
   liftIO $ majorCommentBlock "RUNNING INITIAL MIGRATIONS"
   fromAppRootDir
   cd "db"
-  dbConfig <- getDBConfig curEnv
+  dbConfig <- readDBConfig curEnv
   s <- liftIO $ runMigrationWithConfig $ dbConfigToPGConfig dbConfig
   case s of
     ExitSuccess -> liftIO $ do

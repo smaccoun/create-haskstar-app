@@ -22,14 +22,6 @@ data HASMFile =
       ,_remote  :: RemoteConfig
       } deriving (Generic)
 
-instance ToJSON HASMFile where
-  toJSON = genericToJSON defaultOptions {
-              fieldLabelModifier = drop 1 }
-
-instance FromJSON HASMFile where
-  parseJSON = genericParseJSON defaultOptions {
-                fieldLabelModifier = drop 1 }
-
 data RemoteConfig =
     RemoteConfig
       {_dockerBaseImage :: Maybe Text
@@ -43,6 +35,16 @@ data RemoteDBConfig =
     } deriving (Generic)
 
 makeLenses ''RemoteDBConfig
+makeLenses ''HASMFile
+makeLenses ''RemoteConfig
+
+instance ToJSON HASMFile where
+  toJSON = genericToJSON defaultOptions {
+              fieldLabelModifier = drop 1 }
+
+instance FromJSON HASMFile where
+  parseJSON = genericParseJSON defaultOptions {
+                fieldLabelModifier = drop 1 }
 
 instance ToJSON RemoteConfig where
   toJSON = genericToJSON defaultOptions {
@@ -60,19 +62,7 @@ instance FromJSON RemoteDBConfig where
   parseJSON = genericParseJSON defaultOptions {
                 fieldLabelModifier = drop 1 }
 
-makeLenses ''HASMFile
-makeLenses ''RemoteConfig
 
-newtype SHA1 = SHA1 Text
-newtype RemoteDockerBaseDir = RemoteDockerBaseDir Text
-
-data DeployConfig =
-  DeployConfig
-    {remoteDockerBaseDir :: Maybe RemoteDockerBaseDir
-    ,sha1                :: Maybe SHA1
-    }
-
-makeClassy ''DeployConfig
 
 getAppName :: ScriptRunContext Text
 getAppName = do
@@ -93,14 +83,14 @@ readHASMFile = do
         Right f -> return f
         Left e  -> die $ "Something went wrong with hasm file: " <> pack (show e)
 
-getRemoteConfig :: ScriptRunContext RemoteConfig
-getRemoteConfig = do
+readRemoteConfig :: ScriptRunContext RemoteConfig
+readRemoteConfig = do
   hasmFile' <- readHASMFile
   return $ hasmFile' ^. remote
 
 
-getDBConfig :: Environment -> ScriptRunContext DBConfig
-getDBConfig curEnv =
+readDBConfig :: Environment -> ScriptRunContext DBConfig
+readDBConfig curEnv =
   case curEnv of
     Local ->
       mkDefaultLocalDBConfig <$> getAppName
@@ -121,11 +111,11 @@ getDBConfig curEnv =
         Nothing ->
           die "You do not have config setup for a remote db. Please edit your HASMFIle to include remote DB Config"
 
-data StackLayer = Frontend | Backend
+
 
 deriveRemoteBaseImageName :: StackLayer -> ScriptRunContext Text
 deriveRemoteBaseImageName stackLayer = do
-  remoteConfig' <- getRemoteConfig
+  remoteConfig' <- readRemoteConfig
   let mbBaseImage = remoteConfig' ^. dockerBaseImage
   case mbBaseImage of
     Just baseImage ->
