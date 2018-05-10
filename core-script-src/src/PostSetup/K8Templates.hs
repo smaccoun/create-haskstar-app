@@ -35,8 +35,6 @@ backendDeploymentConfig (AppName appName') (RemoteDockerImage remoteDockerImage'
           ]
       }
 
-
-
 certIssuerConfig :: Email -> StacheTemplate
 certIssuerConfig (Email email) =
     StacheTemplate

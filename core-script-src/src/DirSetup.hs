@@ -30,30 +30,32 @@ import           Servant.Auth.Server       (generateKey)
 import           Text.Mustache
 import           Turtle
 
-runSetup :: Text -> DBConfig -> ScriptRunContext ()
+runSetup :: AppName -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
-  writeHASMFile $ mkHasmFile Nothing
   shouldSetupResult <- liftIO $ promptYesNo "Setup remote deployment as part of initial setup (note: you can also complete this step after setup) ? "
-  onShouldSetup shouldSetupResult
+  onShouldSetup appName' shouldSetupResult
   setupAllSubDirectories dbConfig
-  where
-    onShouldSetup shouldSetup =
-      case shouldSetup of
-        Yes -> do
-          dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
-          let hasmFile = mkHasmFile $ Just dockerHubRepo
-          writeHASMFile hasmFile
-        No -> writeHASMFile $ mkHasmFile Nothing
-    mkHasmFile mbDockerHubRepo =
-      HASMFile
-        {_appName = appName'
-        ,_remote =
-            RemoteConfig
-              {_dockerBaseImage =
-                  fmap (\dhr -> dhr <> "/" <> appName') mbDockerHubRepo
-              ,_dbRemoteConfig = Nothing
-              }
-        }
+
+onShouldSetup :: AppName -> YesNo -> ScriptRunContext ()
+onShouldSetup appName' shouldSetup =
+  case shouldSetup of
+    Yes -> do
+      dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
+      let hasmFile = mkHasmFile appName' (Just dockerHubRepo)
+      writeHASMFile hasmFile
+    No -> writeHASMFile $ mkHasmFile appName' Nothing
+
+mkHasmFile :: AppName -> Maybe Text -> HASMFile
+mkHasmFile (AppName appName') mbDockerHubRepo =
+  HASMFile
+    {_appName = appName'
+    ,_remote =
+        RemoteConfig
+          {_dockerBaseImage =
+              fmap (\dhr -> dhr <> "/" <> appName') mbDockerHubRepo
+          ,_dbRemoteConfig = Nothing
+          }
+    }
 
 
 
