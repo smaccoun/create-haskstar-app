@@ -41,6 +41,6 @@ certIssuerConfig (Email email) =
       {stacheFilename = "acme-staging-issuer.yaml.mustache"
       ,configObj =
         A.object
-          [ "email" A..= email
+          [ "userEmail" A..= email
           ]
       }

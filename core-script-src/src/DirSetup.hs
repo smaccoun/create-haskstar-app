@@ -33,11 +33,11 @@ import           Turtle
 runSetup :: AppName -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
   shouldSetupResult <- liftIO $ promptYesNo "Setup remote deployment as part of initial setup (note: you can also complete this step after setup) ? "
-  onShouldSetup appName' shouldSetupResult
+  onShouldSetupRemoteConfig appName' shouldSetupResult
   setupAllSubDirectories dbConfig
 
-onShouldSetup :: AppName -> YesNo -> ScriptRunContext ()
-onShouldSetup appName'@(AppName appNameText) shouldSetup =
+onShouldSetupRemoteConfig :: AppName -> YesNo -> ScriptRunContext ()
+onShouldSetupRemoteConfig appName'@(AppName appNameText) shouldSetup =
   case shouldSetup of
     Yes -> do
       dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
@@ -60,8 +60,6 @@ onShouldSetup appName'@(AppName appNameText) shouldSetup =
               ,_dbRemoteConfig = Nothing
               }
         }
-
-
 
 -- | Setup DB, Front-End, Back-End directories without building them
 setupCoreDirectories :: DBConfig -> ScriptRunContext ()
@@ -152,6 +150,15 @@ setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
   setupOpsTree
   configureCircle
+  hasmFile' <- readHASMFile
+  case hasmFile' ^. remote of
+    Just rc -> do
+      let email' = rc ^. email
+      _ <- configureK8StacheFile (certIssuerConfig (Email email'))
+      return ()
+    Nothing ->
+      return ()
+
 
 setupOpsTree :: ScriptRunContext ()
 setupOpsTree = do
@@ -170,12 +177,6 @@ setupOpsTree = do
       mkdir circleDir
       cptree "./ops/ci/.circleci/" circleDir
       rmtree "create-haskstar-app"
-
-
-getKubernetesDir :: ScriptRunContext Turtle.FilePath
-getKubernetesDir = do
-  opsDir' <- getOpsDir
-  return $ opsDir' </> "kubernetes"
 
 configureDeploymentScripts :: SHA1 -> ScriptRunContext ()
 configureDeploymentScripts (SHA1 sha1) = do

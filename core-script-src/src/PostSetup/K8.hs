@@ -64,4 +64,3 @@ kubeSecretLiterals envVars =
     envVars
     & fmap (\(eCat, eValue) -> "--from-literal=" <> eCat <> "=\"" <> eValue <> "\"")
     & intercalate "  "
-
