@@ -24,11 +24,11 @@ import           GHC.Generics
 import           Interactive
 import           Lib
 import           PostSetup.Config
+import           PostSetup.K8Templates
 import           Run                       (runDB)
 import           Servant.Auth.Server       (generateKey)
 import           Text.Mustache
 import           Turtle
-
 
 data FrontEndSetupConfig =
   FrontEndSetupConfig
@@ -219,45 +219,35 @@ writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
 
 configureDeploymentFile :: StackLayer -> SHA1 -> ScriptRunContext Turtle.FilePath
 configureDeploymentFile stackLayer sha1 = do
-  (mustacheFilename, decoder) <- getDeploymentTemplateConfig stackLayer sha1
-  configureK8StacheFile mustacheFilename decoder
+  stacheTemplate <- getDeploymentTemplateConfig stackLayer sha1
+  configureK8StacheFile stacheTemplate
 
 
-configureK8StacheFile :: Text -> A.Value -> ScriptRunContext Turtle.FilePath
-configureK8StacheFile stacheFile decoder = do
+configureK8StacheFile :: StacheTemplate -> ScriptRunContext Turtle.FilePath
+configureK8StacheFile (StacheTemplate stacheFilename configObj) = do
   kubernetesDir <- getKubernetesDir
-  let mustacheFile = kubernetesDir </> fromText stacheFile
+  let mustacheFile = kubernetesDir </> stacheFilename
       mustacheFilename = filename mustacheFile & encodeString & pack
   stacheTemplate <- compileMustacheFile $ encodeString mustacheFile
   let writeToFilename = T.replace ".mustache" "" mustacheFilename
       configuredDeploymentFilepath = kubernetesDir </> fromText writeToFilename
   _ <- liftIO $ writeTextFile configuredDeploymentFilepath
               $ TL.toStrict
-              $ renderMustache stacheTemplate decoder
+              $ renderMustache stacheTemplate configObj
   return configuredDeploymentFilepath
 
 
-getDeploymentTemplateConfig :: StackLayer -> SHA1 -> ScriptRunContext (Text, A.Value)
+getDeploymentTemplateConfig :: StackLayer -> SHA1 -> ScriptRunContext StacheTemplate
 getDeploymentTemplateConfig stackLayer (SHA1 curSha) = do
   hasmFile' <- readHASMFile
   dockerBaseImage <- deriveRemoteBaseImageName stackLayer
+  let appName' = hasmFile' ^. appName
+      dockerImage' = (dockerBaseImage <> ":" <> curSha)
   case stackLayer of
     Frontend ->
-      return $
-        ("frontend-deployment.yaml.mustache"
-        ,A.object
-          [ "appName" A..= (hasmFile' ^. appName)
-          , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
-          ]
-        )
+      return $ frontendDeploymentConfig appName'  dockerImage'
     Backend  ->
-      return $
-        ("backend-deployment.yaml.mustache"
-        ,A.object
-          [ "appName" A..= (hasmFile' ^. appName)
-          , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
-          ]
-        )
+      return $ backendDeploymentConfig appName'  dockerImage'
 
 newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
 newtype CoreStackDirName =  CoreStackDirName Text
