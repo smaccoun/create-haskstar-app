@@ -150,15 +150,21 @@ setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
   setupOpsTree
   configureCircle
+  configureInitialK8Templates
+
+configureInitialK8Templates :: ScriptRunContext ()
+configureInitialK8Templates = do
   hasmFile' <- readHASMFile
+  let appName' = hasmFile' ^. appName
   case hasmFile' ^. remote of
     Just rc -> do
       let email' = rc ^. email
-      _ <- configureK8StacheFile (certIssuerConfig (Email email'))
+      let domain' = rc ^. domain
+      _ <- configureK8StacheFile $ certIssuerConfig (Email email')
+      _ <- configureK8StacheFile $ ingressConfig (AppName appName') (Domain domain')
       return ()
     Nothing ->
       return ()
-
 
 setupOpsTree :: ScriptRunContext ()
 setupOpsTree = do

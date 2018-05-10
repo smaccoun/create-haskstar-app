@@ -4,7 +4,8 @@ module PostSetup.K8Templates where
 
 import qualified Data.Aeson as A
 import           Data.Text  (Text)
-import           Lib        (AppName (..), Email (..), RemoteDockerImage (..))
+import           Lib        (AppName (..), Domain (..), Email (..),
+                             RemoteDockerImage (..))
 import           Turtle
 
 data StacheTemplate =
@@ -32,6 +33,17 @@ backendDeploymentConfig (AppName appName') (RemoteDockerImage remoteDockerImage'
         A.object
           [ "appName" A..= appName'
           , "remoteDockerImage" A..= remoteDockerImage'
+          ]
+      }
+
+ingressConfig :: AppName -> Domain -> StacheTemplate
+ingressConfig (AppName appName') (Domain domain) =
+    StacheTemplate
+      {stacheFilename = "ingress.yaml.mustache"
+      ,configObj =
+        A.object
+          [ "appName" A..= appName'
+          , "domain" A..= domain
           ]
       }
 
