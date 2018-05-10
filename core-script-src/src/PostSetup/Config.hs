@@ -19,12 +19,14 @@ import           Turtle
 data HASMFile =
     HASMFile
       {_appName :: Text
-      ,_remote  :: RemoteConfig
+      ,_remote  :: Maybe RemoteConfig
       } deriving (Generic)
 
 data RemoteConfig =
     RemoteConfig
-      {_dockerBaseImage :: Maybe Text
+      {_dockerBaseImage :: Text
+      ,_domain          :: Text
+      ,_email           :: Text
       ,_dbRemoteConfig  :: Maybe RemoteDBConfig
       } deriving (Generic)
 
@@ -86,7 +88,9 @@ readHASMFile = do
 readRemoteConfig :: ScriptRunContext RemoteConfig
 readRemoteConfig = do
   hasmFile' <- readHASMFile
-  return $ hasmFile' ^. remote
+  case hasmFile' ^. remote of
+    Just remoteConfig -> return remoteConfig
+    Nothing -> die "You do not have a remote config setup in your HASM file"
 
 
 readDBConfig :: Environment -> ScriptRunContext DBConfig
@@ -96,7 +100,8 @@ readDBConfig curEnv =
       mkDefaultLocalDBConfig <$> getAppName
     RemoteEnv rv -> do
       hasmFile' <- readHASMFile
-      let remoteDBConfig' = hasmFile' ^. remote ^. dbRemoteConfig
+      remoteConfig <- readRemoteConfig
+      let remoteDBConfig' = remoteConfig ^. dbRemoteConfig
       case remoteDBConfig' of
         Just dbConfig ->
           return
@@ -116,12 +121,8 @@ readDBConfig curEnv =
 deriveRemoteBaseImageName :: StackLayer -> ScriptRunContext Text
 deriveRemoteBaseImageName stackLayer = do
   remoteConfig' <- readRemoteConfig
-  let mbBaseImage = remoteConfig' ^. dockerBaseImage
-  case mbBaseImage of
-    Just baseImage ->
-      return $ baseImage <> "-" <> (getSuffix stackLayer)
-    Nothing ->
-      die "Must have a base remote docker image configured"
+  let baseImage = remoteConfig' ^. dockerBaseImage
+  return $ baseImage <> "-" <> (getSuffix stackLayer)
   where
     getSuffix stackLayer =
       case stackLayer of

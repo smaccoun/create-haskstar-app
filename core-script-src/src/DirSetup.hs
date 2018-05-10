@@ -37,25 +37,29 @@ runSetup appName' dbConfig = do
   setupAllSubDirectories dbConfig
 
 onShouldSetup :: AppName -> YesNo -> ScriptRunContext ()
-onShouldSetup appName' shouldSetup =
+onShouldSetup appName'@(AppName appNameText) shouldSetup =
   case shouldSetup of
     Yes -> do
       dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
-      let hasmFile = mkHasmFile appName' (Just dockerHubRepo)
+      domain <- liftIO $ prompt "What primary domain will this be associated with (e.g. example.com)? " Nothing
+      email <- liftIO $ prompt "What is your email (used for TLS cert auto renewal)? " Nothing
+      let hasmFile = mkHasmFile appName' (Email email) (Domain domain) dockerHubRepo
       writeHASMFile hasmFile
-    No -> writeHASMFile $ mkHasmFile appName' Nothing
-
-mkHasmFile :: AppName -> Maybe Text -> HASMFile
-mkHasmFile (AppName appName') mbDockerHubRepo =
-  HASMFile
-    {_appName = appName'
-    ,_remote =
-        RemoteConfig
-          {_dockerBaseImage =
-              fmap (\dhr -> dhr <> "/" <> appName') mbDockerHubRepo
-          ,_dbRemoteConfig = Nothing
-          }
-    }
+    No -> writeHASMFile $ HASMFile appNameText Nothing
+  where
+    mkHasmFile :: AppName -> Email -> Domain -> Text -> HASMFile
+    mkHasmFile (AppName appName') (Email email') (Domain domain) dockerHubRepo =
+      HASMFile
+        {_appName = appName'
+        ,_remote = Just $
+            RemoteConfig
+              {_dockerBaseImage =
+                  dockerHubRepo <> "/" <> appName'
+              ,_domain = domain
+              ,_email = email'
+              ,_dbRemoteConfig = Nothing
+              }
+        }
 
 
 
@@ -185,24 +189,20 @@ configureCircle = do
   let configStache = "config.yml.template"
       ciPath = opsDir' </> "ci"
       circleTemplatePath = ciPath </> ".circleci" </> fromText configStache
-  hasmFile <- readHASMFile
+  remoteConfig <- readRemoteConfig
   let circleTemplate = input circleTemplatePath
-      mbDockerRepo = hasmFile ^. remote ^. dockerBaseImage
+      dockerRepo = remoteConfig ^. dockerBaseImage
       circleConfigPath = (topRootDir </> ".circleci" </> "config.yml")
-  writeCircleFile circleConfigPath mbDockerRepo circleTemplate
+  writeCircleFile circleConfigPath dockerRepo circleTemplate
 
   return ()
 
-writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()
-writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
-  case mbDockerRepo of
-    Just dockerRepo -> do
-      output circleConfigPath $
-       sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate &
-       sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>")
-      return ()
-    Nothing ->
-      return ()
+writeCircleFile :: Turtle.FilePath -> Text -> Shell Line -> ScriptRunContext ()
+writeCircleFile circleConfigPath dockerRepo circleTemplate = do
+  output circleConfigPath $
+    sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate &
+    sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>")
+  return ()
 
 
 configureDeploymentFile :: StackLayer -> SHA1 -> ScriptRunContext Turtle.FilePath

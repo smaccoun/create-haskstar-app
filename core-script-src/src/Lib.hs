@@ -29,6 +29,7 @@ import           Turtle                    hiding (Generic)
 newtype AppName = AppName Text
 newtype RemoteDockerImage = RemoteDockerImage Text
 newtype Email = Email Text
+newtype Domain = Domain Text
 newtype SHA1 = SHA1 Text
 
 io :: ScriptRunContext () -> Context -> IO ()
