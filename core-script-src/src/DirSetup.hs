@@ -30,17 +30,6 @@ import           Servant.Auth.Server       (generateKey)
 import           Text.Mustache
 import           Turtle
 
-data FrontEndSetupConfig =
-  FrontEndSetupConfig
-    {frontEndLang         :: FrontEndLang
-    ,frontEndBaseTemplate :: GitBaseTemplateUrl
-    }
-
-data FrontEndLang =
-    Elm
-  | GHCJS
-    deriving (Generic, Show, A.FromJSON)
-
 runSetup :: Text -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
   writeHASMFile $ mkHasmFile Nothing
@@ -177,9 +166,6 @@ setupOpsTree = do
       rmtree "create-haskstar-app"
 
 
-
-
-
 getKubernetesDir :: ScriptRunContext Turtle.FilePath
 getKubernetesDir = do
   opsDir' <- getOpsDir
@@ -226,15 +212,8 @@ configureDeploymentFile stackLayer sha1 = do
 configureK8StacheFile :: StacheTemplate -> ScriptRunContext Turtle.FilePath
 configureK8StacheFile (StacheTemplate stacheFilename configObj) = do
   kubernetesDir <- getKubernetesDir
-  let mustacheFile = kubernetesDir </> stacheFilename
-      mustacheFilename = filename mustacheFile & encodeString & pack
-  stacheTemplate <- compileMustacheFile $ encodeString mustacheFile
-  let writeToFilename = T.replace ".mustache" "" mustacheFilename
-      configuredDeploymentFilepath = kubernetesDir </> fromText writeToFilename
-  _ <- liftIO $ writeTextFile configuredDeploymentFilepath
-              $ TL.toStrict
-              $ renderMustache stacheTemplate configObj
-  return configuredDeploymentFilepath
+  let templatePath = kubernetesDir </> fromText stacheFilename
+  configureMustacheTemplate templatePath configObj
 
 
 getDeploymentTemplateConfig :: StackLayer -> SHA1 -> ScriptRunContext StacheTemplate
@@ -245,9 +224,9 @@ getDeploymentTemplateConfig stackLayer (SHA1 curSha) = do
       dockerImage' = (dockerBaseImage <> ":" <> curSha)
   case stackLayer of
     Frontend ->
-      return $ frontendDeploymentConfig appName'  dockerImage'
+      return $ frontendDeploymentConfig (AppName appName')  (RemoteDockerImage dockerImage')
     Backend  ->
-      return $ backendDeploymentConfig appName'  dockerImage'
+      return $ backendDeploymentConfig (AppName appName')  (RemoteDockerImage dockerImage')
 
 newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
 newtype CoreStackDirName =  CoreStackDirName Text
@@ -265,8 +244,18 @@ cloneTemplateAsDir (GitBaseTemplateUrl gitUrl) (CoreStackDirName dirName) = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
 
-
 --TODO: Read this in from config file
+data FrontEndSetupConfig =
+  FrontEndSetupConfig
+    {frontEndLang         :: FrontEndLang
+    ,frontEndBaseTemplate :: GitBaseTemplateUrl
+    }
+
+data FrontEndLang =
+    Elm
+  | GHCJS
+    deriving (Generic, Show, A.FromJSON)
+
 elmFrontEndSetupConfig :: FrontEndSetupConfig
 elmFrontEndSetupConfig =
   FrontEndSetupConfig
