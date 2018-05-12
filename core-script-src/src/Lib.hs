@@ -15,15 +15,21 @@ import           Data.Maybe                (fromMaybe)
 import qualified Data.Set                  as Set
 import qualified Data.Text                 as T
 import qualified Data.Text.IO              as TIO
+import qualified Data.Text.Lazy            as TL
 import qualified Data.Yaml                 as YAML
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
 import           Interactive
 import           PostSetup.Config          (HASMFile (..), getHASMFilePathStr)
 import           System.Environment        (getExecutablePath)
+import           Text.Mustache
 import           Turtle                    hiding (Generic)
 ---------------------------------------------------------------
 
+newtype AppName = AppName Text
+newtype RemoteDockerImage = RemoteDockerImage Text
+newtype Email = Email Text
+newtype Domain = Domain Text
 newtype SHA1 = SHA1 Text
 
 io :: ScriptRunContext () -> Context -> IO ()
@@ -78,6 +84,17 @@ validateAndRunPostSetupCmd context cmd = do
         ioError $ userError "You are not in a valid HASM directory"
 
 
+{- Applies template values to mustache file and writes to new file in place, without mustache extension -}
+configureMustacheTemplate :: Turtle.FilePath -> Data.Aeson.Value -> ScriptRunContext Turtle.FilePath
+configureMustacheTemplate templatePath decoder = do
+  let mustacheFilename = filename templatePath & encodeString & T.pack
+  compiledTemplate <- compileMustacheFile $ encodeString templatePath
+  let writeToFilename = T.replace ".mustache" "" mustacheFilename
+      configuredDeploymentFilepath = directory templatePath </> fromText writeToFilename
+  _ <- liftIO $ writeTextFile configuredDeploymentFilepath
+              $ TL.toStrict
+              $ renderMustache compiledTemplate decoder
+  return configuredDeploymentFilepath
 
 
 

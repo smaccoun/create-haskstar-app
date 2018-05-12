@@ -24,49 +24,42 @@ import           GHC.Generics
 import           Interactive
 import           Lib
 import           PostSetup.Config
+import           PostSetup.K8Templates
 import           Run                       (runDB)
 import           Servant.Auth.Server       (generateKey)
 import           Text.Mustache
 import           Turtle
 
-
-data FrontEndSetupConfig =
-  FrontEndSetupConfig
-    {frontEndLang         :: FrontEndLang
-    ,frontEndBaseTemplate :: GitBaseTemplateUrl
-    }
-
-data FrontEndLang =
-    Elm
-  | GHCJS
-    deriving (Generic, Show, A.FromJSON)
-
-runSetup :: Text -> DBConfig -> ScriptRunContext ()
+runSetup :: AppName -> DBConfig -> ScriptRunContext ()
 runSetup appName' dbConfig = do
-  writeHASMFile $ mkHasmFile Nothing
   shouldSetupResult <- liftIO $ promptYesNo "Setup remote deployment as part of initial setup (note: you can also complete this step after setup) ? "
-  onShouldSetup shouldSetupResult
+  onShouldSetupRemoteConfig appName' shouldSetupResult
   setupAllSubDirectories dbConfig
+
+onShouldSetupRemoteConfig :: AppName -> YesNo -> ScriptRunContext ()
+onShouldSetupRemoteConfig appName'@(AppName appNameText) shouldSetup =
+  case shouldSetup of
+    Yes -> do
+      dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
+      domain <- liftIO $ prompt "What primary domain will this be associated with (e.g. example.com)? " Nothing
+      email <- liftIO $ prompt "What is your email (used for TLS cert auto renewal)? " Nothing
+      let hasmFile = mkHasmFile appName' (Email email) (Domain domain) dockerHubRepo
+      writeHASMFile hasmFile
+    No -> writeHASMFile $ HASMFile appNameText Nothing
   where
-    onShouldSetup shouldSetup =
-      case shouldSetup of
-        Yes -> do
-          dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
-          let hasmFile = mkHasmFile $ Just dockerHubRepo
-          writeHASMFile hasmFile
-        No -> writeHASMFile $ mkHasmFile Nothing
-    mkHasmFile mbDockerHubRepo =
+    mkHasmFile :: AppName -> Email -> Domain -> Text -> HASMFile
+    mkHasmFile (AppName appName') (Email email') (Domain domain) dockerHubRepo =
       HASMFile
         {_appName = appName'
-        ,_remote =
+        ,_remote = Just $
             RemoteConfig
               {_dockerBaseImage =
-                  fmap (\dhr -> dhr <> "/" <> appName') mbDockerHubRepo
+                  dockerHubRepo <> "/" <> appName'
+              ,_domain = domain
+              ,_email = email'
               ,_dbRemoteConfig = Nothing
               }
         }
-
-
 
 -- | Setup DB, Front-End, Back-End directories without building them
 setupCoreDirectories :: DBConfig -> ScriptRunContext ()
@@ -157,6 +150,21 @@ setupOpsDir :: ScriptRunContext ()
 setupOpsDir = do
   setupOpsTree
   configureCircle
+  configureInitialK8Templates
+
+configureInitialK8Templates :: ScriptRunContext ()
+configureInitialK8Templates = do
+  hasmFile' <- readHASMFile
+  let appName' = hasmFile' ^. appName
+  case hasmFile' ^. remote of
+    Just rc -> do
+      let email' = rc ^. email
+      let domain' = rc ^. domain
+      _ <- configureK8StacheFile $ certIssuerConfig (Email email')
+      _ <- configureK8StacheFile $ ingressConfig (AppName appName') (Domain domain')
+      return ()
+    Nothing ->
+      return ()
 
 setupOpsTree :: ScriptRunContext ()
 setupOpsTree = do
@@ -176,15 +184,6 @@ setupOpsTree = do
       cptree "./ops/ci/.circleci/" circleDir
       rmtree "create-haskstar-app"
 
-
-
-
-
-getKubernetesDir :: ScriptRunContext Turtle.FilePath
-getKubernetesDir = do
-  opsDir' <- getOpsDir
-  return $ opsDir' </> "kubernetes"
-
 configureDeploymentScripts :: SHA1 -> ScriptRunContext ()
 configureDeploymentScripts (SHA1 sha1) = do
   configureCircle
@@ -197,67 +196,46 @@ configureCircle = do
   let configStache = "config.yml.template"
       ciPath = opsDir' </> "ci"
       circleTemplatePath = ciPath </> ".circleci" </> fromText configStache
-  hasmFile <- readHASMFile
+  remoteConfig <- readRemoteConfig
   let circleTemplate = input circleTemplatePath
-      mbDockerRepo = hasmFile ^. remote ^. dockerBaseImage
+      dockerRepo = remoteConfig ^. dockerBaseImage
       circleConfigPath = (topRootDir </> ".circleci" </> "config.yml")
-  writeCircleFile circleConfigPath mbDockerRepo circleTemplate
+  writeCircleFile circleConfigPath dockerRepo circleTemplate
 
   return ()
 
-writeCircleFile :: Turtle.FilePath -> Maybe Text -> Shell Line -> ScriptRunContext ()
-writeCircleFile circleConfigPath mbDockerRepo circleTemplate =
-  case mbDockerRepo of
-    Just dockerRepo -> do
-      output circleConfigPath $
-       sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate &
-       sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>")
-      return ()
-    Nothing ->
-      return ()
+writeCircleFile :: Turtle.FilePath -> Text -> Shell Line -> ScriptRunContext ()
+writeCircleFile circleConfigPath dockerRepo circleTemplate = do
+  output circleConfigPath $
+    sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate &
+    sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>")
+  return ()
 
 
 configureDeploymentFile :: StackLayer -> SHA1 -> ScriptRunContext Turtle.FilePath
 configureDeploymentFile stackLayer sha1 = do
-  (mustacheFilename, decoder) <- getDeploymentTemplateConfig stackLayer sha1
-  configureK8StacheFile mustacheFilename decoder
+  stacheTemplate <- getDeploymentTemplateConfig stackLayer sha1
+  configureK8StacheFile stacheTemplate
 
 
-configureK8StacheFile :: Text -> A.Value -> ScriptRunContext Turtle.FilePath
-configureK8StacheFile stacheFile decoder = do
+configureK8StacheFile :: StacheTemplate -> ScriptRunContext Turtle.FilePath
+configureK8StacheFile (StacheTemplate stacheFilename configObj) = do
   kubernetesDir <- getKubernetesDir
-  let mustacheFile = kubernetesDir </> fromText stacheFile
-      mustacheFilename = filename mustacheFile & encodeString & pack
-  stacheTemplate <- compileMustacheFile $ encodeString mustacheFile
-  let writeToFilename = T.replace ".mustache" "" mustacheFilename
-      configuredDeploymentFilepath = kubernetesDir </> fromText writeToFilename
-  _ <- liftIO $ writeTextFile configuredDeploymentFilepath
-              $ TL.toStrict
-              $ renderMustache stacheTemplate decoder
-  return configuredDeploymentFilepath
+  let templatePath = kubernetesDir </> fromText stacheFilename
+  configureMustacheTemplate templatePath configObj
 
 
-getDeploymentTemplateConfig :: StackLayer -> SHA1 -> ScriptRunContext (Text, A.Value)
+getDeploymentTemplateConfig :: StackLayer -> SHA1 -> ScriptRunContext StacheTemplate
 getDeploymentTemplateConfig stackLayer (SHA1 curSha) = do
   hasmFile' <- readHASMFile
   dockerBaseImage <- deriveRemoteBaseImageName stackLayer
+  let appName' = hasmFile' ^. appName
+      dockerImage' = (dockerBaseImage <> ":" <> curSha)
   case stackLayer of
     Frontend ->
-      return $
-        ("frontend-deployment.yaml.mustache"
-        ,A.object
-          [ "appName" A..= (hasmFile' ^. appName)
-          , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
-          ]
-        )
+      return $ frontendDeploymentConfig (AppName appName')  (RemoteDockerImage dockerImage')
     Backend  ->
-      return $
-        ("backend-deployment.yaml.mustache"
-        ,A.object
-          [ "appName" A..= (hasmFile' ^. appName)
-          , "remoteDockerImage" A..= (dockerBaseImage <> ":" <> curSha)
-          ]
-        )
+      return $ backendDeploymentConfig (AppName appName')  (RemoteDockerImage dockerImage')
 
 newtype GitBaseTemplateUrl = GitBaseTemplateUrl Text
 newtype CoreStackDirName =  CoreStackDirName Text
@@ -275,8 +253,18 @@ cloneTemplateAsDir (GitBaseTemplateUrl gitUrl) (CoreStackDirName dirName) = do
     ExitFailure n -> die (" failed with exit code: " <> repr n)
 
 
-
 --TODO: Read this in from config file
+data FrontEndSetupConfig =
+  FrontEndSetupConfig
+    {frontEndLang         :: FrontEndLang
+    ,frontEndBaseTemplate :: GitBaseTemplateUrl
+    }
+
+data FrontEndLang =
+    Elm
+  | GHCJS
+    deriving (Generic, Show, A.FromJSON)
+
 elmFrontEndSetupConfig :: FrontEndSetupConfig
 elmFrontEndSetupConfig =
   FrontEndSetupConfig

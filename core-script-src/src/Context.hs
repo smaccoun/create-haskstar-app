@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE NamedFieldPuns             #-}
+{-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE RecordWildCards            #-}
 {-# LANGUAGE TemplateHaskell            #-}
 
@@ -54,12 +55,17 @@ fromAppRootDir = do
 getOpsDir :: ScriptRunContext Turtle.FilePath
 getOpsDir = do
   rdir <- getAppRootDir
-  return $ rdir </> decodeString "ops"
+  return $ rdir </> "ops"
+
+getKubernetesDir :: ScriptRunContext Turtle.FilePath
+getKubernetesDir = do
+  opsDir' <- getOpsDir
+  return $ opsDir' </> "kubernetes"
 
 getTTab :: ScriptRunContext Turtle.FilePath
 getTTab = do
   opsDir' <- getOpsDir
-  return $ opsDir' </> decodeString "ttab"
+  return $ opsDir' </> "ttab"
 
 getMbTemplate :: (MonadReader r m, HasContext r)
               => m (Maybe Text)

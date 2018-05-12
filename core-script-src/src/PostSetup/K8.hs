@@ -17,7 +17,7 @@ import           PostSetup.Config     (getAppName, readDBConfig)
 import           Turtle
 
 data K8Commands =
-  SetImage StackLayer
+    SetImage StackLayer
 
 configureKubeSecrets :: ScriptRunContext [(String, String)]
 configureKubeSecrets = do

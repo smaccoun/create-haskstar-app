@@ -1,0 +1,22 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{appName}}-com
+  namespace: default
+spec:
+  secretName: {{appName}}-com-tls
+  issuerRef:
+    name: letsencrypt-staging
+  commonName: {{domain}} 
+  dnsNames:
+  {{#dnsNameList}}
+  - {{.}}
+  {{/dnsNameList}}
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      {{#domainList}}
+      {{.}}
+      {{/domainList}}
