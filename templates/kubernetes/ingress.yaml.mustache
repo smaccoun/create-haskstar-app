@@ -1,10 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: smaccoun-ing
+  name: {{appName}}-ing
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.global-static-ip-name: {{appName}}-ip
+    certmanager.k8s.io/cluster-issuer: letsencrypt-production
   labels:
     app: {{appName}}
 spec:
@@ -18,5 +19,5 @@ spec:
         path: /*
   tls:
   - hosts:
-    - {{domain}}
-    secretName: {{appName}}-com-tls
+    - api.{{domain}}
+    secretName: letsencrypt-prod

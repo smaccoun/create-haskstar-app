@@ -50,7 +50,7 @@ ingressConfig (AppName appName') (Domain domain) =
 certIssuerConfig :: Email -> StacheTemplate
 certIssuerConfig (Email email) =
     StacheTemplate
-      {stacheFilename = "acme-staging-issuer.yaml.mustache"
+      {stacheFilename = "letsencrypt-issuer.yaml.mustache"
       ,configObj =
         A.object
           [ "userEmail" A..= email

@@ -1,12 +1,12 @@
 kind: "Service"
 apiVersion: "v1"
 metadata:
-  name: {{appName}}
+  name: {{appName}}-backend-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
-    - port: 80
-      targetPort: external
+    - port: 8080
+      targetPort: 8080
   selector:
     app: {{appName}}
     tier: backend
@@ -14,7 +14,7 @@ spec:
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{appName}}-backend
+  name: {{appName}}-backend-deployment
 spec:
   replicas: 1
   revisionHistoryLimit: 5
@@ -51,13 +51,13 @@ spec:
               path: /health
               port: external
             initialDelaySeconds: 5
-            timeoutSeconds: 1
+            periodSeconds: 200
           readinessProbe:
             httpGet:
               path: /health
               port: external
             initialDelaySeconds: 5
-            timeoutSeconds: 1
+            periodSeconds: 200
           ports:
             - containerPort: 8080
               name: "external"
