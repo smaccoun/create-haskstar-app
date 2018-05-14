@@ -35,13 +35,24 @@ The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end a
 
 #### Major Goals:
 
+**Development**
 - Quick scaffolding of full-stack apps with Haskell as a back-end for rapid prototyping that can turn into full scale apps
-- Simplify and reduce time spent on devOps and deploying to cloud
+
 - Decent level of customization, especially on the front-end
 - Provide template of best practices and best libraries for haskell based webApps (and respective front-ends)
 - Most batteries included - preset with all the libraries and configuration common to most or all webapps (authentication/login, styling framweworks, forms)
 - Solid tooling (e.g. auto generated REST apis from code, hot reloading, etc)
 
+**Deployment**
+- Simplify and reduce time spent on devOps and deploying to cloud
+- Highly declarative cloud configurations (achieved with Kubernetes)
+- Automate all the common stuff (e.g. automatic TLS provisioning)
+- Ability to rollback and forward deployments
+- Secure/Scalable/Health monitoring (again...Kubernetes)
+
+In other words.....
+
+*Simple manifest*
 
 Designed to automate all the redundant, not-so-fun parts of setting up a stack.
 This is almost like a framework - monolithic and highly opinionated - 
@@ -67,7 +78,29 @@ You must have the following installed for basic local development and setup
 - npm
 - yarn
 
-Additionally, if you want to setup remote deployments, you will need [gcloud](https://cloud.google.com/sdk/downloads) and [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed
+**Cloud Hosting (deployment) prerequisites**
+
+Additionally, if you want to setup remote deployments, you will need several libraries.
+Currently, deployments are orchestrated by Kubernetes. Kubernetes allows for highly declarative cloud deployments, and will soon have very good native support from AWS, Google Cloud (GCE), and Digital Ocean.
+Since Google Cloud currently has the best support, current implementation only requires several gcloud tools. 
+
+Here's a list of all tools needed for deployment:
+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed
+- [helm](https://docs.helm.sh/using_helm/#installing-helm)
+- [gcloud](https://cloud.google.com/sdk/downloads) 
+
+You will also already need a google cloud account setup with project. Once you have this, make sure to run:
+
+```bash
+gcloud config set project [PROJECT_ID]
+gcloud config set compute/zone us-central1-b
+
+export PROJECT_ID="$(gcloud config get-value project -q)"
+```
+
+
+
 
 # Setup
 
@@ -162,6 +195,6 @@ Idea is to get stack working for a certain set of configurations, then continual
 |   Platforms | Status   |
 |----------|:---------|
 | CircleCI |          |
-| AWS      |   In progress    |
-| GCloud   |      |
+| AWS      |       |
+| GCloud   |    ✅   |
 
