@@ -38,8 +38,8 @@ main = do
     PostSetupMode postSetupOption -> do
       context <- getPostSetupContext
       case postSetupOption of
-        Start runOption               -> startCmd context runOption
-        Run runOption                 -> runCmd context runOption
+        Start startOption               -> startCmd context startOption
+        Run runOption -> runCmd context runOption
         Build buildOption             -> buildCmd context buildOption
         Deploy deployConfig deployEnv ->  deployCmd context deployConfig deployEnv
         Login loginCmd -> io loginDB context
@@ -59,8 +59,8 @@ buildCmd context buildOption = do
 
 
 runCmd :: Context -> RunCmd -> IO ()
-runCmd context RunMigrations =
-  io (runMigrations Local) context
+runCmd context (RunMigrations migrationEnv) =
+  io (runMigrations migrationEnv) context
 
 startCmd :: Context -> StartCmd -> IO ()
 startCmd context runOption = do

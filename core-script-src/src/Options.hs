@@ -4,7 +4,7 @@
 
 module Options where
 
-import           Context           (RemoteStage (..))
+import           Context           (Environment (..), RemoteStage (..))
 import           Lib               (SHA1 (..))
 import           PostSetup.Config
 import           PostSetup.Context
@@ -24,7 +24,7 @@ data PostSetupOption =
 
 data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
 data StartCmd = StartAPI | StartWeb | StartDB
-data RunCmd = RunMigrations
+data RunCmd = RunMigrations Environment
 
 data LoginCmd = LoginDB
 
@@ -33,7 +33,7 @@ parseCmd =
       fmap New (subcommand "new" "Setup new App" $ argText "appName" "Choose a name for your app")
   <|> fmap (\a -> PostSetupMode (Start a))
         (subcommand "start" "Start services" parseStartCmd)
-  <|> fmap (\a -> PostSetupMode (Run a))
+  <|> fmap (\r -> PostSetupMode (Run r))
         (subcommand "run" "Run services" parseRunCmd)
   <|> fmap (\a -> PostSetupMode (Build a))
         (subcommand "build" "Build services" parseBuildCmd)
@@ -65,12 +65,29 @@ parseStartCmd =
 
 parseRunCmd :: Parser RunCmd
 parseRunCmd =
-  arg parseStartText "runCmd" "Choose 'migrations'"
+  parseFirstArg <*> parseSecondArg
   where
+    parseFirstArg :: Parser (Environment -> RunCmd)
+    parseFirstArg =
+      arg parseStartText "runCmd" "Choose 'migrations'"
+
+    parseStartText :: Text -> Maybe (Environment -> RunCmd)
     parseStartText rt =
       case rt of
         "migrations" -> Just RunMigrations
         _            -> Nothing
+
+    parseSecondArg :: Parser Environment
+    parseSecondArg =
+      arg parseEnv "runCmd" "Choose 'migrations'"
+
+parseEnv :: Text -> Maybe Environment
+parseEnv e =
+  case e of
+    "local"      -> Just Local
+    "staging"    -> Just $ RemoteEnv Staging
+    "production" -> Just $ RemoteEnv Production
+    _            -> Nothing
 
 parseLoginCmd :: Parser LoginCmd
 parseLoginCmd =

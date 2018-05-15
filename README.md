@@ -19,9 +19,9 @@ hasm start db
 hasm start front-end
 hasm start back-end
 
-hasm run migrations
+hasm run migrations local
 
-hasm login db   ## Login to local docker db for debugging purposes
+hasm deploy staging ## Login to local docker db for debugging purposes
 ```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
@@ -82,11 +82,11 @@ You must have the following installed for basic local development and setup
 
 Additionally, if you want to setup remote deployments, you will need several libraries.
 Currently, deployments are orchestrated by Kubernetes. Kubernetes allows for highly declarative cloud deployments, and will soon have very good native support from AWS, Google Cloud (GCE), and Digital Ocean.
-Since Google Cloud currently has the best support, current implementation only requires several gcloud tools. 
+Since Google Cloud currently has the best support, current implementation requires some gcloud specific setup. 
 
 Here's a list of all tools needed for deployment:
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 
 - [helm](https://docs.helm.sh/using_helm/#installing-helm)
 - [gcloud](https://cloud.google.com/sdk/downloads) 
 
