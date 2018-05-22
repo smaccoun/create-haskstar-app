@@ -9,20 +9,21 @@ import qualified Data.Text    as T
 import qualified Data.Text.IO as TIO
 import           Turtle
 
-prompt :: T.Text -> Maybe T.Text -> IO T.Text
+prompt :: MonadIO m => T.Text -> Maybe T.Text -> m T.Text
 prompt promptQuestion mbDefault = do
   let questionExtension = fmap (\d -> " (default " <> d <> ")") mbDefault & fromMaybe ""
   let question = promptQuestion <> questionExtension <> ": "
-  putStrLn "\n-----------------------"
-  TIO.putStrLn question
+  printfln question
+  printf "\n-----------------------\n\n"
   getAnswer
   where
+    getAnswer :: MonadIO m => m Text
     getAnswer = do
-      answer <- getLine
+      answer <- liftIO getLine
       if didHitEnter answer then
            case mbDefault of
               Just def -> do
-                TIO.putStrLn $ "---> Nothing entered. Using default " <> def
+                printfln $ "---> Nothing entered. Using default " <> def
                 return def
               Nothing -> getAnswer
       else
@@ -30,7 +31,7 @@ prompt promptQuestion mbDefault = do
 
 data YesNo = Yes | No
 
-promptYesNo :: T.Text -> IO YesNo
+promptYesNo :: MonadIO m => T.Text -> m YesNo
 promptYesNo promptQuestion = do
   let fullPrompt = promptQuestion <> " (Hit [y] or [n])"
   response <- prompt fullPrompt Nothing

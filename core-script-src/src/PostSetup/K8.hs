@@ -11,19 +11,15 @@ import           Context
 import           Data.List            (find)
 import           Data.Text            (Text, intercalate, pack, replace)
 import           DBConfig             (DBConfig (..))
-import           DirSetup             (writeJWKFromEnv)
 import           Interactive          (showCommand)
-import           PostSetup.Config     (getAppName, readDBConfig)
 import           Turtle
 
 data K8Commands =
     SetImage StackLayer
 
-configureKubeSecrets :: ScriptRunContext [(String, String)]
-configureKubeSecrets = do
+configureKubeSecrets :: Text -> DBConfig -> ScriptRunContext [(String, String)]
+configureKubeSecrets appName' dbConfig = do
   backendDir' <- getBackendDir
-  appName' <- getAppName
-  dbConfig <- readDBConfig $ RemoteEnv Production --TODO: Make env specific
   let backendEnvFile = backendDir' </> ".env"
   envVars <- Dotenv.parseFile $ encodeString backendEnvFile
   case getAuthJWK envVars of

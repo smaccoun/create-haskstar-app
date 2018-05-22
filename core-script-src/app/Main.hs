@@ -25,6 +25,7 @@ import           Options
 import           PostSetup.Config
 import           PostSetup.Context
 import           PostSetup.Deploy
+import           PostSetup.Run
 import           Run
 
 
@@ -42,6 +43,7 @@ main = do
         Run runOption -> runCmd context runOption
         Build buildOption             -> buildCmd context buildOption
         Deploy deployConfig deployEnv ->  deployCmd context deployConfig deployEnv
+        Configure env cf ->   configureCmd context env cf
         Login loginCmd -> io loginDB context
 
 
@@ -82,6 +84,14 @@ deployCmd context deployConfig deployEnv = do
       case deployEnv of
         Staging    -> deploy deployConfig
         Production -> deploy deployConfig
+
+
+configureCmd :: Context -> Environment -> ConfigureCmd -> IO ()
+configureCmd context env configCmd = do
+  case configCmd of
+    ConfigureDB -> do
+      _ <- validateAndRunPostSetupCmd context (interactiveConfigureDB env)
+      return ()
 
 
 setupNew :: Text -> Maybe Text -> Maybe Text -> IO ()

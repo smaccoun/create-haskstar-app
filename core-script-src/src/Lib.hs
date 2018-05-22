@@ -20,7 +20,6 @@ import qualified Data.Yaml                 as YAML
 import           Filesystem.Path.CurrentOS (decodeString, encodeString,
                                             fromText)
 import           Interactive
-import           PostSetup.Config          (HASMFile (..), getHASMFilePathStr)
 import           System.Environment        (getExecutablePath)
 import           Text.Mustache
 import           Turtle                    hiding (Generic)
@@ -56,13 +55,6 @@ checkValidHASMDir = do
         hasAllDirs allChildrenNames =
             Set.isSubsetOf requiredDirs allChildrenNames
 
-
-
-writeHASMFile :: HASMFile -> ScriptRunContext ()
-writeHASMFile hasmFile = do
-    hasmFilePath <- getHASMFilePathStr
-    liftIO $ YAML.encodeFile hasmFilePath hasmFile
-    return ()
 
 getExecutablePath' :: IO ExecutablePath
 getExecutablePath' =

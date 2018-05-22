@@ -21,7 +21,7 @@ hasm start back-end
 
 hasm run migrations local
 
-hasm deploy staging ## Login to local docker db for debugging purposes
+hasm deploy staging ## Currently requires some manual work with Google Cloud prior 
 ```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
@@ -51,8 +51,6 @@ The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end a
 - Secure/Scalable/Health monitoring (again...Kubernetes)
 
 In other words.....
-
-*Simple manifest*
 
 Designed to automate all the redundant, not-so-fun parts of setting up a stack.
 This is almost like a framework - monolithic and highly opinionated - 

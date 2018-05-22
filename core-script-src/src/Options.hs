@@ -21,10 +21,12 @@ data PostSetupOption =
   | Run RunCmd
   | Deploy DeployConfig RemoteStage
   | Login LoginCmd
+  | Configure Environment ConfigureCmd
 
 data BuildCmd = BuildFrontEnd | BuildBackEnd | BuildAll
 data StartCmd = StartAPI | StartWeb | StartDB
 data RunCmd = RunMigrations Environment
+data ConfigureCmd = ConfigureDB
 
 data LoginCmd = LoginDB
 
@@ -39,6 +41,8 @@ parseCmd =
         (subcommand "build" "Build services" parseBuildCmd)
   <|> fmap mapDeployParse
         (subcommand "deploy" "Deploy services" parseDeployCmd)
+  <|> fmap (\(e, c) -> PostSetupMode (Configure e c))
+        (subcommand "configure" "Configure services" parseConfigureCmd)
   <|> fmap (\a -> PostSetupMode (Login a))
         (subcommand "login" "Login services" parseLoginCmd)
   where
@@ -108,9 +112,9 @@ parseDeployCmd =
   where
     parseDeployEnvText rt =
       case rt of
-        "deploy"  -> Just Staging
-        "staging" -> Just Production
-        _         -> Nothing
+        "staging"    -> Just Staging
+        "production" -> Just Production
+        _            -> Nothing
 
 parseBuildCmd :: Parser BuildCmd
 parseBuildCmd =
@@ -122,6 +126,27 @@ parseBuildCmd =
         "front-end" -> Just BuildFrontEnd
         "all"       -> Just BuildAll
         _           -> Nothing
+
+
+parseConfigureCmd :: Parser (Environment, ConfigureCmd)
+parseConfigureCmd =
+  (,)
+  <$> arg parseEnvOption "env" "Choose either 'local', 'staging', or 'production'"
+  <*> arg parseConfigCmd "config" "Choose db"
+  where
+    parseConfigCmd :: Text -> Maybe ConfigureCmd
+    parseConfigCmd rt =
+      case rt of
+        "db" -> Just ConfigureDB
+        _    -> Nothing
+
+parseEnvOption :: Text -> Maybe Environment
+parseEnvOption rt =
+  case rt of
+    "local"      -> Just Local
+    "staging"    -> Just $ RemoteEnv Staging
+    "production" -> Just $ RemoteEnv Production
+    _            -> Nothing
 
 
 parser :: Parser (ExecutionContext, Maybe Text, Maybe Text)

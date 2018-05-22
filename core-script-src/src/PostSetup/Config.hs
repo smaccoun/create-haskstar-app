@@ -6,14 +6,17 @@
 module PostSetup.Config where
 
 import           Context
-import           Control.Lens    ((^.))
+import           Control.Lens    (over, set, (.~), (^.))
 import           Control.Lens.TH
 import           Data.Aeson
+import           Data.Maybe      (fromMaybe)
 import           Data.Text       (Text, pack)
 import qualified Data.Text       as T (replace)
 import qualified Data.Yaml       as YAML
 import           DBConfig
 import           GHC.Generics
+import           Interactive     (prompt)
+import           PostSetup.K8    (configureKubeSecrets)
 import           Turtle
 
 data HASMFile =
@@ -32,7 +35,8 @@ data RemoteConfig =
 
 data RemoteDBConfig =
   RemoteDBConfig
-    {_dbRemoteHost     :: Text
+    {_dbRemoteUser     :: Text
+    ,_dbRemoteHost     :: Text
     ,_dbRemotePassword :: Text
     } deriving (Generic)
 
@@ -93,6 +97,38 @@ readRemoteConfig = do
     Nothing -> die "You do not have a remote config setup in your HASM file"
 
 
+interactiveConfigureDB :: Environment -> ScriptRunContext ()
+interactiveConfigureDB env = do
+  dbRemoteHostAnswer <- prompt "DB_HOST" Nothing
+  dbRemoteUserAnswer <- prompt "DB_USER" (Just "postgres")
+  dbRemotePasswordAnswer <- prompt "DB_PASSWORD" Nothing
+  let baseRemoteDBConfig =
+        RemoteDBConfig
+          {_dbRemoteUser =  dbRemoteUserAnswer
+          , _dbRemoteHost     = dbRemoteHostAnswer
+          ,_dbRemotePassword = dbRemotePasswordAnswer
+          }
+  curHASMFile <- readHASMFile
+  appName' <- getAppName
+  dbConfig <- readDBConfig $ RemoteEnv Production --TODO: Make env specific
+  case curHASMFile ^. remote of
+    Just curRemoteConfig -> do
+      let newRemoteConfig = set dbRemoteConfig (Just baseRemoteDBConfig) curRemoteConfig
+          newHASMFile = set remote (Just newRemoteConfig) curHASMFile
+      writeHASMFile newHASMFile
+      _ <- configureKubeSecrets appName' dbConfig
+      return ()
+    Nothing ->
+      die "You do not have a general remote config setup yet!"
+    where
+      writeHASMFile :: HASMFile -> ScriptRunContext ()
+      writeHASMFile hasmFile = do
+          hasmFilePath <- getHASMFilePathStr
+          liftIO $ YAML.encodeFile hasmFilePath hasmFile
+          return ()
+
+
+
 readDBConfig :: Environment -> ScriptRunContext DBConfig
 readDBConfig curEnv =
   case curEnv of
@@ -102,19 +138,22 @@ readDBConfig curEnv =
       hasmFile' <- readHASMFile
       remoteConfig <- readRemoteConfig
       let remoteDBConfig' = remoteConfig ^. dbRemoteConfig
+      appName' <- getAppName
       case remoteDBConfig' of
-        Just dbConfig ->
-          return
-            DBConfig
-              {dbHost = dbConfig ^. dbRemoteHost
-              ,dbPort = 5432
-              ,dbUser = "postgres"
-              ,dbPassword = dbConfig ^. dbRemotePassword
-              ,dbName = T.replace "-" "_" (hasmFile' ^. appName)
-              ,dbSchema = "public"
-              }
+        Just rdb -> return $ defaultRemoteDBConfig appName' rdb
         Nothing ->
           die "You do not have config setup for a remote db. Please edit your HASMFIle to include remote DB Config"
+
+defaultRemoteDBConfig :: Text -> RemoteDBConfig -> DBConfig
+defaultRemoteDBConfig appName' dbConfig =
+      DBConfig
+        {dbHost = (dbConfig ^. dbRemoteUser)
+        ,dbPort = 5432
+        ,dbUser = "postgres"
+        ,dbPassword = dbConfig ^. dbRemotePassword
+        ,dbName = T.replace "-" "_" appName'
+        ,dbSchema = "public"
+        }
 
 
 

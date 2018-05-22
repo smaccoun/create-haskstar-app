@@ -16,7 +16,7 @@ import           PostSetup.Config
 import           PostSetup.Context         (DeployConfig (..),
                                             RemoteDockerBaseDir (..))
 import           PostSetup.K8
-import           Run                       (runMigrations)
+import           PostSetup.Run             (runMigrations)
 import           Turtle
 
 deploy :: DeployConfig -> ScriptRunContext ()
@@ -29,7 +29,9 @@ deploy deployConfig = do
 
 deployBackend :: ScriptRunContext ExitCode
 deployBackend = do
-  _ <- configureKubeSecrets
+  appName' <- getAppName
+  dbConfig <- readDBConfig $ RemoteEnv Production --TODO: Make env specific
+  _ <- configureKubeSecrets appName' dbConfig
   runK8Cmd $ SetImage Backend
 
 deployFrontend :: ScriptRunContext ExitCode

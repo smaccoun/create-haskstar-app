@@ -17,6 +17,7 @@ import qualified Data.Text                 as T
 import           Data.Text.Encoding        (decodeUtf8)
 import qualified Data.Text.Lazy            as TL
 import           Data.Text.Lazy.Builder    (toLazyText)
+import qualified Data.Yaml                 as YAML
 import           DBConfig
 import qualified Filesystem.Path           as FP
 import           Filesystem.Path.CurrentOS (decodeString, encodeString)
@@ -219,6 +220,12 @@ writeCircleFile circleConfigPath dockerRepo circleTemplate = do
     sed (fmap (\_ -> dockerRepo <> "-backend") $ text "<<dockerRepoBackendImage>>") circleTemplate &
     sed (fmap (\_ -> dockerRepo <> "-frontend") $ text "<<dockerRepoFrontendImage>>")
   return ()
+
+writeHASMFile :: HASMFile -> ScriptRunContext ()
+writeHASMFile hasmFile = do
+    hasmFilePath <- getHASMFilePathStr
+    liftIO $ YAML.encodeFile hasmFilePath hasmFile
+    return ()
 
 
 configureDeploymentFile :: StackLayer -> SHA1 -> ScriptRunContext Turtle.FilePath

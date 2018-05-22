@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0f92fcf42c3b5a956402b6e298376ad61d20702225882742299c1fb3950d516b
+-- hash: 1a19e3967b63d9a2eef6616471770a5a20c87e9631db0bbd45d7c641a72ce48d
 
 name:           hasm
 version:        0.1.0.0
@@ -58,6 +58,7 @@ library
       PostSetup.Deploy
       PostSetup.K8
       PostSetup.K8Templates
+      PostSetup.Run
       Run
   other-modules:
       Paths_hasm
