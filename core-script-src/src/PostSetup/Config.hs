@@ -147,9 +147,9 @@ readDBConfig curEnv =
 defaultRemoteDBConfig :: Text -> RemoteDBConfig -> DBConfig
 defaultRemoteDBConfig appName' dbConfig =
       DBConfig
-        {dbHost = (dbConfig ^. dbRemoteUser)
+        {dbHost = (dbConfig ^. dbRemoteHost)
         ,dbPort = 5432
-        ,dbUser = "postgres"
+        ,dbUser = dbConfig ^. dbRemoteUser
         ,dbPassword = dbConfig ^. dbRemotePassword
         ,dbName = T.replace "-" "_" appName'
         ,dbSchema = "public"
