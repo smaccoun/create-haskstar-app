@@ -38,61 +38,51 @@ main = do
     New appName   -> setupNew appName mbfrontEndOption mbTemplate
     PostSetupMode postSetupOption -> do
       context <- getPostSetupContext
-      case postSetupOption of
-        Start startOption               -> startCmd context startOption
-        Run runOption -> runCmd context runOption
-        Build buildOption             -> buildCmd context buildOption
-        Deploy deployConfig deployEnv ->  deployCmd context deployConfig deployEnv
-        Configure env cf ->   configureCmd context env cf
-        Login loginCmd -> io loginDB context
+      validateAndRunPostSetupCmd context (runPostSetupOption postSetupOption)
 
 
-
-buildCmd :: Context -> BuildCmd -> IO ()
-buildCmd context buildOption = do
-  validateAndRunPostSetupCmd context buildCmdInContext
-  return ()
-  where
-    buildCmdInContext =
-      case buildOption of
-        BuildFrontEnd -> buildFrontEnd
-        BuildBackEnd  -> buildBackEnd
-        BuildAll      -> buildFrontAndBackEnd
+runPostSetupOption :: PostSetupOption -> ScriptRunContext ()
+runPostSetupOption postSetupOption =
+  case postSetupOption of
+    Start startOption             -> startCmd startOption
+    Run runOption                 -> runCmd runOption
+    Build buildOption             -> buildCmd buildOption
+    Deploy deployConfig deployEnv ->  deployCmd deployConfig deployEnv
+    Configure env cf              ->   configureCmd env cf
+    Login loginCmd                -> loginDB
 
 
-runCmd :: Context -> RunCmd -> IO ()
-runCmd context (RunMigrations migrationEnv) =
-  io (runMigrations migrationEnv) context
+buildCmd :: BuildCmd -> ScriptRunContext ()
+buildCmd buildOption =
+  case buildOption of
+    BuildFrontEnd -> buildFrontEnd
+    BuildBackEnd  -> buildBackEnd
+    BuildAll      -> buildFrontAndBackEnd
 
-startCmd :: Context -> StartCmd -> IO ()
-startCmd context runOption = do
-  validateAndRunPostSetupCmd context runCmdInContext
-  return ()
-  where
-    runCmdInContext =
-      case runOption of
-        StartAPI -> runBackEnd
-        StartWeb -> runFrontEnd
-        StartDB  -> runDB
+runCmd :: RunCmd -> ScriptRunContext ()
+runCmd (RunMigrations migrationEnv) =
+  runMigrations migrationEnv
 
-deployCmd :: Context -> DeployConfig -> RemoteStage -> IO ()
-deployCmd context deployConfig deployEnv = do
-  validateAndRunPostSetupCmd context deployInContext
-  return ()
-  where
-    deployInContext =
-      case deployEnv of
-        Staging    -> deploy deployConfig
-        Production -> deploy deployConfig
+startCmd :: StartCmd -> ScriptRunContext ()
+startCmd runOption =
+  case runOption of
+    StartAPI -> runBackEnd
+    StartWeb -> runFrontEnd
+    StartDB  -> runDB
 
 
-configureCmd :: Context -> Environment -> ConfigureCmd -> IO ()
-configureCmd context env configCmd = do
+deployCmd :: DeployConfig -> RemoteStage -> ScriptRunContext ()
+deployCmd deployConfig deployEnv =
+  case deployEnv of
+    Staging    -> deploy deployConfig
+    Production -> deploy deployConfig
+
+
+configureCmd :: Environment -> ConfigureCmd -> ScriptRunContext ()
+configureCmd env configCmd = do
   case configCmd of
     ConfigureDB -> do
-      _ <- validateAndRunPostSetupCmd context (interactiveConfigureDB env)
-      return ()
-
+      interactiveConfigureDB env
 
 setupNew :: Text -> Maybe Text -> Maybe Text -> IO ()
 setupNew appNameOption mbFrontEndOption mbTemplate = do
