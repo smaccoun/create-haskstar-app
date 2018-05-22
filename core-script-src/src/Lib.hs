@@ -31,8 +31,8 @@ newtype Email = Email Text
 newtype Domain = Domain Text
 newtype SHA1 = SHA1 Text
 
-io :: ScriptRunContext () -> Context -> IO ()
-io (ScriptRunContext action) context =
+io ::  Context -> ScriptRunContext () -> IO ()
+io context (ScriptRunContext action) =
     runReaderT action context
 
 gitCloneShallow :: Text -> Maybe Text -> IO ExitCode
@@ -71,7 +71,7 @@ validateAndRunPostSetupCmd :: Context -> ScriptRunContext () -> IO ()
 validateAndRunPostSetupCmd context cmd = do
     isValidHASMDir <- checkValidHASMDir
     if isValidHASMDir then do
-        io cmd context
+        io context cmd
     else
         ioError $ userError "You are not in a valid HASM directory"
 

@@ -98,11 +98,11 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
   let context = Context appDir executablePath mbTemplate
 
   -- | Setup Ops, DB, Front-End, Back-End directories
-  io (runSetup (AppName appNameOption) dbConfig) context
+  io context (runSetup (AppName appNameOption) dbConfig)
 
   shouldBuild <- askToBuild
   if shouldBuild then do
-    io buildBackEnd context
+    io context buildBackEnd
   else
     return ()
 
