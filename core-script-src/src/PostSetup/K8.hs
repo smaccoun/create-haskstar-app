@@ -26,7 +26,7 @@ configureKubeSecrets appName' dbConfig = do
     Nothing -> die "Cannot find configured AUTH JWK"
     Just jwk -> do
         let configmapVars = getConfigmapVars (pack jwk) dbConfig
-        let fullCmd = (kubeSecretsCmd appName' configmapVars)
+            fullCmd = (kubeSecretsCmd appName' configmapVars)
         showCommand fullCmd
         _ <- shell fullCmd  empty
         return envVars

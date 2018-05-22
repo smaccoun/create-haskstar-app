@@ -32,35 +32,36 @@ import           Text.Mustache
 import           Turtle
 
 runSetup :: AppName -> DBConfig -> ScriptRunContext ()
-runSetup appName' dbConfig = do
-  shouldSetupResult <- liftIO $ promptYesNo "Setup remote deployment as part of initial setup (note: you can also complete this step after setup) ? "
-  onShouldSetupRemoteConfig appName' shouldSetupResult
-  setupAllSubDirectories dbConfig
-
-onShouldSetupRemoteConfig :: AppName -> YesNo -> ScriptRunContext ()
-onShouldSetupRemoteConfig appName'@(AppName appNameText) shouldSetup =
-  case shouldSetup of
+runSetup appName'@(AppName appNameText) dbConfig = do
+  shouldSetupRemote <- liftIO $ promptYesNo "Setup remote deployment as part of initial setup (note: you can also complete this step after setup) ? "
+  case shouldSetupRemote of
     Yes -> do
       dockerHubRepo <- liftIO $ prompt "What is your docker hub name? " Nothing
       domain <- liftIO $ prompt "What primary domain will this be associated with (e.g. example.com)? " Nothing
       email <- liftIO $ prompt "What is your email (used for TLS cert auto renewal)? " Nothing
-      let hasmFile = mkHasmFile appName' (Email email) (Domain domain) dockerHubRepo
+      let hasmFile = mkBaseHasmFile appName' (Email email) (Domain domain) dockerHubRepo
       writeHASMFile hasmFile
-    No -> writeHASMFile $ HASMFile appNameText Nothing
-  where
-    mkHasmFile :: AppName -> Email -> Domain -> Text -> HASMFile
-    mkHasmFile (AppName appName') (Email email') (Domain domain) dockerHubRepo =
-      HASMFile
-        {_appName = appName'
-        ,_remote = Just $
-            RemoteConfig
-              {_dockerBaseImage =
-                  dockerHubRepo <> "/" <> appName'
-              ,_domain = domain
-              ,_email = email'
-              ,_dbRemoteConfig = Nothing
-              }
-        }
+
+    No -> do
+      writeHASMFile $ HASMFile appNameText Nothing
+
+  setupOpsDir shouldSetupRemote
+  setupCoreDirectories dbConfig
+
+
+mkBaseHasmFile :: AppName -> Email -> Domain -> Text -> HASMFile
+mkBaseHasmFile (AppName appName') (Email email') (Domain domain) dockerHubRepo =
+  HASMFile
+    {_appName = appName'
+    ,_remote = Just $
+        RemoteConfig
+          {_dockerBaseImage =
+              dockerHubRepo <> "/" <> appName'
+          ,_domain = domain
+          ,_email = email'
+          ,_dbRemoteConfig = Nothing
+          }
+    }
 
 -- | Setup DB, Front-End, Back-End directories without building them
 setupCoreDirectories :: DBConfig -> ScriptRunContext ()
@@ -73,10 +74,6 @@ setupCoreDirectories dbConfig = do
   majorCommentBlock "FRONT-END"
   setupFrontendDir elmFrontEndSetupConfig
 
-setupAllSubDirectories :: DBConfig -> ScriptRunContext ()
-setupAllSubDirectories dbConfig = do
-  setupOpsDir
-  setupCoreDirectories dbConfig
 
 setupBackendDir :: DBConfig -> ScriptRunContext ()
 setupBackendDir dbConfig = do
@@ -147,11 +144,14 @@ setupDBDir dbConfig = do
 
 
 
-setupOpsDir :: ScriptRunContext ()
-setupOpsDir = do
+setupOpsDir :: YesNo -> ScriptRunContext ()
+setupOpsDir shouldSetupRemote = do
   setupOpsTree
-  configureCircle
-  configureInitialK8Templates
+  case shouldSetupRemote of
+    Yes ->  do
+      configureCircle
+      configureInitialK8Templates
+    No -> return ()
 
 configureInitialK8Templates :: ScriptRunContext ()
 configureInitialK8Templates = do
