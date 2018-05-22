@@ -58,14 +58,14 @@ parseCmd =
 
 parseStartCmd :: Parser StartCmd
 parseStartCmd =
-  arg parseStartText "startCmd" "Choose either 'front-end', 'back-end', or 'db'"
+  arg parseStartText "startCmd" "Choose either 'frontend', 'backend', or 'db'"
   where
     parseStartText rt =
       case rt of
-        "back-end"  -> Just StartAPI
-        "front-end" -> Just StartWeb
-        "db"        -> Just StartDB
-        _           -> Nothing
+        "backend"  -> Just StartAPI
+        "frontend" -> Just StartWeb
+        "db"       -> Just StartDB
+        _          -> Nothing
 
 parseRunCmd :: Parser RunCmd
 parseRunCmd =
@@ -118,14 +118,14 @@ parseDeployCmd =
 
 parseBuildCmd :: Parser BuildCmd
 parseBuildCmd =
-  arg parseStartText "buildCmd" "Choose either 'front-end', 'back-end', or 'migrations'"
+  arg parseStartText "buildCmd" "Choose either 'frontend', 'backend', or 'migrations'"
   where
     parseStartText rt =
       case rt of
-        "back-end"  -> Just BuildBackEnd
-        "front-end" -> Just BuildFrontEnd
-        "all"       -> Just BuildAll
-        _           -> Nothing
+        "backend"  -> Just BuildBackEnd
+        "frontend" -> Just BuildFrontEnd
+        "all"      -> Just BuildAll
+        _          -> Nothing
 
 
 parseConfigureCmd :: Parser (Environment, ConfigureCmd)
