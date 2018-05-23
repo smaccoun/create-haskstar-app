@@ -45,9 +45,9 @@ gitCloneShallow gitRepo mbTemplate = do
      cloneCmd = gitBaseCloneCmd <> withBranch <> gitRepo
 
 
-checkValidHASMDir :: IO Bool
-checkValidHASMDir = do
-    directChildren <- fold (ls ".") Fold.list
+isHASMFileDirectChild :: Turtle.FilePath -> IO Bool
+isHASMFileDirectChild aDir = do
+    directChildren <- fold (ls aDir) Fold.list
     let directChildrenNames = Set.fromList $ fmap (encodeString . filename) directChildren
     return $ hasAllDirs directChildrenNames
     where
@@ -63,17 +63,25 @@ getExecutablePath' =
 
 getPostSetupContext :: IO Context
 getPostSetupContext = do
-    appRootDir <- pwd
-    executablePath <- getExecutablePath'
-    return $ Context appRootDir executablePath Nothing
+    curDir <- pwd
+    mbAppRootDir <- isInValidHASMDir curDir
+    case mbAppRootDir of
+        Just appRootDir' ->  do
+            executablePath <- getExecutablePath'
+            return $ Context appRootDir' executablePath Nothing
+        Nothing ->
+            die "You are not within a valid HASM directory"
 
-validateAndRunPostSetupCmd :: Context -> ScriptRunContext () -> IO ()
-validateAndRunPostSetupCmd context cmd = do
-    isValidHASMDir <- checkValidHASMDir
-    if isValidHASMDir then do
-        io context cmd
+isInValidHASMDir :: Turtle.FilePath -> IO (Maybe Turtle.FilePath)
+isInValidHASMDir curDir = do
+    dirHasValidHASMFile <- isHASMFileDirectChild curDir
+    if dirHasValidHASMFile  then
+        return $ Just curDir
     else
-        ioError $ userError "You are not in a valid HASM directory"
+        if curDir == "/" then
+            return Nothing
+        else
+            isInValidHASMDir $ parent curDir
 
 
 {- Applies template values to mustache file and writes to new file in place, without mustache extension -}

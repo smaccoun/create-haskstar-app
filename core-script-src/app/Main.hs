@@ -38,7 +38,7 @@ main = do
     New appName   -> setupNew appName mbfrontEndOption mbTemplate
     PostSetupMode postSetupOption -> do
       context <- getPostSetupContext
-      validateAndRunPostSetupCmd context (runPostSetupOption postSetupOption)
+      io context (runPostSetupOption postSetupOption)
 
 
 runPostSetupOption :: PostSetupOption -> ScriptRunContext ()
