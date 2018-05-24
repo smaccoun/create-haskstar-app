@@ -16,8 +16,8 @@ hasm new example-app
 cd example-app
 
 hasm start db
-hasm start front-end
-hasm start back-end
+hasm start frontend
+hasm start backend
 
 hasm run migrations local
 
