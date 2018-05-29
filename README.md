@@ -41,6 +41,18 @@ Current frontend: [Beam-Servant](https://github.com/smaccoun/haskstar-elm)
   - [Deployment](#deployment-setup)
 - [Goals](#goals)
 - [Roadmap](#roadmap)
+   - [Backend](#back-end)
+     - [Auth](#auth)
+     - [Features](#features)
+     - [Libraries](#libraries)
+   - [Frontend](#front-end)
+     - [Frameworks](#frameworks)
+     - [Auth views](#auth-views)
+     - [Admin Panel](#admin-panel)
+   - [Ops](#ops)
+   - [DB](#db)
+     - [Migrations](#migrations)
+   - [Distribution](#distribution)
 - [Development Philosophy](#development-philosophy)
 
 
@@ -138,7 +150,7 @@ Idea is to get stack working for a certain set of configurations, then continual
 
 # Roadmap
 
-### ---------Front-End-----------
+### Front-End
 
 #### Frameworks
 |   lib    | Status   |
@@ -149,12 +161,11 @@ Idea is to get stack working for a certain set of configurations, then continual
 | Halogen (purescript)    |          |
 
 
-#### User/Session/Auth
+#### Auth Views
 
 |   Feature | Status   |
 |----------|:---------|
 | Login/Register view |     ✅      |
-| password hasing (scrypt) |   ✅    |
 | OAuth     |      |
 | Cookie    |      |
 
@@ -166,7 +177,15 @@ Idea is to get stack working for a certain set of configurations, then continual
 | Font Awesome |      |
 | Ionic |      |
 
-### ---------Back-End-----------
+#### Admin Panel
+
+|   Feature | Status   |
+|----------|:---------|
+| Elm |     ✅      |
+| Miso | Coming soon...target as isolated      |
+
+
+### Back-End
 
 #### Libraries
 | lib                                                    | Status      |
@@ -176,18 +195,31 @@ Idea is to get stack working for a certain set of configurations, then continual
 | [Selda](https://selda.link/)   |  ?? 
 | yesod?                                                 |             |
 
+#### Auth
+
+|   Feature | Status   |
+|----------|:---------|
+| password hasing (scrypt) |   ✅    |
+| OAuth     |      |
+| Cookie    |      |
+
 #### Features
 | feature                          | Status      |
 |--------------------------------------------------------|-------------|
 | Automatic Swagger UI generation  | ✅          |
 | Automatic Swagger UI server      | ✅          |
 
+### Ops
 
+|   Platforms | Status   |
+|----------|:---------|
+| CircleCI |    ✅      |
+| AWS      |       |
+| GCloud   |    ✅   |
 
+### DB
 
-### ---------DB-----------
-
-**Only plan on supporting postgres for a while**
+#### Migrations
 
 |   lib    | Status   |
 |----------|:---------|
@@ -205,11 +237,5 @@ Idea is to get stack working for a certain set of configurations, then continual
 | Nix      |      |
 | ....     |      |
 
-### ---------Dev Ops-----------
 
-|   Platforms | Status   |
-|----------|:---------|
-| CircleCI |          |
-| AWS      |       |
-| GCloud   |    ✅   |
 
