@@ -13,8 +13,8 @@ prompt :: MonadIO m => T.Text -> Maybe T.Text -> m T.Text
 prompt promptQuestion mbDefault = do
   let questionExtension = fmap (\d -> " (default " <> d <> ")") mbDefault & fromMaybe ""
   let question = promptQuestion <> questionExtension <> ": "
-  printfln question
   printf "\n-----------------------\n\n"
+  printfln question
   getAnswer
   where
     getAnswer :: MonadIO m => m Text
@@ -33,7 +33,7 @@ data YesNo = Yes | No
 
 promptYesNo :: MonadIO m => T.Text -> m YesNo
 promptYesNo promptQuestion = do
-  let fullPrompt = promptQuestion <> " (Hit [y] or [n])"
+  let fullPrompt = promptQuestion <> " (Y/n)"
   response <- prompt fullPrompt Nothing
   case T.toLower response of
     "y" -> return Yes

@@ -89,7 +89,15 @@ runDB = do
         liftIO $ instructionCommentBlock $ "\nSuccessfully booted docker instance.\n To log into the database run:" <> dbLoginCmd pgConfig
         fromAppRootDir
         return ()
-    ExitFailure n -> die ("Failed to boot docker instance for DB: " <> repr n)
+    ExitFailure n -> do
+      shouldRestartDB <- promptYesNo $ "You may already have a running instance. Would you like to reboot the db"
+      case shouldRestartDB of
+        Yes -> do
+          _ <- liftIO $ shell "docker stop my-app-db && docker rm my-app-db" empty
+          runDB
+        No -> do
+          die "Exiting"
+
 
 
 
