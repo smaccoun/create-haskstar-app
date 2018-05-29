@@ -100,6 +100,11 @@ setupNew appNameOption mbFrontEndOption mbTemplate = do
   -- | Setup Ops, DB, Front-End, Back-End directories
   io context (runSetup (AppName appNameOption) dbConfig)
 
+  shouldStartDB <- promptYesNo "Setup complete. Would you like to spin up the local DB instance now"
+  case shouldStartDB of
+    Yes -> io context runDB
+    No  -> return ()
+
   shouldBuild <- askToBuild
   if shouldBuild then do
     io context buildBackEnd

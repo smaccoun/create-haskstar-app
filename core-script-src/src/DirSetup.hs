@@ -140,8 +140,7 @@ setupDBDir dbConfig = do
   liftIO $ writeTextFile ".env" dbEnvFile
 
   _ <- shell "stack build" empty
-  runDB
-
+  return ()
 
 
 setupOpsDir :: YesNo -> ScriptRunContext ()
