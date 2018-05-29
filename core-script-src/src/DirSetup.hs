@@ -81,7 +81,7 @@ setupBackendDir dbConfig = do
   mkBackendEnv dbConfig
   return ()
   where
-    backendBaseGitUrl = GitBaseTemplateUrl "https://github.com/smaccoun/haskstar-haskell"
+    backendBaseGitUrl = GitBaseTemplateUrl "https://github.com/smaccoun/beam-servant"
 
 setupFrontendDir :: FrontEndSetupConfig -> ScriptRunContext ()
 setupFrontendDir frc@(FrontEndSetupConfig _ gitBaseUrl ) = do

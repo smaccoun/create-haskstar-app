@@ -21,14 +21,29 @@ hasm start backend
 
 hasm run migrations local
 
+hasm configure staging db   ## Configure a remote db instance (e.g. RDS or GCloud SQL)
 hasm deploy staging ## Currently requires some manual work with Google Cloud prior 
 ```
 
 The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end and your choice of front-end, devops, etc.
 
-(Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options)
+Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options
 
-#### Currently Very WIP, but I will be working on this full time for a while. Contributions highly welcome!
+Current backend: [Beam-Servant](https://github.com/smaccoun/beam-servant)
+Current frontend: [Beam-Servant](https://github.com/smaccoun/haskstar-elm)
+
+### Currently Very WIP, but I will be working on this full time for a while. Contributions highly welcome!
+
+## Table Of Contents
+- [Setup](#setup)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Deployment](#deployment-setup)
+- [Goals](#goals)
+- [Roadmap](#roadmap)
+- [Development Philosophy](#development-philosophy)
+
+
 
 
 ## GOALS
@@ -64,11 +79,7 @@ the eventual goal of this is to make the full setup process highly customizable.
 
 --TODO: Work on nix build, homebrew, hackage.
 
-
-**NOTE** *The first build may take a VERY long time, especially if you do not have lts-9.4*
-**After the first time builds should be quite fast! Grab a coffee during the initial setup! **
-
-**Prerequisites**
+### Prerequisites
 You must have the following installed for basic local development and setup
 
 - stack
@@ -76,7 +87,23 @@ You must have the following installed for basic local development and setup
 - npm
 - yarn
 
-**Cloud Hosting (deployment) prerequisites**
+
+### Installation
+
+**Install the command line util (hasm)**
+
+```bash
+git clone git@github.com:smaccoun/create-haskstar-app.git
+cd create-haskstar-app
+./install.sh
+```
+
+**NOTE** *The first build may take a VERY long time, especially if you do not have lts-9.4*
+**After the first time builds should be quite fast! Grab a coffee during the initial setup! **
+
+
+
+### Deployment Setup
 
 Additionally, if you want to setup remote deployments, you will need several libraries.
 Currently, deployments are orchestrated by Kubernetes. Kubernetes allows for highly declarative cloud deployments, and will soon have very good native support from AWS, Google Cloud (GCE), and Digital Ocean.
@@ -97,16 +124,6 @@ gcloud config set compute/zone us-central1-b
 export PROJECT_ID="$(gcloud config get-value project -q)"
 ```
 
-
-
-
-# Setup
-
-```bash
-git clone git@github.com:smaccoun/create-haskstar-app.git
-cd create-haskstar-app
-./install.sh
-```
 
 # Development Philosophy
 
