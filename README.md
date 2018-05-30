@@ -30,7 +30,7 @@ The name HaskStar (Hask*) implies building a WebApp with Haskell as a back-end a
 Default stack is Haskell/Elm/Postgres, but see roadmap for upcoming options
 
 Current backend: [Beam-Servant](https://github.com/smaccoun/beam-servant)
-Current frontend: [Beam-Servant](https://github.com/smaccoun/haskstar-elm)
+Current frontend: [Haskstar-Elm](https://github.com/smaccoun/haskstar-elm)
 
 ### Currently Very WIP, but I will be working on this full time for a while. Contributions highly welcome!
 
