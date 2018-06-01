@@ -47,8 +47,8 @@ runPostSetupOption postSetupOption =
     Start startOption             -> startCmd startOption
     Run runOption                 -> runCmd runOption
     Build buildOption             -> buildCmd buildOption
-    Deploy deployConfig deployEnv ->  deployCmd deployConfig deployEnv
-    Configure env cf              ->   configureCmd env cf
+    Deploy deployConfig deployEnv -> deployCmd deployConfig deployEnv
+    Configure env cf              -> configureCmd env cf
     Login loginCmd                -> loginDB
 
 

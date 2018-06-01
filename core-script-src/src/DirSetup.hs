@@ -161,7 +161,7 @@ configureInitialK8Templates = do
       let email' = rc ^. email
       let domain' = rc ^. domain
       _ <- configureK8StacheFile $ certIssuerConfig (Email email')
-      _ <- setupGlobalGoogleStaticIPCmd
+--      _ <- setupGlobalGoogleStaticIPCmd
       _ <- configureK8StacheFile $ ingressConfig (AppName appName') (Domain domain')
       return ()
     Nothing ->
